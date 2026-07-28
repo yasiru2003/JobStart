@@ -1,0 +1,134 @@
+'use client'
+
+import { useState } from 'react'
+import { X, Calendar, Clock, MapPin, Video, MessageSquare, CheckCircle, AlertCircle, XCircle, Send } from 'lucide-react'
+import WhatsappConversationModal from '@/components/modals/WhatsappConversationModal'
+
+interface InterviewDetailModalProps {
+  isOpen: boolean
+  onClose: () => void
+  interview: {
+    id: string
+    candidate: string
+    job: string
+    date: string
+    time: string
+    mode: string
+    status: string
+    phone?: string
+  } | null
+}
+
+export default function InterviewDetailModal({
+  isOpen,
+  onClose,
+  interview,
+}: InterviewDetailModalProps) {
+  const [isChatOpen, setIsChatOpen] = useState(false)
+  const [resentToast, setResentToast] = useState(false)
+
+  if (!isOpen || !interview) return null
+
+  const phone = interview.phone || '+94 77 123 4567'
+
+  const handleResend = () => {
+    setResentToast(true)
+    setTimeout(() => setResentToast(false), 3000)
+  }
+
+  return (
+    <>
+      <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex justify-end animate-fade-in">
+        <div
+          className="bg-surface w-full max-w-md h-full overflow-y-auto shadow-2xl p-6 flex flex-col justify-between border-l border-border relative animate-slide-in-right"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Header */}
+          <div>
+            <div className="flex items-start justify-between border-b border-border pb-4">
+              <div>
+                <h2 className="text-lg font-bold text-foreground">{interview.candidate}</h2>
+                <p className="text-xs text-muted mt-0.5">{interview.job}</p>
+              </div>
+              <button
+                onClick={onClose}
+                className="w-8 h-8 rounded-full bg-surface-2 hover:bg-border flex items-center justify-center text-muted hover:text-foreground transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Toast Alert */}
+            {resentToast && (
+              <div className="mt-4 p-3 rounded-xl bg-emerald-600 text-white font-semibold text-xs flex items-center gap-2 animate-bounce">
+                <Send className="w-4 h-4" />
+                <span>WhatsApp reminder dispatched via WAHA API!</span>
+              </div>
+            )}
+
+            {/* Fields Grid */}
+            <div className="mt-6 space-y-3.5 pt-2">
+              <div className="flex justify-between items-center text-xs">
+                <span className="text-muted font-medium">Interview Date</span>
+                <span className="font-semibold text-foreground">{interview.date}</span>
+              </div>
+              <div className="flex justify-between items-center text-xs">
+                <span className="text-muted font-medium">Scheduled Time Slot</span>
+                <span className="font-semibold text-foreground">{interview.time}</span>
+              </div>
+              <div className="flex justify-between items-center text-xs">
+                <span className="text-muted font-medium">Mode / Location</span>
+                <span className="font-semibold text-foreground flex items-center gap-1">
+                  {interview.mode.includes('Site') ? <MapPin className="w-3.5 h-3.5 text-rose-500" /> : <Video className="w-3.5 h-3.5 text-blue-500" />}
+                  {interview.mode}
+                </span>
+              </div>
+              <div className="flex justify-between items-center text-xs">
+                <span className="text-muted font-medium">WhatsApp Confirmation</span>
+                <span className="badge-verified text-xs font-bold capitalize">{interview.status}</span>
+              </div>
+              <div className="flex justify-between items-center text-xs">
+                <span className="text-muted font-medium">Candidate Phone</span>
+                <span className="font-semibold text-emerald-600 dark:text-emerald-400">{phone}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="mt-8 space-y-2 pt-4 border-t border-border">
+            <button
+              onClick={handleResend}
+              className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-2"
+            >
+              <Send className="w-4 h-4" />
+              <span>Resend WhatsApp Reminder (WAHA)</span>
+            </button>
+
+            <button
+              onClick={() => setIsChatOpen(true)}
+              className="w-full py-2.5 border border-border bg-surface-2 hover:bg-border text-foreground font-semibold text-xs rounded-xl transition-colors flex items-center justify-center gap-2"
+            >
+              <MessageSquare className="w-4 h-4 text-emerald-600" />
+              <span>Show WhatsApp Conversation</span>
+            </button>
+
+            <button
+              onClick={onClose}
+              className="w-full py-2 border border-border bg-surface hover:bg-surface-2 text-rose-600 font-semibold text-xs rounded-xl transition-colors"
+            >
+              Cancel Interview
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <WhatsappConversationModal
+        isOpen={isChatOpen}
+        onClose={() => setIsChatOpen(false)}
+        candidateName={interview.candidate}
+        phone={phone}
+        jobTitle={interview.job}
+      />
+    </>
+  )
+}

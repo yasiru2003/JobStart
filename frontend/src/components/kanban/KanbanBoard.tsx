@@ -1,8 +1,7 @@
-'use client'
-
 import { useState, useRef } from 'react'
 import { MapPin, Star, ShieldCheck, GripVertical, Calendar, FileText, ChevronRight } from 'lucide-react'
 import ScheduleInterviewModal from '@/components/modals/ScheduleInterviewModal'
+import CandidateDetailModal from '@/components/modals/CandidateDetailModal'
 
 export type Candidate = {
   id: string
@@ -43,6 +42,7 @@ export default function KanbanBoard({ initialColumns, jobTitle }: KanbanBoardPro
   const [search, setSearch] = useState('')
   const [sort, setSort] = useState<'match' | 'name' | 'rating'>('match')
   const [scheduleFor, setScheduleFor] = useState<Candidate | null>(null)
+  const [selectedCand, setSelectedCand] = useState<Candidate | null>(null)
 
   const dragNode = useRef<HTMLDivElement | null>(null)
 
@@ -223,13 +223,22 @@ export default function KanbanBoard({ initialColumns, jobTitle }: KanbanBoardPro
                     {/* Actions */}
                     <div className="flex gap-1.5 mt-2.5">
                       <button
-                        onClick={() => setScheduleFor(cand)}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setScheduleFor(cand)
+                        }}
                         className="flex-1 py-1.5 text-xs font-semibold rounded-lg border border-border bg-surface-2 hover:bg-border text-foreground transition-colors flex items-center justify-center gap-1"
                       >
                         <Calendar className="w-3 h-3" />
                         Interview
                       </button>
-                      <button className="flex-1 py-1.5 text-xs font-semibold rounded-lg border border-border bg-surface-2 hover:bg-border text-foreground transition-colors flex items-center justify-center gap-1">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setSelectedCand(cand)
+                        }}
+                        className="flex-1 py-1.5 text-xs font-semibold rounded-lg border border-border bg-surface-2 hover:bg-border text-foreground transition-colors flex items-center justify-center gap-1"
+                      >
                         <FileText className="w-3 h-3" />
                         Resume
                       </button>
@@ -256,6 +265,14 @@ export default function KanbanBoard({ initialColumns, jobTitle }: KanbanBoardPro
           jobTitle={jobTitle}
           candidateName={scheduleFor.name}
           onScheduleSubmit={() => { setScheduleFor(null); alert(`Interview scheduled with ${scheduleFor?.name}!`) }}
+        />
+      )}
+
+      {selectedCand && (
+        <CandidateDetailModal
+          isOpen={true}
+          onClose={() => setSelectedCand(null)}
+          candidate={selectedCand}
         />
       )}
     </div>

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Calendar, Clock, Plus, Search, Filter, Video, MapPin, CheckCircle, AlertCircle, XCircle, MessageSquare, Send, CheckCheck } from 'lucide-react'
 import ScheduleInterviewModal from '@/components/modals/ScheduleInterviewModal'
+import InterviewDetailModal from '@/components/modals/InterviewDetailModal'
 
 const INITIAL_INTERVIEWS = [
   { id: '1', candidate: 'Sunil Rathnayake', phone: '+94 77 123 4567', job: 'Senior React / Next.js Developer', employer: 'WSO2', date: '24 Jul 2026', time: '10:00 AM – 11:00 AM', mode: 'Google Meet', status: 'confirmed', interviewer: 'Nalaka Bandara', wahaSent: true },
@@ -22,6 +23,7 @@ export default function InterviewsPage() {
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('all')
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedInterview, setSelectedInterview] = useState<any | null>(null)
   const [sendingWahaId, setSendingWahaId] = useState<string | null>(null)
   const [toastMessage, setToastMessage] = useState<string | null>(null)
 
@@ -157,7 +159,8 @@ export default function InterviewsPage() {
             return (
               <div
                 key={iv.id}
-                className="grid grid-cols-[2fr_1.8fr_1fr_1.3fr_1.2fr_1fr] px-5 py-4 items-center hover:bg-surface-2/60 transition-colors text-sm"
+                onClick={() => setSelectedInterview(iv)}
+                className="grid grid-cols-[2fr_1.8fr_1fr_1.3fr_1.2fr_1fr] px-5 py-4 items-center hover:bg-surface-2/60 transition-colors text-sm cursor-pointer"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-xl bg-primary/10 text-primary font-bold text-xs flex items-center justify-center">
@@ -191,7 +194,7 @@ export default function InterviewsPage() {
                   </span>
                 </div>
 
-                <div className="text-right">
+                <div className="text-right" onClick={(e) => e.stopPropagation()}>
                   {iv.wahaSent ? (
                     <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600 bg-emerald-500/10 border border-emerald-200 px-2.5 py-1 rounded-lg">
                       <CheckCheck className="w-3.5 h-3.5" />
@@ -225,6 +228,12 @@ export default function InterviewsPage() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onScheduleSubmit={handleScheduleSubmit}
+      />
+
+      <InterviewDetailModal
+        isOpen={Boolean(selectedInterview)}
+        onClose={() => setSelectedInterview(null)}
+        interview={selectedInterview}
       />
     </div>
   )
