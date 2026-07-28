@@ -90,8 +90,11 @@ export default function Header() {
 
         {/* Sign Out Button */}
         <button
-          onClick={logout}
-          className="ml-2 px-3 py-1.5 text-xs font-medium text-muted hover:text-foreground border border-border rounded-lg hover:bg-surface-2 transition-all focus-ring"
+          onClick={() => {
+            logout()
+            router.push('/login')
+          }}
+          className="ml-2 px-3 py-1.5 text-xs font-semibold text-muted hover:text-rose-600 border border-border rounded-lg hover:bg-rose-500/10 hover:border-rose-200 transition-all focus-ring"
           id="header-signout"
         >
           Sign out

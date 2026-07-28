@@ -23,6 +23,7 @@ interface AuthState {
   token: string | null
   viewingAs: UserRole
   isLoading: boolean
+  login: (token: string, user: User) => void
   setUser: (user: User | null) => void
   setToken: (token: string | null) => void
   setViewingAs: (role: UserRole) => void
@@ -36,6 +37,13 @@ export const useAuthStore = create<AuthState>()(
       token: 'demo-jwt-token',
       viewingAs: 'admin',
       isLoading: false,
+      login: (token: string, user: User) =>
+        set({
+          token,
+          user,
+          viewingAs: user.role || 'admin',
+          isLoading: false,
+        }),
       setUser: (user) => set({ user, viewingAs: user?.role || 'admin' }),
       setToken: (token) => set({ token }),
       setViewingAs: (role) => set({ viewingAs: role }),

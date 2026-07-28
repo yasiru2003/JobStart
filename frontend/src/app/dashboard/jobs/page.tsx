@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { Briefcase, Plus, Search, MapPin, DollarSign, Sparkles, Edit3, Trash2, Bot, Calendar } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { Briefcase, Plus, Search, MapPin, DollarSign, Sparkles, Edit3, Trash2, Bot, Calendar, Kanban } from 'lucide-react'
 import PostJobModal from '@/components/modals/PostJobModal'
 import ScheduleInterviewModal from '@/components/modals/ScheduleInterviewModal'
 import AiAgentDrawer from '@/components/ai/AiAgentDrawer'
@@ -14,6 +15,7 @@ const initialJobs = [
 ]
 
 export default function JobsPage() {
+  const router = useRouter()
   const [jobs, setJobs] = useState(initialJobs)
   const [isPostModalOpen, setIsPostModalOpen] = useState(false)
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false)
@@ -114,6 +116,14 @@ export default function JobsPage() {
               </div>
 
               <div className="flex items-center gap-1.5">
+                <button
+                  onClick={() => router.push(`/dashboard/jobs/${job.id}`)}
+                  className="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 font-semibold text-xs rounded-lg transition-colors flex items-center gap-1 border border-indigo-200"
+                  title="View Pipeline"
+                >
+                  <Kanban className="w-3.5 h-3.5" /> Pipeline
+                </button>
+
                 <button
                   onClick={() => {
                     setSelectedJob(job)
