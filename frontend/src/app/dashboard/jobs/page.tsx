@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { Briefcase, Plus, Search, MapPin, DollarSign, Sparkles, Edit3, Trash2, Bot, Calendar, Kanban } from 'lucide-react'
 import PostJobModal from '@/components/modals/PostJobModal'
 import ScheduleInterviewModal from '@/components/modals/ScheduleInterviewModal'
+import DeleteJobModal from '@/components/modals/DeleteJobModal'
 import AiAgentDrawer from '@/components/ai/AiAgentDrawer'
 
 const initialJobs = [
@@ -20,7 +21,9 @@ export default function JobsPage() {
   const [isPostModalOpen, setIsPostModalOpen] = useState(false)
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false)
   const [isAiDrawerOpen, setIsAiDrawerOpen] = useState(false)
+  const [jobToDelete, setJobToDelete] = useState<any | null>(null)
   const [selectedJob, setSelectedJob] = useState<any>(null)
+  const [search, setSearch] = useState('')
 
   const handleCreateJob = (jobData: any) => {
     const newJob = {
@@ -36,9 +39,18 @@ export default function JobsPage() {
     setJobs([newJob, ...jobs])
   }
 
-  const handleDeleteJob = (id: string) => {
-    setJobs((prev) => prev.filter((j) => j.id !== id))
+  const confirmDeleteJob = () => {
+    if (jobToDelete) {
+      setJobs((prev) => prev.filter((j) => j.id !== jobToDelete.id))
+      setJobToDelete(null)
+    }
   }
+
+  const filteredJobs = jobs.filter((j) =>
+    j.title.toLowerCase().includes(search.toLowerCase()) ||
+    j.employer.toLowerCase().includes(search.toLowerCase()) ||
+    j.location.toLowerCase().includes(search.toLowerCase())
+  )
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto animate-fade-in relative">
@@ -55,7 +67,7 @@ export default function JobsPage() {
         <div className="flex items-center gap-2.5">
           <button
             onClick={() => setIsAiDrawerOpen(true)}
-            className="px-3.5 py-2 border border-border bg-surface hover:bg-surface-2 text-foreground font-semibold text-xs rounded-xl transition-colors flex items-center gap-1.5"
+            className="px-3.5 py-2 border border-border bg-surface hover:bg-surface-2 text-foreground font-semibold text-xs rounded-xl transition-colors flex items-center gap-1.5 cursor-pointer"
             id="open-ai-drawer-btn"
           >
             <Sparkles className="w-3.5 h-3.5 text-amber-500" />
@@ -63,7 +75,7 @@ export default function JobsPage() {
           </button>
           <button
             onClick={() => setIsPostModalOpen(true)}
-            className="px-4 py-2 bg-accent hover:bg-amber-600 text-amber-950 font-bold text-xs rounded-xl shadow-md transition-colors flex items-center gap-2"
+            className="px-4 py-2 bg-accent hover:bg-amber-600 text-amber-950 font-bold text-xs rounded-xl shadow-md transition-colors flex items-center gap-2 cursor-pointer"
             id="open-post-job-modal-btn"
           >
             <Plus className="w-4 h-4" />
@@ -79,6 +91,8 @@ export default function JobsPage() {
           <input
             type="text"
             placeholder="Search job title, skills, or employer..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-9 pr-4 py-2 bg-surface-2 border border-border rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-primary/20"
           />
         </div>
@@ -86,7 +100,7 @@ export default function JobsPage() {
 
       {/* Jobs List */}
       <div className="space-y-4">
-        {jobs.map((job) => (
+        {filteredJobs.map((job) => (
           <div key={job.id} className="card p-5 hover:shadow-md transition-all flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="space-y-2">
               <div className="flex items-center gap-3">
@@ -118,7 +132,7 @@ export default function JobsPage() {
               <div className="flex items-center gap-1.5">
                 <button
                   onClick={() => router.push(`/dashboard/jobs/${job.id}`)}
-                  className="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 font-semibold text-xs rounded-lg transition-colors flex items-center gap-1 border border-indigo-200"
+                  className="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 font-semibold text-xs rounded-lg transition-colors flex items-center gap-1 border border-indigo-200 cursor-pointer"
                   title="View Pipeline"
                 >
                   <Kanban className="w-3.5 h-3.5" /> Pipeline
@@ -129,7 +143,7 @@ export default function JobsPage() {
                     setSelectedJob(job)
                     setIsScheduleModalOpen(true)
                   }}
-                  className="px-3 py-1.5 bg-primary/10 hover:bg-primary/20 text-primary font-semibold text-xs rounded-lg transition-colors flex items-center gap-1"
+                  className="px-3 py-1.5 bg-primary/10 hover:bg-primary/20 text-primary font-semibold text-xs rounded-lg transition-colors flex items-center gap-1 cursor-pointer"
                   title="Schedule Interview"
                 >
                   <Calendar className="w-3.5 h-3.5" /> Interview
@@ -137,15 +151,15 @@ export default function JobsPage() {
 
                 <button
                   onClick={() => setIsAiDrawerOpen(true)}
-                  className="w-8 h-8 rounded-lg border border-border bg-surface-2 hover:bg-border flex items-center justify-center text-muted hover:text-foreground transition-colors"
+                  className="w-8 h-8 rounded-lg border border-border bg-surface-2 hover:bg-border flex items-center justify-center text-muted hover:text-foreground transition-colors cursor-pointer"
                   title="Ask AI Agent about this job"
                 >
                   <Bot className="w-4 h-4 text-amber-500" />
                 </button>
 
                 <button
-                  onClick={() => handleDeleteJob(job.id)}
-                  className="w-8 h-8 rounded-lg border border-border bg-surface-2 hover:bg-rose-100 text-rose-600 transition-colors flex items-center justify-center"
+                  onClick={() => setJobToDelete(job)}
+                  className="w-8 h-8 rounded-lg border border-border bg-surface-2 hover:bg-rose-100 text-rose-600 transition-colors flex items-center justify-center cursor-pointer"
                   title="Delete job"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
@@ -167,7 +181,14 @@ export default function JobsPage() {
         isOpen={isScheduleModalOpen}
         onClose={() => setIsScheduleModalOpen(false)}
         jobTitle={selectedJob?.title}
-        onScheduleSubmit={(data) => alert('Interview Scheduled successfully!')}
+        onScheduleSubmit={(data) => alert('Bulk Interview Invites Dispatched via WhatsApp!')}
+      />
+
+      <DeleteJobModal
+        isOpen={Boolean(jobToDelete)}
+        onClose={() => setJobToDelete(null)}
+        jobTitle={jobToDelete?.title}
+        onConfirmDelete={confirmDeleteJob}
       />
 
       <AiAgentDrawer
