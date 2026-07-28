@@ -1,7 +1,7 @@
 'use client'
 
 import { useAuthStore, useUIStore } from '@/lib/stores'
-import { Moon, Sun, Bell } from 'lucide-react'
+import { Moon, Sun, Bell, LogOut } from 'lucide-react'
 import { usePathname, useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 
@@ -19,6 +19,15 @@ export default function Header() {
     .join('')
     .toUpperCase()
     .slice(0, 2)
+
+  const handleSignOut = () => {
+    logout()
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('jobstart-auth-v2')
+      localStorage.removeItem('jobstart-auth')
+    }
+    router.push('/login')
+  }
 
   // Generate dynamic breadcrumbs based on route
   const getBreadcrumbs = () => {
@@ -90,14 +99,13 @@ export default function Header() {
 
         {/* Sign Out Button */}
         <button
-          onClick={() => {
-            logout()
-            router.push('/login')
-          }}
-          className="ml-2 px-3 py-1.5 text-xs font-semibold text-muted hover:text-rose-600 border border-border rounded-lg hover:bg-rose-500/10 hover:border-rose-200 transition-all focus-ring"
+          onClick={handleSignOut}
+          className="ml-2 px-3 py-1.5 text-xs font-semibold text-rose-600 hover:text-rose-700 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-200 rounded-lg transition-all focus-ring flex items-center gap-1.5 cursor-pointer"
           id="header-signout"
+          title="Sign out of JobStart"
         >
-          Sign out
+          <LogOut className="w-3.5 h-3.5" />
+          <span className="hidden sm:inline">Sign out</span>
         </button>
       </div>
     </header>

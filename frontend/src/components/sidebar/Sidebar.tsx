@@ -1,12 +1,12 @@
 'use client'
 
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import {
   LayoutDashboard, Users, UserCircle, Shield,
   Briefcase, FileText, CreditCard, BarChart3, Settings,
   ChevronDown, ChevronRight, CheckSquare, PanelLeftClose,
-  PanelLeftOpen, Building2, Bot, Sparkles
+  PanelLeftOpen, Building2, Bot, Sparkles, LogOut
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAuthStore, useUIStore, UserRole } from '@/lib/stores'
@@ -105,7 +105,8 @@ const navByRole: Record<UserRole, NavGroup[]> = {
 
 export default function Sidebar() {
   const pathname = usePathname()
-  const { user, viewingAs, setViewingAs } = useAuthStore()
+  const router = useRouter()
+  const { user, viewingAs, setViewingAs, logout } = useAuthStore()
   const { sidebarCollapsed, toggleSidebar } = useUIStore()
   const [collapsedGroups, setCollapsedGroups] = useState<string[]>([])
   const [isAiAgentOpen, setIsAiAgentOpen] = useState(false)
@@ -270,43 +271,6 @@ export default function Sidebar() {
           })}
         </nav>
 
-        {/* AI Agent Button in Bottom Sidebar (Matching original template) */}
-        <div className={cn('px-3 py-2 border-t border-border/60 shrink-0', sidebarCollapsed && 'px-2 flex justify-center')}>
-          <button
-            onClick={() => setIsAiAgentOpen(true)}
-            className={cn(
-              'w-full flex items-center gap-3 px-3 py-2 rounded-xl border border-amber-500/30 bg-amber-500/10 text-amber-600 hover:bg-amber-500/20 font-semibold text-xs transition-all shadow-sm focus-ring',
-              sidebarCollapsed && 'justify-center w-10 h-10 p-0 rounded-xl'
-            )}
-            id="sidebar-ai-agent-btn"
-            title="AI Agent Assistant"
-          >
-            <Sparkles className="w-4.5 h-4.5 text-amber-500 shrink-0 animate-pulse" />
-            {!sidebarCollapsed && (
-              <>
-                <span className="flex-1 text-left font-bold text-amber-700 dark:text-amber-400">AI Agent</span>
-                <span className="badge-info text-[9px] px-1.5 py-0.2 bg-amber-500 text-amber-950 font-bold">v2.4</span>
-              </>
-            )}
-          </button>
-        </div>
-
-        {/* User Info Footer */}
-        <div className={cn('border-t border-border p-3.5 bg-surface-2/40 shrink-0', sidebarCollapsed && 'p-2 flex justify-center')}>
-          {user ? (
-            <div className={cn('flex items-center gap-3', sidebarCollapsed && 'justify-center')}>
-              <div className="w-9 h-9 rounded-full gradient-primary flex items-center justify-center text-white text-xs font-bold shrink-0 shadow-sm" title={user.fullName}>
-                {user.fullName?.charAt(0)?.toUpperCase() || 'N'}
-              </div>
-              {!sidebarCollapsed && (
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-bold text-foreground truncate leading-tight">{user.fullName}</p>
-                  <p className="text-xs text-muted capitalize leading-tight mt-0.5">{user.role}</p>
-                </div>
-              )}
-            </div>
-          ) : null}
-        </div>
       </aside>
 
       {/* AI Agent Drawer */}
