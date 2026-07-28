@@ -6,7 +6,7 @@ import {
   LayoutDashboard, Users, UserCircle, Shield,
   Briefcase, FileText, CreditCard, BarChart3, Settings,
   ChevronDown, ChevronRight, CheckSquare, PanelLeftClose,
-  PanelLeftOpen, Building2, Bot, Sparkles, LogOut
+  PanelLeftOpen, Building2, Bot, Sparkles, LogOut, Calendar
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAuthStore, useUIStore, UserRole } from '@/lib/stores'
@@ -37,15 +37,17 @@ const navByRole: Record<UserRole, NavGroup[]> = {
       ],
     },
     {
-      label: 'JOBS',
+      label: 'JOBS & INTERVIEWS',
       items: [
         { label: 'Job Postings', href: '/dashboard/jobs', icon: Briefcase },
         { label: 'Applications', href: '/dashboard/applications', icon: FileText },
+        { label: 'Interviews', href: '/dashboard/interviews', icon: Calendar },
       ],
     },
     {
       label: 'OPERATIONS',
       items: [
+        { label: 'AI Assistant', href: '/dashboard/ai-agent', icon: Sparkles },
         { label: 'Payments & Billing', href: '/dashboard/billing', icon: CreditCard },
         { label: 'Reports', href: '/dashboard/reports', icon: BarChart3 },
         { label: 'Settings', href: '/dashboard/settings', icon: Settings },
@@ -59,11 +61,13 @@ const navByRole: Record<UserRole, NavGroup[]> = {
         { label: 'Job Postings', href: '/dashboard/jobs', icon: Briefcase },
         { label: 'Applications', href: '/dashboard/applications', icon: FileText },
         { label: 'Candidates', href: '/dashboard/candidates', icon: UserCircle },
+        { label: 'Interviews', href: '/dashboard/interviews', icon: Calendar },
       ],
     },
     {
-      label: 'ACCOUNT',
+      label: 'TOOLS & ACCOUNT',
       items: [
+        { label: 'AI Assistant', href: '/dashboard/ai-agent', icon: Sparkles },
         { label: 'Billing', href: '/dashboard/billing', icon: CreditCard },
         { label: 'Settings', href: '/dashboard/settings', icon: Settings },
       ],
@@ -76,11 +80,13 @@ const navByRole: Record<UserRole, NavGroup[]> = {
         { label: 'Jobs', href: '/dashboard/jobs', icon: Briefcase },
         { label: 'Candidates', href: '/dashboard/candidates', icon: UserCircle },
         { label: 'Applications', href: '/dashboard/applications', icon: FileText },
+        { label: 'Interviews', href: '/dashboard/interviews', icon: Calendar },
       ],
     },
     {
-      label: 'ACCOUNT',
+      label: 'TOOLS & ACCOUNT',
       items: [
+        { label: 'AI Assistant', href: '/dashboard/ai-agent', icon: Sparkles },
         { label: 'Settings', href: '/dashboard/settings', icon: Settings },
       ],
     },
@@ -91,12 +97,14 @@ const navByRole: Record<UserRole, NavGroup[]> = {
       items: [
         { label: 'Find Jobs', href: '/dashboard/jobs', icon: Briefcase },
         { label: 'My Applications', href: '/dashboard/applications', icon: FileText },
+        { label: 'Interviews', href: '/dashboard/interviews', icon: Calendar },
         { label: 'My Profile', href: '/dashboard/profile', icon: UserCircle },
       ],
     },
     {
-      label: 'ACCOUNT',
+      label: 'TOOLS & ACCOUNT',
       items: [
+        { label: 'AI Assistant', href: '/dashboard/ai-agent', icon: Sparkles },
         { label: 'Settings', href: '/dashboard/settings', icon: Settings },
       ],
     },
