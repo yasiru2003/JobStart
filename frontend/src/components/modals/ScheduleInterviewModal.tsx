@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { X, Calendar, Clock, MapPin, Video, UserCheck, Send } from 'lucide-react'
+import { X, Calendar, Clock, MapPin, Video, Send, Plus, Trash2, CheckCircle2, User, Search, ShieldCheck } from 'lucide-react'
 
 interface ScheduleInterviewModalProps {
   isOpen: boolean
@@ -11,48 +11,103 @@ interface ScheduleInterviewModalProps {
   onScheduleSubmit: (interviewData: any) => void
 }
 
+const MOCK_JOB_OPTIONS = [
+  { id: '1', title: 'Senior React / Next.js Developer' },
+  { id: '2', title: 'Lead UI/UX Designer' },
+  { id: '3', title: 'DevOps & Kubernetes Engineer' },
+  { id: '4', title: 'Associate Software Engineer' },
+]
+
+const MOCK_CANDIDATES = [
+  { id: 'c1', initials: 'KP', name: 'Kasun Perera', location: 'Colombo', matchScore: 72, phone: '+94 77 123 4567' },
+  { id: 'c2', initials: 'NF', name: 'Nimal Fernando', location: 'Gampaha', matchScore: 81, phone: '+94 71 987 6543' },
+  { id: 'c4', initials: 'SR', name: 'Sunil Rathnayake', location: 'Negombo', matchScore: 93, phone: '+94 75 456 7890' },
+  { id: 'c5', initials: 'PJ', name: 'Priyanka Jayasuriya', location: 'Colombo', matchScore: 87, phone: '+94 77 555 1212' },
+  { id: 'c6', initials: 'CW', name: 'Chamara Wickramasinghe', location: 'Kandy', matchScore: 95, phone: '+94 77 888 9999' },
+]
+
 export default function ScheduleInterviewModal({
   isOpen,
   onClose,
-  candidateName = 'Kasun Perera',
-  jobTitle = 'Senior Full Stack Engineer',
+  candidateName,
+  jobTitle = 'Senior React / Next.js Developer',
   onScheduleSubmit,
 }: ScheduleInterviewModalProps) {
-  const [formData, setFormData] = useState({
-    candidateSearch: candidateName,
-    candidatePhone: '+94 77 123 4567',
-    interviewType: 'technical',
-    date: '2026-07-28',
-    startTime: '10:30',
-    endTime: '11:30',
-    locationType: 'virtual',
-    meetingLink: 'https://meet.google.com/jobstart-interview-01',
-    address: 'WSO2 HQ, 20 Palm Grove, Colombo 03',
-    interviewers: 'Nalaka Bandara (Lead Architect)',
-    notes: 'Please review technical submission prior to the session.',
-    sendWahaWhatsApp: true,
-  })
+  const [selectedJob, setSelectedJob] = useState(jobTitle)
+  const [candSearch, setCandSearch] = useState('')
+  const [chosenCandidates, setChosenCandidates] = useState<string[]>(
+    candidateName ? [candidateName] : ['Sunil Rathnayake', 'Priyanka Jayasuriya']
+  )
+  const [slots, setSlots] = useState<{ id: string; date: string; start: string; end: string }[]>([
+    { id: '1', date: '2026-07-29', start: '10:00', end: '11:00' },
+  ])
+  const [mode, setMode] = useState<'Online' | 'Physical'>('Online')
+  const [meetingLink, setMeetingLink] = useState('https://meet.google.com/jobstart-interview-01')
+  const [address, setAddress] = useState('WSO2 HQ, 20 Palm Grove, Colombo 03')
+  const [reminderFreq, setReminderFreq] = useState('1 hour before')
 
   if (!isOpen) return null
 
+  const handleToggleCandidate = (name: string) => {
+    setChosenCandidates((prev) =>
+      prev.includes(name) ? prev.filter((n) => n !== name) : [...prev, name]
+    )
+  }
+
+  const handleAddSlot = () => {
+    setSlots((prev) => [
+      ...prev,
+      { id: String(Date.now()), date: '2026-07-30', start: '14:00', end: '15:00' },
+    ])
+  }
+
+  const handleRemoveSlot = (id: string) => {
+    if (slots.length > 1) {
+      setSlots((prev) => prev.filter((s) => s.id !== id))
+    }
+  }
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    onScheduleSubmit(formData)
+    onScheduleSubmit({
+      jobTitle: selectedJob,
+      candidates: chosenCandidates,
+      slots,
+      mode,
+      locationType: mode === 'Online' ? 'virtual' : 'onsite',
+      meetingLink,
+      address,
+      reminderFreq,
+      date: slots[0]?.date || '2026-07-29',
+      startTime: slots[0]?.start || '10:00',
+      endTime: slots[0]?.end || '11:00',
+      sendWahaWhatsApp: true,
+    })
     onClose()
   }
 
+  const filteredCands = MOCK_CANDIDATES.filter((c) =>
+    c.name.toLowerCase().includes(candSearch.toLowerCase())
+  )
+
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto animate-fade-in">
-      <div className="bg-surface border border-border rounded-2xl max-w-lg w-full shadow-2xl overflow-hidden my-8">
+    <div
+      className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto animate-fade-in"
+      onClick={onClose}
+    >
+      <div
+        className="bg-surface border border-border rounded-2xl max-w-2xl w-full shadow-2xl overflow-hidden my-8 animate-scale-in"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Header */}
         <div className="px-6 py-4 border-b border-border flex items-center justify-between bg-surface-2/50">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-accent text-amber-950 flex items-center justify-center font-bold">
-              <Calendar className="w-4 h-4" />
+            <div className="w-9 h-9 rounded-xl bg-accent text-amber-950 flex items-center justify-center font-bold shadow-sm">
+              <Calendar className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-foreground">Schedule Candidate Interview</h2>
-              <p className="text-xs text-muted">Send automated calendar invite & SMS notification</p>
+              <h2 className="text-lg font-bold text-foreground">Bulk Interview Scheduler (WhatsApp Agent)</h2>
+              <p className="text-xs text-muted">Select candidates, proposed slots & send automated WhatsApp invites</p>
             </div>
           </div>
           <button
@@ -64,162 +119,222 @@ export default function ScheduleInterviewModal({
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-4 max-h-[75vh] overflow-y-auto">
-          {/* Candidate & Job Info */}
-          <div className="p-3 bg-surface-2/60 border border-border rounded-xl space-y-1">
-            <p className="text-xs font-bold text-foreground">Candidate: <span className="text-primary">{candidateName}</span></p>
-            <p className="text-xs text-muted">Role: {jobTitle}</p>
-          </div>
-
-          {/* Interview Type */}
+        <form onSubmit={handleSubmit} className="p-6 space-y-5 max-h-[78vh] overflow-y-auto">
+          {/* 1. Which Job */}
           <div>
-            <label className="block text-xs font-bold text-foreground mb-1.5">Interview Round *</label>
-            <select
-              value={formData.interviewType}
-              onChange={(e) => setFormData({ ...formData, interviewType: e.target.value })}
-              className="w-full px-3.5 py-2 bg-surface-2 border border-border rounded-xl text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
-            >
-              <option value="screening">Initial HR Screening</option>
-              <option value="technical">Technical Architecture Assessment</option>
-              <option value="managerial">Managerial & Culture Fit</option>
-              <option value="final">Final Executive Offer Discussion</option>
-            </select>
-          </div>
-
-          {/* Date & Time */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div>
-              <label className="block text-xs font-bold text-foreground mb-1.5">Date *</label>
-              <input
-                type="date"
-                required
-                value={formData.date}
-                onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                className="w-full px-3 py-2 bg-surface-2 border border-border rounded-xl text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-bold text-foreground mb-1.5">Start Time *</label>
-              <input
-                type="time"
-                required
-                value={formData.startTime}
-                onChange={(e) => setFormData({ ...formData, startTime: e.target.value })}
-                className="w-full px-3 py-2 bg-surface-2 border border-border rounded-xl text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-bold text-foreground mb-1.5">End Time *</label>
-              <input
-                type="time"
-                required
-                value={formData.endTime}
-                onChange={(e) => setFormData({ ...formData, endTime: e.target.value })}
-                className="w-full px-3 py-2 bg-surface-2 border border-border rounded-xl text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
-              />
+            <label className="block text-xs font-bold text-foreground uppercase tracking-wider mb-2">
+              1. Which Job Posting?
+            </label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {MOCK_JOB_OPTIONS.map((j) => {
+                const selected = selectedJob === j.title
+                return (
+                  <button
+                    key={j.id}
+                    type="button"
+                    onClick={() => setSelectedJob(j.title)}
+                    className={`p-3 rounded-xl border text-left text-xs font-semibold transition-all ${
+                      selected
+                        ? 'border-primary bg-primary/10 text-primary shadow-sm font-bold'
+                        : 'border-border bg-surface-2 text-foreground hover:border-primary/40'
+                    }`}
+                  >
+                    {j.title}
+                  </button>
+                )
+              })}
             </div>
           </div>
 
-          {/* Location / Meeting Mode */}
+          {/* 2. Which Candidates */}
           <div>
-            <label className="block text-xs font-bold text-foreground mb-1.5">Meeting Location Mode</label>
-            <div className="flex gap-4 mb-2">
-              <label className="flex items-center gap-2 text-xs font-semibold text-foreground cursor-pointer">
-                <input
-                  type="radio"
-                  name="locationType"
-                  value="virtual"
-                  checked={formData.locationType === 'virtual'}
-                  onChange={() => setFormData({ ...formData, locationType: 'virtual' })}
-                  className="accent-primary"
-                />
-                <Video className="w-3.5 h-3.5 text-primary" /> Google Meet / Zoom
-              </label>
-              <label className="flex items-center gap-2 text-xs font-semibold text-foreground cursor-pointer">
-                <input
-                  type="radio"
-                  name="locationType"
-                  value="onsite"
-                  checked={formData.locationType === 'onsite'}
-                  onChange={() => setFormData({ ...formData, locationType: 'onsite' })}
-                  className="accent-primary"
-                />
-                <MapPin className="w-3.5 h-3.5 text-accent" /> On-Site Office
+            <div className="flex justify-between items-center mb-2">
+              <label className="block text-xs font-bold text-foreground uppercase tracking-wider">
+                2. Which Candidates? ({chosenCandidates.length} Selected)
               </label>
             </div>
 
-            {formData.locationType === 'virtual' ? (
+            <div className="relative mb-2">
+              <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
               <input
                 type="text"
-                value={formData.meetingLink}
-                onChange={(e) => setFormData({ ...formData, meetingLink: e.target.value })}
+                placeholder="Search candidates by name..."
+                value={candSearch}
+                onChange={(e) => setCandSearch(e.target.value)}
+                className="w-full pl-9 pr-3 py-2 bg-surface-2 border border-border rounded-xl text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
+              />
+            </div>
+
+            <div className="space-y-1.5 max-h-[160px] overflow-y-auto p-2 border border-border rounded-xl bg-surface-2/40">
+              {filteredCands.map((cand) => {
+                const checked = chosenCandidates.includes(cand.name)
+                return (
+                  <div
+                    key={cand.id}
+                    onClick={() => handleToggleCandidate(cand.name)}
+                    className={`p-2.5 rounded-xl border cursor-pointer flex items-center justify-between transition-all ${
+                      checked
+                        ? 'border-primary/50 bg-primary/10 text-foreground'
+                        : 'border-transparent hover:bg-surface-2'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <input
+                        type="checkbox"
+                        checked={checked}
+                        onChange={() => handleToggleCandidate(cand.name)}
+                        className="w-4 h-4 text-primary rounded focus:ring-primary cursor-pointer"
+                      />
+                      <div className="w-7 h-7 rounded-full bg-primary/20 text-primary font-bold text-xs flex items-center justify-center">
+                        {cand.initials}
+                      </div>
+                      <div>
+                        <p className="text-xs font-bold text-foreground leading-tight">{cand.name}</p>
+                        <p className="text-[10px] text-muted">{cand.location} · {cand.phone}</p>
+                      </div>
+                    </div>
+                    <span className="text-[11px] font-bold text-primary">{cand.matchScore}% match</span>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* 3. Proposed Time Slots */}
+          <div>
+            <label className="block text-xs font-bold text-foreground uppercase tracking-wider mb-2">
+              3. Proposed Time Slots
+            </label>
+
+            <div className="space-y-2">
+              {slots.map((s, idx) => (
+                <div key={s.id} className="flex gap-2 items-center p-2.5 bg-surface-2 border border-border rounded-xl text-xs">
+                  <input
+                    type="date"
+                    value={s.date}
+                    onChange={(e) => {
+                      const val = e.target.value
+                      setSlots((prev) => prev.map((sl) => (sl.id === s.id ? { ...sl, date: val } : sl)))
+                    }}
+                    className="px-2 py-1.5 bg-surface border border-border rounded-lg text-foreground focus:outline-none"
+                  />
+                  <input
+                    type="time"
+                    value={s.start}
+                    onChange={(e) => {
+                      const val = e.target.value
+                      setSlots((prev) => prev.map((sl) => (sl.id === s.id ? { ...sl, start: val } : sl)))
+                    }}
+                    className="px-2 py-1.5 bg-surface border border-border rounded-lg text-foreground focus:outline-none"
+                  />
+                  <span className="text-muted text-xs">to</span>
+                  <input
+                    type="time"
+                    value={s.end}
+                    onChange={(e) => {
+                      const val = e.target.value
+                      setSlots((prev) => prev.map((sl) => (sl.id === s.id ? { ...sl, end: val } : sl)))
+                    }}
+                    className="px-2 py-1.5 bg-surface border border-border rounded-lg text-foreground focus:outline-none"
+                  />
+
+                  {slots.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveSlot(s.id)}
+                      className="p-1.5 text-rose-600 hover:bg-rose-500/10 rounded-lg transition-colors ml-auto"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            <button
+              type="button"
+              onClick={handleAddSlot}
+              className="mt-2 w-full py-2 border border-dashed border-border hover:bg-primary/5 text-primary text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              <span>+ Add Another Day / Time Slot</span>
+            </button>
+          </div>
+
+          {/* 4. Interview Mode & WhatsApp Reminders */}
+          <div className="space-y-3 pt-2 border-t border-border">
+            <label className="block text-xs font-bold text-foreground uppercase tracking-wider">
+              4. Interview Type & Location Mode
+            </label>
+
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => setMode('Online')}
+                className={`flex-1 py-2.5 px-3 rounded-xl border text-xs font-bold transition-all flex items-center justify-center gap-2 ${
+                  mode === 'Online'
+                    ? 'border-primary bg-primary text-white shadow-sm'
+                    : 'border-border bg-surface-2 text-foreground'
+                }`}
+              >
+                <Video className="w-4 h-4" />
+                <span>💻 Online Virtual</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setMode('Physical')}
+                className={`flex-1 py-2.5 px-3 rounded-xl border text-xs font-bold transition-all flex items-center justify-center gap-2 ${
+                  mode === 'Physical'
+                    ? 'border-primary bg-primary text-white shadow-sm'
+                    : 'border-border bg-surface-2 text-foreground'
+                }`}
+              >
+                <MapPin className="w-4 h-4" />
+                <span>📍 On-Site Physical</span>
+              </button>
+            </div>
+
+            {mode === 'Online' ? (
+              <input
+                type="text"
+                value={meetingLink}
+                onChange={(e) => setMeetingLink(e.target.value)}
                 placeholder="Google Meet or Zoom link"
-                className="w-full px-3.5 py-2 bg-surface-2 border border-border rounded-xl text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
+                className="w-full px-3.5 py-2 bg-surface-2 border border-border rounded-xl text-xs text-foreground focus:outline-none"
               />
             ) : (
               <input
                 type="text"
-                value={formData.address}
-                onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
                 placeholder="Physical Office Address"
-                className="w-full px-3.5 py-2 bg-surface-2 border border-border rounded-xl text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
+                className="w-full px-3.5 py-2 bg-surface-2 border border-border rounded-xl text-xs text-foreground focus:outline-none"
               />
             )}
-          </div>
 
-          {/* Interviewers & Notes */}
-          <div>
-            <label className="block text-xs font-bold text-foreground mb-1.5">Interviewer Panel</label>
-            <input
-              type="text"
-              value={formData.interviewers}
-              onChange={(e) => setFormData({ ...formData, interviewers: e.target.value })}
-              placeholder="Name of interviewing managers"
-              className="w-full px-3.5 py-2 bg-surface-2 border border-border rounded-xl text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs font-bold text-foreground mb-1.5">WhatsApp Number (WAHA API Dispatch)</label>
-            <input
-              type="text"
-              value={formData.candidatePhone}
-              onChange={(e) => setFormData({ ...formData, candidatePhone: e.target.value })}
-              placeholder="+94 77 123 4567"
-              className="w-full px-3.5 py-2 bg-surface-2 border border-border rounded-xl text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs font-bold text-foreground mb-1.5">Instructions for Candidate</label>
-            <textarea
-              rows={2}
-              value={formData.notes}
-              onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-              placeholder="Instructions or links to share with the candidate..."
-              className="w-full px-3.5 py-2 bg-surface-2 border border-border rounded-xl text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
-            />
-          </div>
-
-          <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-200/50 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                id="waha-whatsapp-toggle"
-                checked={formData.sendWahaWhatsApp}
-                onChange={(e) => setFormData({ ...formData, sendWahaWhatsApp: e.target.checked })}
-                className="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500 cursor-pointer"
-              />
-              <label htmlFor="waha-whatsapp-toggle" className="text-xs font-bold text-emerald-700 dark:text-emerald-400 cursor-pointer">
-                Dispatch WhatsApp Invitation via WAHA API
-              </label>
+            <div>
+              <label className="block text-xs font-bold text-foreground mb-1.5">WhatsApp Join Reminder Frequency</label>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                {['1 hour before', '3 hours before', 'Morning of + 1h', 'No reminder'].map((opt) => (
+                  <button
+                    key={opt}
+                    type="button"
+                    onClick={() => setReminderFreq(opt)}
+                    className={`py-2 px-2 rounded-xl text-[11px] font-bold border transition-all text-center ${
+                      reminderFreq === opt
+                        ? 'border-primary bg-primary/10 text-primary'
+                        : 'border-border bg-surface-2 text-muted'
+                    }`}
+                  >
+                    {opt}
+                  </button>
+                ))}
+              </div>
             </div>
-            <span className="text-[10px] bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 px-2 py-0.5 rounded-full font-bold">
-              WAHA Connected
-            </span>
           </div>
 
-          {/* Action Buttons */}
+          {/* Action Footer */}
           <div className="pt-4 border-t border-border flex items-center justify-end gap-3">
             <button
               type="button"
@@ -228,13 +343,14 @@ export default function ScheduleInterviewModal({
             >
               Cancel
             </button>
+
             <button
               type="submit"
-              className="px-6 py-2 bg-primary hover:bg-primary-light text-white font-bold text-xs rounded-xl shadow-md transition-colors flex items-center gap-2"
-              id="submit-schedule-interview-btn"
+              className="px-6 py-2.5 bg-accent hover:bg-amber-600 text-amber-950 font-extrabold text-xs rounded-xl shadow-lg transition-all flex items-center gap-2"
+              id="submit-bulk-schedule-btn"
             >
-              <Send className="w-3.5 h-3.5" />
-              <span>Confirm & Send Invite</span>
+              <Send className="w-4 h-4" />
+              <span>Send Invites via WhatsApp</span>
             </button>
           </div>
         </form>
