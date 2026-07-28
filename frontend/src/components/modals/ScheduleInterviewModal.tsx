@@ -20,6 +20,7 @@ export default function ScheduleInterviewModal({
 }: ScheduleInterviewModalProps) {
   const [formData, setFormData] = useState({
     candidateSearch: candidateName,
+    candidatePhone: '+94 77 123 4567',
     interviewType: 'technical',
     date: '2026-07-28',
     startTime: '10:30',
@@ -29,6 +30,7 @@ export default function ScheduleInterviewModal({
     address: 'WSO2 HQ, 20 Palm Grove, Colombo 03',
     interviewers: 'Nalaka Bandara (Lead Architect)',
     notes: 'Please review technical submission prior to the session.',
+    sendWahaWhatsApp: true,
   })
 
   if (!isOpen) return null
@@ -178,14 +180,43 @@ export default function ScheduleInterviewModal({
           </div>
 
           <div>
+            <label className="block text-xs font-bold text-foreground mb-1.5">WhatsApp Number (WAHA API Dispatch)</label>
+            <input
+              type="text"
+              value={formData.candidatePhone}
+              onChange={(e) => setFormData({ ...formData, candidatePhone: e.target.value })}
+              placeholder="+94 77 123 4567"
+              className="w-full px-3.5 py-2 bg-surface-2 border border-border rounded-xl text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
+            />
+          </div>
+
+          <div>
             <label className="block text-xs font-bold text-foreground mb-1.5">Instructions for Candidate</label>
             <textarea
-              rows={3}
+              rows={2}
               value={formData.notes}
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
               placeholder="Instructions or links to share with the candidate..."
               className="w-full px-3.5 py-2 bg-surface-2 border border-border rounded-xl text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
             />
+          </div>
+
+          <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-200/50 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="waha-whatsapp-toggle"
+                checked={formData.sendWahaWhatsApp}
+                onChange={(e) => setFormData({ ...formData, sendWahaWhatsApp: e.target.checked })}
+                className="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500 cursor-pointer"
+              />
+              <label htmlFor="waha-whatsapp-toggle" className="text-xs font-bold text-emerald-700 dark:text-emerald-400 cursor-pointer">
+                Dispatch WhatsApp Invitation via WAHA API
+              </label>
+            </div>
+            <span className="text-[10px] bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 px-2 py-0.5 rounded-full font-bold">
+              WAHA Connected
+            </span>
           </div>
 
           {/* Action Buttons */}

@@ -1,14 +1,14 @@
 'use client'
 
 import { useState } from 'react'
-import { Calendar, Clock, Plus, Search, Filter, Video, MapPin, CheckCircle, AlertCircle, XCircle, UserCheck } from 'lucide-react'
+import { Calendar, Clock, Plus, Search, Filter, Video, MapPin, CheckCircle, AlertCircle, XCircle, MessageSquare, Send, CheckCheck } from 'lucide-react'
 import ScheduleInterviewModal from '@/components/modals/ScheduleInterviewModal'
 
 const INITIAL_INTERVIEWS = [
-  { id: '1', candidate: 'Sunil Rathnayake', job: 'Senior React / Next.js Developer', employer: 'WSO2', date: '24 Jul 2026', time: '10:00 AM – 11:00 AM', mode: 'Google Meet', status: 'confirmed', interviewer: 'Nalaka Bandara' },
-  { id: '2', candidate: 'Priyanka Jayasuriya', job: 'Lead UI/UX Designer', employer: 'Sysco LABS', date: '24 Jul 2026', time: '02:00 PM – 03:00 PM', mode: 'WhatsApp Call', status: 'awaiting', interviewer: 'Chaminda Silva' },
-  { id: '3', candidate: 'Chamara Wickramasinghe', job: 'DevOps Engineer', employer: 'Dialog Axiata', date: '26 Jul 2026', time: '11:00 AM – 12:00 PM', mode: 'On-site (Colombo 02)', status: 'declined', interviewer: 'Dilshan Perera' },
-  { id: '4', candidate: 'Kasun Perera', job: 'Associate Software Engineer', employer: 'Brandix Tech', date: '28 Jul 2026', time: '09:30 AM – 10:30 AM', mode: 'Google Meet', status: 'confirmed', interviewer: 'Nadeeka Dias' },
+  { id: '1', candidate: 'Sunil Rathnayake', phone: '+94 77 123 4567', job: 'Senior React / Next.js Developer', employer: 'WSO2', date: '24 Jul 2026', time: '10:00 AM – 11:00 AM', mode: 'Google Meet', status: 'confirmed', interviewer: 'Nalaka Bandara', wahaSent: true },
+  { id: '2', candidate: 'Priyanka Jayasuriya', phone: '+94 71 987 6543', job: 'Lead UI/UX Designer', employer: 'Sysco LABS', date: '24 Jul 2026', time: '02:00 PM – 03:00 PM', mode: 'WhatsApp Call', status: 'awaiting', interviewer: 'Chaminda Silva', wahaSent: false },
+  { id: '3', candidate: 'Chamara Wickramasinghe', phone: '+94 75 456 7890', job: 'DevOps Engineer', employer: 'Dialog Axiata', date: '26 Jul 2026', time: '11:00 AM – 12:00 PM', mode: 'On-site (Colombo 02)', status: 'declined', interviewer: 'Dilshan Perera', wahaSent: false },
+  { id: '4', candidate: 'Kasun Perera', phone: '+94 77 555 1212', job: 'Associate Software Engineer', employer: 'Brandix Tech', date: '28 Jul 2026', time: '09:30 AM – 10:30 AM', mode: 'Google Meet', status: 'confirmed', interviewer: 'Nadeeka Dias', wahaSent: true },
 ]
 
 const STATUS_BADGES: Record<string, { label: string; cls: string; icon: any }> = {
@@ -22,42 +22,82 @@ export default function InterviewsPage() {
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('all')
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [sendingWahaId, setSendingWahaId] = useState<string | null>(null)
+  const [toastMessage, setToastMessage] = useState<string | null>(null)
 
   const handleScheduleSubmit = (data: any) => {
     const newIv = {
       id: String(Date.now()),
       candidate: data.candidateSearch || 'New Candidate',
+      phone: data.candidatePhone || '+94 77 000 0000',
       job: data.jobTitle || 'Software Engineer',
       employer: 'JobStart Employer',
       date: data.date || '2026-07-29',
       time: `${data.startTime} – ${data.endTime}`,
       mode: data.locationType === 'virtual' ? 'Google Meet' : 'On-site',
-      status: 'confirmed',
+      status: 'awaiting',
       interviewer: data.interviewers || 'Recruitment Team',
+      wahaSent: Boolean(data.sendWahaWhatsApp),
     }
+
     setInterviews([newIv, ...interviews])
     setIsModalOpen(false)
+
+    if (data.sendWahaWhatsApp) {
+      triggerWahaToast(`WhatsApp invitation queued via WAHA API for ${newIv.candidate} (${newIv.phone})!`)
+    }
+  }
+
+  const triggerWahaToast = (msg: string) => {
+    setToastMessage(msg)
+    setTimeout(() => setToastMessage(null), 4000)
+  }
+
+  const handleSendWaha = (id: string, candidate: string, phone: string) => {
+    setSendingWahaId(id)
+    setTimeout(() => {
+      setInterviews((prev) =>
+        prev.map((iv) => (iv.id === id ? { ...iv, wahaSent: true, status: 'awaiting' } : iv))
+      )
+      setSendingWahaId(null)
+      triggerWahaToast(`WhatsApp invitation dispatched via WAHA API to ${candidate} (${phone})!`)
+    }, 800)
   }
 
   const filtered = interviews.filter((iv) => {
     const matchesSearch =
       iv.candidate.toLowerCase().includes(search.toLowerCase()) ||
       iv.job.toLowerCase().includes(search.toLowerCase()) ||
-      iv.employer.toLowerCase().includes(search.toLowerCase())
+      iv.employer.toLowerCase().includes(search.toLowerCase()) ||
+      iv.phone.includes(search)
     const matchesStatus = statusFilter === 'all' || iv.status === statusFilter
     return matchesSearch && matchesStatus
   })
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto animate-fade-in relative">
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="fixed bottom-6 right-6 z-50 p-4 rounded-2xl bg-emerald-600 text-white font-semibold text-xs shadow-2xl flex items-center gap-2.5 animate-bounce">
+          <CheckCheck className="w-4 h-4" />
+          <span>{toastMessage}</span>
+        </div>
+      )}
+
       {/* Header Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-            <Calendar className="w-6 h-6 text-primary" />
-            Interviews Schedule
-          </h1>
-          <p className="text-sm text-muted">Track and schedule candidate interviews across active job pipelines.</p>
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
+              <Calendar className="w-6 h-6 text-primary" />
+              Interviews Schedule
+            </h1>
+            <span className="badge-info text-[11px] bg-emerald-500/10 text-emerald-600 border-emerald-200 font-bold flex items-center gap-1.5 px-2.5 py-0.5">
+              <MessageSquare className="w-3.5 h-3.5" />
+              WAHA API Active
+            </span>
+          </div>
+          <p className="text-sm text-muted mt-0.5">Track, schedule, and send automated WhatsApp interview invitations via WAHA API.</p>
         </div>
 
         <button
@@ -75,7 +115,7 @@ export default function InterviewsPage() {
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
           <input
             type="text"
-            placeholder="Search by candidate, job, or employer..."
+            placeholder="Search by candidate, phone, job, or employer..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-9 pr-4 py-2 bg-surface-2 border border-border rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-primary/20"
@@ -99,22 +139,25 @@ export default function InterviewsPage() {
 
       {/* Interviews Table */}
       <div className="card overflow-hidden">
-        <div className="grid grid-cols-[2fr_1.8fr_1fr_1.4fr_1.2fr] px-5 py-3 bg-surface-2 text-xs font-bold text-muted uppercase tracking-wider border-b border-border">
+        <div className="grid grid-cols-[2fr_1.8fr_1fr_1.3fr_1.2fr_1fr] px-5 py-3 bg-surface-2 text-xs font-bold text-muted uppercase tracking-wider border-b border-border">
           <span>Candidate</span>
           <span>Job & Employer</span>
           <span>Date</span>
           <span>Time & Mode</span>
           <span>Status</span>
+          <span className="text-right">WAHA Action</span>
         </div>
 
         <div className="divide-y divide-border">
           {filtered.map((iv) => {
             const badge = STATUS_BADGES[iv.status] || STATUS_BADGES.confirmed
             const StatusIcon = badge.icon
+            const isSending = sendingWahaId === iv.id
+
             return (
               <div
                 key={iv.id}
-                className="grid grid-cols-[2fr_1.8fr_1fr_1.4fr_1.2fr] px-5 py-4 items-center hover:bg-surface-2/60 transition-colors text-sm"
+                className="grid grid-cols-[2fr_1.8fr_1fr_1.3fr_1.2fr_1fr] px-5 py-4 items-center hover:bg-surface-2/60 transition-colors text-sm"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-xl bg-primary/10 text-primary font-bold text-xs flex items-center justify-center">
@@ -122,7 +165,7 @@ export default function InterviewsPage() {
                   </div>
                   <div>
                     <p className="font-bold text-foreground leading-tight">{iv.candidate}</p>
-                    <p className="text-xs text-muted">Interviewer: {iv.interviewer}</p>
+                    <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">{iv.phone}</p>
                   </div>
                 </div>
 
@@ -146,6 +189,24 @@ export default function InterviewsPage() {
                     <StatusIcon className="w-3.5 h-3.5" />
                     {badge.label}
                   </span>
+                </div>
+
+                <div className="text-right">
+                  {iv.wahaSent ? (
+                    <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600 bg-emerald-500/10 border border-emerald-200 px-2.5 py-1 rounded-lg">
+                      <CheckCheck className="w-3.5 h-3.5" />
+                      WAHA Sent
+                    </span>
+                  ) : (
+                    <button
+                      onClick={() => handleSendWaha(iv.id, iv.candidate, iv.phone)}
+                      disabled={isSending}
+                      className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-sm transition-all inline-flex items-center gap-1 disabled:opacity-50"
+                    >
+                      <Send className="w-3 h-3" />
+                      <span>{isSending ? 'Sending...' : 'WAHA Invite'}</span>
+                    </button>
+                  )}
                 </div>
               </div>
             )
