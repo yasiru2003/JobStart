@@ -16,7 +16,7 @@ require_admin = require_roles("admin")
 
 class WAHAConfigRequest(BaseModel):
     host: str = Field(..., example="http://178.104.127.220:3000", description="WAHA server base URL (host + port)")
-    api_key: str = Field(..., example="key_Z9s561T3AdkBlkciQ73wt7oag2yEurGA", description="WAHA API key (X-Api-Key header)")
+    api_key: str = Field(..., example="your_waha_api_key_here", description="WAHA API key (X-Api-Key header)")
     session: Optional[str] = Field(default=None, example="default", description="Session name (defaults to 'default')")
 
 
