@@ -9,6 +9,8 @@ export interface User {
   fullName: string
   role: UserRole
   avatarUrl?: string
+  tenantId?: string
+  tenantDomain?: string
 }
 
 const defaultAdminUser: User = {

@@ -51,15 +51,15 @@
   }
 
   .dark {
-    --background: #0f172a;
-    --foreground: #f8fafc;
-    --surface: #1e293b;
-    --surface-2: #334155;
-    --border: #334155;
-    --border-strong: #475569;
+    --background: #0b1329;
+    --foreground: #f1f5f9;
+    --surface: #151e36;
+    --surface-2: #1e2942;
+    --border: #263354;
+    --border-strong: #33446e;
     --primary: #14b8a6;
     --primary-hover: #2dd4bf;
-    --primary-lighter: #134e4a;
+    --primary-lighter: #0f3d39;
     --accent: #f59e0b;
     --accent-hover: #d97706;
     --muted: #94a3b8;
@@ -85,7 +85,7 @@ body {
 }
 
 .btn-primary {
-  background-color: #0F766E;
+  background-color: var(--primary);
   color: #ffffff;
   font-weight: 600;
   border-radius: 12px;
@@ -93,20 +93,18 @@ body {
   box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
 .btn-primary:hover {
-  background-color: #0d9488;
+  background-color: var(--primary-hover);
 }
 
 .btn-accent {
-  background-color: #F59E0B;
-  color: #1e1b4b;
-  font-weight: 700;
+  background-color: var(--accent);
+  color: #ffffff;
+  font-weight: 600;
   border-radius: 12px;
   transition: all 150ms ease;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
 .btn-accent:hover {
-  background-color: #d97706;
-  color: #ffffff;
+  background-color: var(--accent-hover);
 }
 
 .badge-pending {
@@ -116,8 +114,8 @@ body {
   border-radius: 9999px;
   font-size: 12px;
   font-weight: 600;
-  background-color: #fef3c7;
-  color: #d97706;
+  background-color: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
 }
 
 .badge-verified {
@@ -127,8 +125,8 @@ body {
   border-radius: 9999px;
   font-size: 12px;
   font-weight: 600;
-  background-color: #d1fae5;
-  color: #059669;
+  background-color: rgba(16, 185, 129, 0.15);
+  color: #10b981;
 }
 
 .badge-rejected {
@@ -138,8 +136,8 @@ body {
   border-radius: 9999px;
   font-size: 12px;
   font-weight: 600;
-  background-color: #fee2e2;
-  color: #dc2626;
+  background-color: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
 }
 
 .badge-info {
@@ -149,8 +147,8 @@ body {
   border-radius: 9999px;
   font-size: 12px;
   font-weight: 600;
-  background-color: #e0f2fe;
-  color: #0284c7;
+  background-color: rgba(14, 165, 233, 0.15);
+  color: #0ea5e9;
 }
 
 .nav-item {
@@ -177,3 +175,11 @@ body {
   color: var(--primary);
   font-weight: 600;
 }
+
+.modal-overlay {
+  background-color: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+

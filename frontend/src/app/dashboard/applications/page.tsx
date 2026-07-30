@@ -37,20 +37,28 @@ export default function ApplicationsPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-border space-x-2 text-xs font-semibold">
-        {['all', 'applied', 'screening', 'interview', 'offer', 'rejected'].map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`pb-2.5 px-3 border-b-2 capitalize transition-colors ${
-              activeTab === tab
-                ? 'border-primary text-primary font-bold'
-                : 'border-transparent text-muted hover:text-foreground'
-            }`}
-          >
-            {tab}
-          </button>
-        ))}
+      <div className="flex border-b border-border space-x-2 text-xs font-semibold overflow-x-auto">
+        {['all', 'applied', 'screening', 'interview', 'offer', 'rejected'].map((tab) => {
+          const count = tab === 'all' ? applications.length : applications.filter((a) => a.status === tab).length
+          return (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`pb-2.5 px-3 border-b-2 capitalize transition-colors flex items-center gap-1.5 shrink-0 ${
+                activeTab === tab
+                  ? 'border-primary text-primary font-bold'
+                  : 'border-transparent text-muted hover:text-foreground'
+              }`}
+            >
+              <span>{tab}</span>
+              <span className={`px-1.5 py-0.2 rounded-full text-[10px] ${
+                activeTab === tab ? 'bg-primary/10 text-primary font-bold' : 'bg-surface-2 text-muted'
+              }`}>
+                {count}
+              </span>
+            </button>
+          )
+        })}
       </div>
 
       {/* Table */}

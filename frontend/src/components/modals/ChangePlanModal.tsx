@@ -33,7 +33,7 @@ export default function ChangePlanModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto animate-fade-in"
+      className="fixed inset-0 z-50 modal-overlay flex items-center justify-center p-4 overflow-y-auto animate-fade-in"
       onClick={onClose}
     >
       <div

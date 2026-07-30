@@ -6,6 +6,7 @@ import AddTeamMemberModal from '@/components/modals/AddTeamMemberModal'
 import EditCompanyProfileModal from '@/components/modals/EditCompanyProfileModal'
 import ChangePlanModal from '@/components/modals/ChangePlanModal'
 import Toast from '@/components/ui/Toast'
+import WAHASettingsCard from '@/components/modals/WAHASettingsCard'
 
 const INITIAL_TEAM = [
   { id: '1', name: 'Nadeeka Dias', email: 'nadeeka.dias@jobstart.lk', role: 'Admin', initials: 'ND' },
@@ -141,7 +142,10 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      {/* 3. Subscription & Billing Plan Card */}
+      {/* 3. WhatsApp Cloud Integration */}
+      <WAHASettingsCard onToast={(msg) => setToast(msg)} />
+
+      {/* 4. Subscription & Billing Plan Card */}
       <div className="card p-6 space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">

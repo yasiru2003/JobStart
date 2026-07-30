@@ -13,9 +13,9 @@ const INITIAL_INTERVIEWS = [
 ]
 
 const STATUS_BADGES: Record<string, { label: string; cls: string; icon: any }> = {
-  confirmed: { label: 'Confirmed', cls: 'bg-emerald-500/10 text-emerald-600 border-emerald-200', icon: CheckCircle },
-  awaiting:  { label: 'Awaiting Confirmation', cls: 'bg-amber-500/10 text-amber-600 border-amber-200', icon: AlertCircle },
-  declined:  { label: 'Declined', cls: 'bg-rose-500/10 text-rose-600 border-rose-200', icon: XCircle },
+  confirmed: { label: 'Confirmed', cls: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20', icon: CheckCircle },
+  awaiting:  { label: 'Awaiting', cls: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20', icon: AlertCircle },
+  declined:  { label: 'Declined', cls: 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20', icon: XCircle },
 }
 
 export default function InterviewsPage() {
@@ -94,12 +94,8 @@ export default function InterviewsPage() {
               <Calendar className="w-6 h-6 text-primary" />
               Interviews Schedule
             </h1>
-            <span className="badge-info text-[11px] bg-emerald-500/10 text-emerald-600 border-emerald-200 font-bold flex items-center gap-1.5 px-2.5 py-0.5">
-              <MessageSquare className="w-3.5 h-3.5" />
-              WAHA API Active
-            </span>
           </div>
-          <p className="text-sm text-muted mt-0.5">Track, schedule, and send automated WhatsApp interview invitations via WAHA API.</p>
+          <p className="text-sm text-muted mt-0.5">Track and schedule candidate interview invitations.</p>
         </div>
 
         <button
@@ -141,74 +137,69 @@ export default function InterviewsPage() {
 
       {/* Interviews Table */}
       <div className="card overflow-hidden">
-        <div className="grid grid-cols-[2fr_1.8fr_1fr_1.3fr_1.2fr_1fr] px-5 py-3 bg-surface-2 text-xs font-bold text-muted uppercase tracking-wider border-b border-border">
+        <div className="grid grid-cols-[1.5fr_1.5fr_1fr_1.2fr_1fr_0.8fr] px-5 py-3.5 bg-surface-2 text-xs font-bold text-muted uppercase tracking-wider border-b border-border gap-2">
           <span>Candidate</span>
           <span>Job & Employer</span>
           <span>Date</span>
           <span>Time & Mode</span>
           <span>Status</span>
-          <span className="text-right">WAHA Action</span>
+          <span className="text-right">WhatsApp Bot</span>
         </div>
 
         <div className="divide-y divide-border">
           {filtered.map((iv) => {
             const badge = STATUS_BADGES[iv.status] || STATUS_BADGES.confirmed
             const StatusIcon = badge.icon
-            const isSending = sendingWahaId === iv.id
 
             return (
               <div
                 key={iv.id}
                 onClick={() => setSelectedInterview(iv)}
-                className="grid grid-cols-[2fr_1.8fr_1fr_1.3fr_1.2fr_1fr] px-5 py-4 items-center hover:bg-surface-2/60 transition-colors text-sm cursor-pointer"
+                className="grid grid-cols-[1.5fr_1.5fr_1fr_1.2fr_1fr_0.8fr] px-5 py-3.5 items-center hover:bg-surface-2/60 transition-colors text-sm cursor-pointer gap-2"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-primary/10 text-primary font-bold text-xs flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-xl bg-primary/10 text-primary font-bold text-xs flex items-center justify-center shrink-0">
                     {iv.candidate.split(' ').map(n=>n[0]).join('')}
                   </div>
-                  <div>
-                    <p className="font-bold text-foreground leading-tight">{iv.candidate}</p>
-                    <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">{iv.phone}</p>
+                  <div className="min-w-0">
+                    <p className="font-bold text-foreground leading-tight truncate">{iv.candidate}</p>
+                    <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium truncate">{iv.phone}</p>
                   </div>
                 </div>
 
-                <div>
-                  <p className="font-semibold text-foreground text-xs leading-tight">{iv.job}</p>
-                  <p className="text-[11px] text-muted">{iv.employer}</p>
+                <div className="min-w-0">
+                  <p className="font-semibold text-foreground text-xs leading-tight truncate">{iv.job}</p>
+                  <p className="text-[11px] text-muted truncate">{iv.employer}</p>
                 </div>
 
-                <div className="text-xs text-muted font-medium">{iv.date}</div>
+                <div className="text-xs text-muted font-medium whitespace-nowrap">{iv.date}</div>
 
-                <div className="text-xs">
-                  <p className="font-semibold text-foreground">{iv.time}</p>
-                  <p className="text-muted text-[11px] flex items-center gap-1 mt-0.5">
-                    {iv.mode.includes('Site') ? <MapPin className="w-3 h-3 text-rose-500" /> : <Video className="w-3 h-3 text-blue-500" />}
-                    {iv.mode}
+                <div className="text-xs min-w-0">
+                  <p className="font-semibold text-foreground truncate">{iv.time}</p>
+                  <p className="text-muted text-[11px] flex items-center gap-1 mt-0.5 truncate">
+                    {iv.mode.includes('Site') ? <MapPin className="w-3 h-3 text-rose-500 shrink-0" /> : <Video className="w-3 h-3 text-blue-500 shrink-0" />}
+                    <span className="truncate">{iv.mode}</span>
                   </p>
                 </div>
 
                 <div>
-                  <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs font-semibold ${badge.cls}`}>
-                    <StatusIcon className="w-3.5 h-3.5" />
-                    {badge.label}
+                  <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs font-semibold whitespace-nowrap ${badge.cls}`}>
+                    <StatusIcon className="w-3.5 h-3.5 shrink-0" />
+                    <span>{badge.label}</span>
                   </span>
                 </div>
 
-                <div className="text-right" onClick={(e) => e.stopPropagation()}>
+                <div className="text-right">
                   {iv.wahaSent ? (
-                    <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600 bg-emerald-500/10 border border-emerald-200 px-2.5 py-1 rounded-lg">
-                      <CheckCheck className="w-3.5 h-3.5" />
-                      WAHA Sent
+                    <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 dark:text-emerald-300 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full whitespace-nowrap">
+                      <CheckCheck className="w-3.5 h-3.5 text-emerald-500" />
+                      <span>Sent</span>
                     </span>
                   ) : (
-                    <button
-                      onClick={() => handleSendWaha(iv.id, iv.candidate, iv.phone)}
-                      disabled={isSending}
-                      className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-sm transition-all inline-flex items-center gap-1 disabled:opacity-50"
-                    >
-                      <Send className="w-3 h-3" />
-                      <span>{isSending ? 'Sending...' : 'WAHA Invite'}</span>
-                    </button>
+                    <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-700 dark:text-amber-300 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-full whitespace-nowrap">
+                      <Clock className="w-3.5 h-3.5 text-amber-500" />
+                      <span>Bot Queued</span>
+                    </span>
                   )}
                 </div>
               </div>

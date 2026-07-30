@@ -26,6 +26,7 @@ class EmployerProfile(Base):
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     user_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), unique=True)
+    tenant_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("tenants.id"), index=True, nullable=True)
     company_name: Mapped[str] = mapped_column(String(255), nullable=False)
     company_logo_url: Mapped[str | None] = mapped_column(String(500))
     industry: Mapped[str | None] = mapped_column(String(100))

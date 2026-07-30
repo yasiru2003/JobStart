@@ -20,8 +20,8 @@ export default function ResumePreviewModal({
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto animate-fade-in">
-      <div className="bg-surface border border-border rounded-2xl max-w-xl w-full shadow-2xl overflow-hidden my-8">
+    <div className="fixed inset-0 z-[60] bg-black/65 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto animate-fade-in" onClick={onClose}>
+      <div className="bg-surface border border-border/80 rounded-2xl max-w-xl w-full shadow-2xl overflow-hidden my-8 animate-scale-in" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
         <div className="px-6 py-4 border-b border-border flex items-center justify-between bg-surface-2/50">
           <div className="flex items-center gap-2.5">

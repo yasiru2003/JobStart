@@ -6,7 +6,7 @@ import {
   LayoutDashboard, Users, UserCircle, Shield,
   Briefcase, FileText, CreditCard, BarChart3, Settings,
   ChevronDown, ChevronRight, CheckSquare, PanelLeftClose,
-  PanelLeftOpen, Building2, Bot, Sparkles, LogOut, Calendar
+  PanelLeftOpen, Building2, Bot, Sparkles, LogOut, Calendar, MessageCircle
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAuthStore, useUIStore, UserRole } from '@/lib/stores'
@@ -47,7 +47,7 @@ const navByRole: Record<UserRole, NavGroup[]> = {
     {
       label: 'OPERATIONS',
       items: [
-        { label: 'AI Assistant', href: '/dashboard/ai-agent', icon: Sparkles },
+        { label: 'WhatsApp Agent', href: '/dashboard/whatsapp', icon: MessageCircle },
         { label: 'Payments & Billing', href: '/dashboard/billing', icon: CreditCard },
         { label: 'Reports', href: '/dashboard/reports', icon: BarChart3 },
         { label: 'Settings', href: '/dashboard/settings', icon: Settings },
@@ -56,18 +56,19 @@ const navByRole: Record<UserRole, NavGroup[]> = {
   ],
   employer: [
     {
-      label: 'HIRING',
+      label: 'HIRING & TEAM',
       items: [
         { label: 'Job Postings', href: '/dashboard/jobs', icon: Briefcase },
         { label: 'Applications', href: '/dashboard/applications', icon: FileText },
         { label: 'Candidates', href: '/dashboard/candidates', icon: UserCircle },
+        { label: 'Hiring Team & HR', href: '/dashboard/recruiters', icon: Users },
         { label: 'Interviews', href: '/dashboard/interviews', icon: Calendar },
       ],
     },
     {
-      label: 'TOOLS & ACCOUNT',
+      label: 'ACCOUNT',
       items: [
-        { label: 'AI Assistant', href: '/dashboard/ai-agent', icon: Sparkles },
+        { label: 'WhatsApp Agent', href: '/dashboard/whatsapp', icon: MessageCircle },
         { label: 'Billing', href: '/dashboard/billing', icon: CreditCard },
         { label: 'Settings', href: '/dashboard/settings', icon: Settings },
       ],
@@ -84,9 +85,8 @@ const navByRole: Record<UserRole, NavGroup[]> = {
       ],
     },
     {
-      label: 'TOOLS & ACCOUNT',
+      label: 'ACCOUNT',
       items: [
-        { label: 'AI Assistant', href: '/dashboard/ai-agent', icon: Sparkles },
         { label: 'Settings', href: '/dashboard/settings', icon: Settings },
       ],
     },
@@ -102,9 +102,8 @@ const navByRole: Record<UserRole, NavGroup[]> = {
       ],
     },
     {
-      label: 'TOOLS & ACCOUNT',
+      label: 'ACCOUNT',
       items: [
-        { label: 'AI Assistant', href: '/dashboard/ai-agent', icon: Sparkles },
         { label: 'Settings', href: '/dashboard/settings', icon: Settings },
       ],
     },
@@ -132,8 +131,8 @@ export default function Sidebar() {
     <>
       <aside
         className={cn(
-          'flex flex-col h-screen bg-[hsl(var(--sidebar-bg))] border-r border-border',
-          'transition-all duration-300 ease-in-out overflow-hidden shrink-0 relative z-20',
+          'flex flex-col h-screen bg-surface border-r border-border',
+          'transition-all duration-300 ease-in-out overflow-hidden shrink-0 relative',
           sidebarCollapsed ? 'w-[72px]' : 'w-[280px]'
         )}
       >
@@ -175,32 +174,6 @@ export default function Sidebar() {
             </button>
           )}
         </div>
-
-        {/* Role Switcher (Admin view) */}
-        {!sidebarCollapsed && user?.role === 'admin' && (
-          <div className="px-3 pt-3 pb-1 border-b border-border/50 shrink-0">
-            <p className="text-[10px] font-semibold text-muted uppercase tracking-widest mb-1.5 px-1">
-              VIEWING AS
-            </p>
-            <div className="flex gap-1 p-1 rounded-lg bg-surface-2">
-              {(['employer', 'recruiter', 'admin'] as UserRole[]).map((role) => (
-                <button
-                  key={role}
-                  onClick={() => setViewingAs(role)}
-                  className={cn(
-                    'flex-1 py-1 text-xs font-semibold rounded-md capitalize transition-all focus-ring',
-                    viewingAs === role
-                      ? 'bg-surface text-primary shadow-sm'
-                      : 'text-muted hover:text-foreground'
-                  )}
-                  id={`role-switcher-${role}`}
-                >
-                  {role}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
 
         {/* Overview Link */}
         <div className={cn('px-3 pt-3 shrink-0', sidebarCollapsed && 'px-2 flex justify-center')}>
@@ -279,6 +252,28 @@ export default function Sidebar() {
           })}
         </nav>
 
+        {/* Sidebar Footer with AI Agent Trigger */}
+        <div className="p-3 border-t border-border bg-surface-2/40 shrink-0">
+          <button
+            onClick={() => setIsAiAgentOpen(true)}
+            className={cn(
+              'w-full flex items-center gap-2.5 p-2.5 rounded-xl border border-primary/20 bg-primary/10 text-primary hover:bg-primary/20 transition-all font-semibold text-xs shadow-sm group',
+              sidebarCollapsed && 'justify-center p-2.5'
+            )}
+            title="Open AI Assistant"
+            id="sidebar-ai-agent-btn"
+          >
+            <div className="w-6 h-6 rounded-lg bg-primary text-white flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+              <Sparkles className="w-3.5 h-3.5" />
+            </div>
+            {!sidebarCollapsed && (
+              <div className="flex-1 text-left min-w-0">
+                <p className="font-bold leading-tight truncate text-primary">JobStart AI</p>
+                <p className="text-[10px] text-muted truncate">Ask anything or automate</p>
+              </div>
+            )}
+          </button>
+        </div>
       </aside>
 
       {/* AI Agent Drawer */}

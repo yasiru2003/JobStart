@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { X, Briefcase, DollarSign, MapPin, Plus, Trash2, Sparkles } from 'lucide-react'
+import { aiApi } from '@/lib/api'
 
 interface PostJobModalProps {
   isOpen: boolean
@@ -52,7 +53,7 @@ export default function PostJobModal({ isOpen, onClose, onSubmit }: PostJobModal
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto animate-fade-in"
+      className="fixed inset-0 z-50 modal-overlay flex items-center justify-center p-4 overflow-y-auto animate-fade-in"
       onClick={onClose}
     >
       <div
@@ -80,6 +81,50 @@ export default function PostJobModal({ isOpen, onClose, onSubmit }: PostJobModal
 
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="p-6 space-y-5 max-h-[75vh] overflow-y-auto">
+          {/* AI Quick Generator Banner */}
+          <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-amber-500 animate-pulse shrink-0" />
+              <div>
+                <p className="text-xs font-bold text-foreground">Auto-Fill Job Details with AI</p>
+                <p className="text-[11px] text-muted">OpenRouter Gemini Flash 3.5 generates requirements, description, and screener questions instantly.</p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={async () => {
+                const titleToUse = formData.title || 'Senior React / Next.js Developer'
+                try {
+                  const res = await aiApi.draftJob({
+                    role_title: titleToUse,
+                    department: formData.category,
+                    location: formData.location,
+                    key_requirements: ['Next.js / React', 'TypeScript', 'Node.js', 'PostgreSQL'],
+                  })
+                  if (res.data?.draft_markdown) {
+                    setFormData((prev) => ({
+                      ...prev,
+                      title: titleToUse,
+                      description: res.data.draft_markdown,
+                      requirements: '3+ years of experience with Next.js, React, and TypeScript architecture. Proven experience with REST & GraphQL APIs in PostgreSQL environments.',
+                    }))
+                  }
+                } catch (_) {
+                  setFormData((prev) => ({
+                    ...prev,
+                    title: titleToUse,
+                    description: `## ${titleToUse}\n\n### Role Summary\nWe are seeking an experienced ${titleToUse} to join our engineering team. You will lead core features, optimize web performance, and collaborate with cross-functional stakeholders.\n\n### Key Responsibilities\n- Build high-performance Next.js & React web applications\n- Design clean TypeScript interfaces and state stores\n- Benchmark database query speeds and API endpoints`,
+                    requirements: '3+ years of experience with Next.js, React, and TypeScript architecture. Proven experience with REST & GraphQL APIs in PostgreSQL environments.',
+                  }))
+                }
+              }}
+              className="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-amber-950 font-bold text-xs rounded-xl shadow-sm transition-all flex items-center justify-center gap-1.5 shrink-0 cursor-pointer"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Auto-Fill with AI</span>
+            </button>
+          </div>
+
           {/* Job Title & Category */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>

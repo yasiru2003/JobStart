@@ -39,6 +39,16 @@ class Settings(BaseSettings):
     SMTP_PASSWORD: str = ""
     FROM_EMAIL: str = "noreply@jobstart.lk"
 
+    # OpenRouter LLM (Gemini Flash via LangChain)
+    OPENROUTER_API_KEY: str = ""  # Set via OPENROUTER_API_KEY in .env
+    OPENROUTER_MODEL: str = "google/gemini-2.5-flash-lite"
+    OPENROUTER_BASE_URL: str = "https://openrouter.ai/api/v1"
+
+    # WAHA Cloud (WhatsApp HTTP API)
+    WAHA_BASE_URL: str = ""
+    WAHA_SESSION: str = "default"
+    WAHA_API_KEY: str = ""
+
     # CORS
     ALLOWED_ORIGINS: list[str] = [
         "http://localhost:3000",

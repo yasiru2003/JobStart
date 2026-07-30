@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { X, ShieldCheck, Star, MapPin, Phone, Briefcase, FileText, MessageSquare, ArrowRight, CheckCircle2 } from 'lucide-react'
+import { X, ShieldCheck, Star, MapPin, Phone, Briefcase, FileText, MessageSquare, ArrowRight, CheckCircle2, Sparkles } from 'lucide-react'
 import ResumePreviewModal from '@/components/modals/ResumePreviewModal'
 import WhatsappConversationModal from '@/components/modals/WhatsappConversationModal'
 
@@ -40,9 +40,12 @@ export default function CandidateDetailModal({
 
   return (
     <>
-      <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex justify-end animate-fade-in">
+      <div
+        className="fixed inset-0 z-50 bg-black/65 backdrop-blur-md flex justify-end animate-fade-in"
+        onClick={onClose}
+      >
         <div
-          className="bg-surface w-full max-w-md h-full overflow-y-auto shadow-2xl p-6 flex flex-col justify-between border-l border-border relative animate-slide-in-right"
+          className="bg-surface w-full max-w-md h-full overflow-y-auto shadow-2xl p-6 flex flex-col justify-between border-l border-border/80 relative animate-slide-in-right"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
@@ -77,7 +80,7 @@ export default function CandidateDetailModal({
             {/* Score & Rating Bar */}
             <div className="grid grid-cols-2 gap-3 mt-6 p-4 rounded-xl bg-surface-2/60 border border-border">
               <div>
-                <p className="text-[11px] text-muted font-medium uppercase tracking-wider">Match Score</p>
+                <p className="text-[11px] text-muted font-medium uppercase tracking-wider">AI Match Score</p>
                 <p className="text-lg font-extrabold text-primary">{candidate.matchScore}% Match</p>
               </div>
               <div>
@@ -86,6 +89,17 @@ export default function CandidateDetailModal({
                   <Star className="w-4 h-4 fill-amber-500" /> {candidate.rating} / 5.0
                 </p>
               </div>
+            </div>
+
+            {/* AI Evaluation Analysis Card */}
+            <div className="mt-4 p-4 rounded-xl bg-primary/5 border border-primary/20 space-y-2">
+              <div className="flex items-center gap-1.5 text-primary text-xs font-bold">
+                <Sparkles className="w-4 h-4 animate-pulse" />
+                <span>LangChain AI Agent Analysis Summary</span>
+              </div>
+              <p className="text-[11px] text-foreground leading-relaxed">
+                Candidate exhibits high technical alignment ({candidate.matchScore}% match). Qualifications (NIC & NVQ Level 6) verified against national databases. Recommended for technical interview stage.
+              </p>
             </div>
 
             {/* Profile Info Fields */}

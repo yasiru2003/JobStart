@@ -16,6 +16,7 @@ interface InterviewDetailModalProps {
     mode: string
     status: string
     phone?: string
+    interviewer?: string
   } | null
 }
 
@@ -38,9 +39,12 @@ export default function InterviewDetailModal({
 
   return (
     <>
-      <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex justify-end animate-fade-in">
+      <div
+        className="fixed inset-0 z-50 bg-black/65 backdrop-blur-md flex justify-end animate-fade-in"
+        onClick={onClose}
+      >
         <div
-          className="bg-surface w-full max-w-md h-full overflow-y-auto shadow-2xl p-6 flex flex-col justify-between border-l border-border relative animate-slide-in-right"
+          className="bg-surface w-full max-w-md h-full overflow-y-auto shadow-2xl p-6 flex flex-col justify-between border-l border-border/80 relative animate-slide-in-right"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
@@ -77,15 +81,33 @@ export default function InterviewDetailModal({
                 <span className="font-semibold text-foreground">{interview.time}</span>
               </div>
               <div className="flex justify-between items-center text-xs">
-                <span className="text-muted font-medium">Mode / Location</span>
+                <span className="text-muted font-medium">Mode / Platform</span>
                 <span className="font-semibold text-foreground flex items-center gap-1">
                   {interview.mode.includes('Site') ? <MapPin className="w-3.5 h-3.5 text-rose-500" /> : <Video className="w-3.5 h-3.5 text-blue-500" />}
                   {interview.mode}
                 </span>
               </div>
+              {!interview.mode.includes('Site') && (
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-muted font-medium">Meeting URL</span>
+                  <a
+                    href="https://meet.google.com/jobstart-interview-01"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="font-bold text-primary hover:underline flex items-center gap-1"
+                  >
+                    <Video className="w-3 h-3" />
+                    <span>Join Meeting Link</span>
+                  </a>
+                </div>
+              )}
               <div className="flex justify-between items-center text-xs">
                 <span className="text-muted font-medium">WhatsApp Confirmation</span>
                 <span className="badge-verified text-xs font-bold capitalize">{interview.status}</span>
+              </div>
+              <div className="flex justify-between items-center text-xs">
+                <span className="text-muted font-medium">Assigned HR Recruiter</span>
+                <span className="font-bold text-primary">{interview.interviewer || 'Nadeeka Dias'}</span>
               </div>
               <div className="flex justify-between items-center text-xs">
                 <span className="text-muted font-medium">Candidate Phone</span>

@@ -1,7 +1,8 @@
 import { useState, useRef } from 'react'
-import { MapPin, Star, ShieldCheck, GripVertical, Calendar, FileText, ChevronRight } from 'lucide-react'
+import { MapPin, Star, ShieldCheck, GripVertical, Calendar, FileText, ChevronRight, Sparkles } from 'lucide-react'
 import ScheduleInterviewModal from '@/components/modals/ScheduleInterviewModal'
 import CandidateDetailModal from '@/components/modals/CandidateDetailModal'
+import AiAgentDrawer from '@/components/ai/AiAgentDrawer'
 
 export type Candidate = {
   id: string
@@ -43,6 +44,7 @@ export default function KanbanBoard({ initialColumns, jobTitle }: KanbanBoardPro
   const [sort, setSort] = useState<'match' | 'name' | 'rating'>('match')
   const [scheduleFor, setScheduleFor] = useState<Candidate | null>(null)
   const [selectedCand, setSelectedCand] = useState<Candidate | null>(null)
+  const [isAiDrawerOpen, setIsAiDrawerOpen] = useState(false)
 
   const dragNode = useRef<HTMLDivElement | null>(null)
 
@@ -164,7 +166,16 @@ export default function KanbanBoard({ initialColumns, jobTitle }: KanbanBoardPro
             >
               {/* Column header */}
               <div className="flex items-center justify-between px-1">
-                <span className="text-sm font-bold text-foreground">{col.label}</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-sm font-bold text-foreground">{col.label}</span>
+                  <button
+                    onClick={() => setIsAiDrawerOpen(true)}
+                    className="p-1 rounded-md hover:bg-primary/10 text-primary transition-colors cursor-pointer group"
+                    title={`Get AI Help & compare candidates in ${col.label}`}
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-primary group-hover:scale-110 transition-transform" />
+                  </button>
+                </div>
                 <span
                   className="text-xs font-bold px-2 py-0.5 rounded-full border"
                   style={{ color: col.color, borderColor: col.border, background: col.bg }}
@@ -220,28 +231,33 @@ export default function KanbanBoard({ initialColumns, jobTitle }: KanbanBoardPro
                       </div>
                     </div>
 
-                    {/* Actions */}
+                    {/* Context-Relevant Stage Actions */}
                     <div className="flex gap-1.5 mt-2.5">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          setScheduleFor(cand)
-                        }}
-                        className="flex-1 py-1.5 text-xs font-semibold rounded-lg border border-border bg-surface-2 hover:bg-border text-foreground transition-colors flex items-center justify-center gap-1"
-                      >
-                        <Calendar className="w-3 h-3" />
-                        Interview
-                      </button>
                       <button
                         onClick={(e) => {
                           e.stopPropagation()
                           setSelectedCand(cand)
                         }}
-                        className="flex-1 py-1.5 text-xs font-semibold rounded-lg border border-border bg-surface-2 hover:bg-border text-foreground transition-colors flex items-center justify-center gap-1"
+                        className="flex-1 py-1.5 text-xs font-semibold rounded-lg border border-border bg-surface-2 hover:bg-border text-foreground transition-colors flex items-center justify-center gap-1 cursor-pointer"
+                        title="View Profile & Resume"
                       >
                         <FileText className="w-3 h-3" />
-                        Resume
+                        Profile
                       </button>
+
+                      {(col.key === 'shortlisted' || col.key === 'interviewing') && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setScheduleFor(cand)
+                          }}
+                          className="flex-1 py-1.5 text-xs font-semibold rounded-lg bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 transition-colors flex items-center justify-center gap-1 cursor-pointer"
+                          title="Schedule Interview"
+                        >
+                          <Calendar className="w-3 h-3" />
+                          Interview
+                        </button>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -275,6 +291,11 @@ export default function KanbanBoard({ initialColumns, jobTitle }: KanbanBoardPro
           candidate={selectedCand}
         />
       )}
+
+      <AiAgentDrawer
+        isOpen={isAiDrawerOpen}
+        onClose={() => setIsAiDrawerOpen(false)}
+      />
     </div>
   )
 }

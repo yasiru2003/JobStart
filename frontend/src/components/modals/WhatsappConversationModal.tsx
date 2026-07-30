@@ -23,23 +23,23 @@ export default function WhatsappConversationModal({
   if (!isOpen) return null
 
   const CHAT_MESSAGES = [
-    { sender: 'bot', text: `👋 Hello ${candidateName}! JobStart AI Agent here. We noticed your application for ${jobTitle}. Could you confirm your availability?`, time: '10:00 AM' },
-    { sender: 'candidate', text: 'Hi! Yes I am available full time in Colombo.', time: '10:02 AM' },
-    { sender: 'bot', text: 'Great! Do you hold a valid NVQ Level 3 or equivalent technical certification?', time: '10:03 AM' },
-    { sender: 'candidate', text: 'Yes, I have NVQ Level 3 with 3 years of work experience.', time: '10:05 AM' },
-    { sender: 'bot', text: 'Awesome. Your application has been verified & forwarded to the employer hiring pipeline!', time: '10:06 AM' },
+    { sender: 'bot', text: `📅 Interview Invitation: Hello ${candidateName}! You have been invited for a technical interview for ${jobTitle}.`, time: '09:00 AM' },
+    { sender: 'bot', text: '🗓 Scheduled Date: Tomorrow at 10:00 AM (Online Google Meet / Zoom). Please confirm your attendance.', time: '09:01 AM' },
+    { sender: 'candidate', text: 'Thank you! I confirm I will join the interview tomorrow at 10:00 AM.', time: '09:15 AM' },
+    { sender: 'bot', text: '✅ Interview Confirmed! Here is your meeting link: https://meet.google.com/jobstart-interview-room', time: '09:16 AM' },
+    { sender: 'bot', text: '🔔 Reminder: Your interview starts in 24 hours. Automated reminder sent via WhatsApp.', time: '10:00 AM' },
   ]
 
   const SCREENING_ANSWERS = [
-    { question: '1. Are you available for full-time work in Sri Lanka?', answer: 'Yes, available immediately for full-time position in Western Province.', status: 'Verified' },
-    { question: '2. Do you hold NVQ Level 3 or higher certification?', answer: 'Yes, NVQ Level 3 Certificate verified on JobStart.', status: 'Verified' },
-    { question: '3. What is your expected monthly salary range?', answer: 'LKR 350,000 - 450,000 / month.', status: 'Matched' },
+    { question: '1. Interview Mode Confirmation', answer: 'Online Virtual (Google Meet)', status: 'Confirmed' },
+    { question: '2. Scheduled Interview Slot', answer: 'Tomorrow at 10:00 AM Sri Lanka Time (Asia/Colombo)', status: 'Confirmed' },
+    { question: '3. Join Reminders Frequency', answer: 'WhatsApp Reminders: 24h & 1h prior to interview', status: 'Active' },
   ]
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex justify-end animate-fade-in">
+    <div className="fixed inset-0 z-[60] bg-black/65 backdrop-blur-md flex justify-end animate-fade-in" onClick={onClose}>
       <div
-        className="bg-surface w-full max-w-lg h-full overflow-y-auto shadow-2xl p-6 flex flex-col justify-between border-l border-border relative animate-slide-in-right"
+        className="bg-surface w-full max-w-lg h-full overflow-y-auto shadow-2xl p-6 flex flex-col justify-between border-l border-border/80 relative animate-slide-in-right"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -52,7 +52,7 @@ export default function WhatsappConversationModal({
               <div>
                 <h2 className="text-base font-bold text-foreground">{candidateName}</h2>
                 <p className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
-                  <Phone className="w-3 h-3" /> {phone} · WAHA Session Active
+                  <Phone className="w-3 h-3" /> {phone} · WhatsApp Active
                 </p>
               </div>
             </div>

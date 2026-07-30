@@ -1,9 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { UserCircle, Search, Filter, ShieldCheck, MapPin, Briefcase } from 'lucide-react'
+import { UserCircle, Search, Filter, ShieldCheck, MapPin, Briefcase, Sparkles } from 'lucide-react'
 import CandidateDetailModal from '@/components/modals/CandidateDetailModal'
 import FilterModal from '@/components/modals/FilterModal'
+import AiAgentDrawer from '@/components/ai/AiAgentDrawer'
 
 const sampleCandidates = [
   { id: '1', initials: 'KP', name: 'Kasun Perera', title: 'Senior Full Stack Engineer', location: 'Colombo 03', exp: '6 years', verified: false, docs: 'NIC + NVQ Level 6', matchScore: 92, rating: '4.8', phone: '+94 77 123 4567' },
@@ -16,6 +17,7 @@ const sampleCandidates = [
 export default function CandidatesPage() {
   const [selectedCand, setSelectedCand] = useState<any | null>(null)
   const [isFilterOpen, setIsFilterOpen] = useState(false)
+  const [isAiDrawerOpen, setIsAiDrawerOpen] = useState(false)
   const [search, setSearch] = useState('')
 
   const filtered = sampleCandidates.filter((cand) =>
@@ -23,6 +25,11 @@ export default function CandidatesPage() {
     cand.title.toLowerCase().includes(search.toLowerCase()) ||
     cand.location.toLowerCase().includes(search.toLowerCase())
   )
+
+  const handleAnalyzeWithAi = (cand: any, e: React.MouseEvent) => {
+    e.stopPropagation()
+    setIsAiDrawerOpen(true)
+  }
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto animate-fade-in relative">
@@ -58,43 +65,55 @@ export default function CandidatesPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {filtered.map((cand) => (
-          <div key={cand.id} className="card p-5 hover:shadow-md transition-all space-y-4">
-            <div className="flex items-start justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full gradient-primary text-white font-bold flex items-center justify-center text-sm">
-                  {cand.initials}
+          <div key={cand.id} className="card p-5 hover:shadow-md transition-all space-y-4 flex flex-col justify-between">
+            <div className="space-y-4">
+              <div className="flex items-start justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full gradient-primary text-white font-bold flex items-center justify-center text-sm">
+                    {cand.initials}
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-foreground text-base leading-snug">{cand.name}</h3>
+                    <p className="text-xs text-primary font-medium">{cand.title}</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="font-bold text-foreground text-base leading-snug">{cand.name}</h3>
-                  <p className="text-xs text-primary font-medium">{cand.title}</p>
+                <span className={cand.verified ? 'badge-verified' : 'badge-pending'}>
+                  {cand.verified ? 'Verified' : 'Pending'}
+                </span>
+              </div>
+
+              <div className="space-y-1.5 text-xs text-muted pt-2 border-t border-border">
+                <div className="flex items-center gap-2">
+                  <MapPin className="w-3.5 h-3.5 text-muted shrink-0" />
+                  <span>{cand.location}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Briefcase className="w-3.5 h-3.5 text-muted shrink-0" />
+                  <span>Experience: {cand.exp}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <ShieldCheck className="w-3.5 h-3.5 text-muted shrink-0" />
+                  <span>Docs: {cand.docs}</span>
                 </div>
               </div>
-              <span className={cand.verified ? 'badge-verified' : 'badge-pending'}>
-                {cand.verified ? 'Verified' : 'Pending'}
-              </span>
             </div>
 
-            <div className="space-y-1.5 text-xs text-muted pt-2 border-t border-border">
-              <div className="flex items-center gap-2">
-                <MapPin className="w-3.5 h-3.5 text-muted shrink-0" />
-                <span>{cand.location}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Briefcase className="w-3.5 h-3.5 text-muted shrink-0" />
-                <span>Experience: {cand.exp}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <ShieldCheck className="w-3.5 h-3.5 text-muted shrink-0" />
-                <span>Docs: {cand.docs}</span>
-              </div>
-            </div>
+            <div className="space-y-2 pt-2 border-t border-border">
+              <button
+                onClick={(e) => handleAnalyzeWithAi(cand, e)}
+                className="w-full py-2 bg-primary/10 hover:bg-primary/20 text-primary font-bold text-xs rounded-xl transition-all border border-primary/20 flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Analyze Candidate with AI</span>
+              </button>
 
-            <button
-              onClick={() => setSelectedCand(cand)}
-              className="w-full py-2 bg-surface-2 hover:bg-border text-foreground font-semibold text-xs rounded-xl transition-colors cursor-pointer"
-            >
-              View Candidate Profile
-            </button>
+              <button
+                onClick={() => setSelectedCand(cand)}
+                className="w-full py-2 bg-surface-2 hover:bg-border text-foreground font-semibold text-xs rounded-xl transition-colors cursor-pointer"
+              >
+                View Candidate Profile
+              </button>
+            </div>
           </div>
         ))}
       </div>
@@ -109,6 +128,11 @@ export default function CandidatesPage() {
         isOpen={isFilterOpen}
         onClose={() => setIsFilterOpen(false)}
         onApplyFilters={() => setIsFilterOpen(false)}
+      />
+
+      <AiAgentDrawer
+        isOpen={isAiDrawerOpen}
+        onClose={() => setIsAiDrawerOpen(false)}
       />
     </div>
   )

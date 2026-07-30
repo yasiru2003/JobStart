@@ -19,6 +19,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }, [])
 
   useEffect(() => {
+    if (typeof document !== 'undefined') {
+      if (darkMode) {
+        document.documentElement.classList.add('dark')
+      } else {
+        document.documentElement.classList.remove('dark')
+      }
+    }
+  }, [darkMode])
+
+  useEffect(() => {
     if (mounted && (!token || !user)) {
       router.push('/login')
     }
@@ -43,13 +53,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <Providers>
-      <div className={cn('flex h-screen overflow-hidden bg-background relative', darkMode && 'dark')}>
-        <Sidebar />
-        <div className="flex-1 flex flex-col min-w-0 overflow-hidden relative">
-          <Header />
-          <main className="flex-1 overflow-y-auto p-6 md:p-8 bg-background text-foreground relative">
-            {children}
-          </main>
+      <div className={cn('flex h-screen overflow-hidden bg-background text-foreground transition-colors duration-200', darkMode && 'dark')}>
+        <div className="flex h-full w-full bg-background text-foreground">
+          <Sidebar />
+          <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+            <Header />
+            <main className="flex-1 overflow-y-auto p-6 md:p-8 bg-background text-foreground">
+              {children}
+            </main>
+          </div>
         </div>
       </div>
     </Providers>

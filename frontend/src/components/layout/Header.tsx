@@ -4,6 +4,7 @@ import { useAuthStore, useUIStore } from '@/lib/stores'
 import { Moon, Sun, Bell, LogOut } from 'lucide-react'
 import { usePathname, useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
+import NotificationsDropdown from '@/components/layout/NotificationsDropdown'
 
 export default function Header() {
   const pathname = usePathname()
@@ -29,9 +30,11 @@ export default function Header() {
     router.push('/login')
   }
 
+  const roleLabel = (displayRole === 'admin' ? 'Platform Admin' : displayRole).charAt(0).toUpperCase() + (displayRole === 'admin' ? 'Platform Admin' : displayRole).slice(1)
+  const roleSubtext = displayRole === 'admin' ? 'Platform Admin (JobStart Team)' : displayRole
+
   // Generate dynamic breadcrumbs based on route
   const getBreadcrumbs = () => {
-    const roleLabel = displayRole.charAt(0).toUpperCase() + displayRole.slice(1)
     if (pathname === '/dashboard') {
       return [{ label: roleLabel }, { label: 'Overview' }]
     }
@@ -45,7 +48,7 @@ export default function Header() {
   const breadcrumbs = getBreadcrumbs()
 
   return (
-    <header className="h-16 border-b border-border bg-surface px-6 flex items-center justify-between sticky top-0 z-10">
+    <header className="h-16 border-b border-border bg-surface px-6 flex items-center justify-between shrink-0">
       {/* Breadcrumbs */}
       <div className="flex items-center gap-2 text-sm">
         {breadcrumbs.map((b, i) => (
@@ -76,26 +79,24 @@ export default function Header() {
           {darkMode ? <Sun className="w-4 h-4 text-amber-500" /> : <Moon className="w-4 h-4" />}
         </button>
 
-        {/* Notifications */}
-        <button
-          className="w-9 h-9 rounded-full bg-surface-2 flex items-center justify-center text-muted hover:text-foreground relative transition-colors focus-ring"
-          title="Notifications"
-          id="header-notifications"
-        >
-          <Bell className="w-4 h-4" />
-          <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-accent animate-pulse" />
-        </button>
+        {/* Notifications Dropdown */}
+        <NotificationsDropdown />
 
-        {/* User Pill */}
-        <div className="flex items-center gap-2.5 pl-2">
-          <div className="w-8 h-8 rounded-full gradient-primary flex items-center justify-center text-white text-xs font-bold shadow-sm">
+        {/* User Profile Pill */}
+        <button
+          onClick={() => router.push('/dashboard/profile')}
+          className="flex items-center gap-2.5 pl-2 p-1.5 rounded-xl hover:bg-surface-2 transition-all cursor-pointer group text-left focus-ring"
+          title="View My Profile"
+          id="header-user-profile-btn"
+        >
+          <div className="w-8 h-8 rounded-full gradient-primary flex items-center justify-center text-white text-xs font-bold shadow-sm group-hover:scale-105 transition-transform">
             {initials}
           </div>
           <div className="hidden sm:block text-left">
-            <p className="text-sm font-bold leading-tight text-foreground">{displayName}</p>
-            <p className="text-[11px] font-medium text-muted capitalize leading-tight">{displayRole}</p>
+            <p className="text-sm font-bold leading-tight text-foreground group-hover:text-primary transition-colors">{displayName}</p>
+            <p className="text-[11px] font-medium text-muted capitalize leading-tight">{roleSubtext}</p>
           </div>
-        </div>
+        </button>
 
         {/* Sign Out Button */}
         <button

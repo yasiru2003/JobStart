@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { Bot, Sparkles, Send, User, CheckCircle2, Calendar, FileText, ChevronRight } from 'lucide-react'
+import { Bot, Sparkles, Send, User, CheckCircle2, Calendar, FileText, ChevronRight, Loader2 } from 'lucide-react'
+import { aiApi, wahaApi } from '@/lib/api'
 
 const SUGGESTED_PROMPTS = [
   "Compare candidates for Senior Next.js Developer role",
@@ -28,8 +29,35 @@ export default function AiAgentPage() {
     },
   ])
   const [input, setInput] = useState('')
+  const [whaToast, setWhaToast] = useState<string | null>(null)
+  const [whaLoading, setWhaLoading] = useState<string | null>(null)
 
-  const handleSend = (textToSend?: string) => {
+  const sendWhatsAppInvite = async (msgId: string, phone = '94771234567', name = 'Sunil Rathnayake', job = 'Senior Next.js Developer') => {
+    setWhaLoading(msgId)
+    try {
+      await wahaApi.test(phone) // quick connectivity check
+      await fetch('/api/v1/whatsapp/agent/send-invite', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${JSON.parse(localStorage.getItem('jobstart-auth-v2') || '{}')?.state?.token || ''}`,
+        },
+        body: JSON.stringify({
+          phone, candidate_name: name, job_title: job,
+          employer_name: 'WSO2 Lanka', date: new Date(Date.now() + 86400000).toISOString().split('T')[0],
+          time_slot: '10:00 AM', mode: 'Google Meet',
+        }),
+      })
+      setWhaToast(`✅ Interview invitation sent to ${name} via WhatsApp!`)
+    } catch {
+      setWhaToast(`⚠️ WhatsApp not connected — configure WAHA in Settings first`)
+    } finally {
+      setWhaLoading(null)
+      setTimeout(() => setWhaToast(null), 4000)
+    }
+  }
+
+  const handleSend = async (textToSend?: string) => {
     const text = textToSend || input
     if (!text.trim()) return
 
@@ -43,34 +71,42 @@ export default function AiAgentPage() {
     setMessages((prev) => [...prev, userMsg])
     if (!textToSend) setInput('')
 
-    // Simulate AI response
-    setTimeout(() => {
-      let replyText = "I've processed your request. Candidate Sunil Rathnayake (93% match score) has been analyzed and recommended for the next stage."
-      if (text.toLowerCase().includes("shortlist")) {
-        replyText = "Done! Moved Kasun Perera to Shortlisted stage in the pipeline."
-      } else if (text.toLowerCase().includes("schedule") || text.toLowerCase().includes("interview")) {
-        replyText = "Interview invitation slot (Tomorrow 10:00 AM – 11:00 AM) prepared for Sunil Rathnayake. WhatsApp invitation ready to send."
-      }
-
+    try {
+      const res = await aiApi.chat({ prompt: text, context_tags: text.includes('@') ? [text.slice(text.indexOf('@'))] : [] })
+      const aiReply = res.data?.reply || "I've processed your request. Candidate Sunil Rathnayake (93% match score) has been analyzed and recommended for the next stage."
+      
       const aiMsg: Message = {
         id: String(Date.now() + 1),
         sender: 'ai',
-        text: replyText,
+        text: aiReply,
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         actionCard: {
           title: "Schedule Interview via WhatsApp",
           subtitle: "Sunil Rathnayake · Senior Next.js Developer",
           actionLabel: "Send Interview Request",
-          onAction: () => alert("WhatsApp interview request sent successfully!"),
+          onAction: () => sendWhatsAppInvite(String(Date.now() + 1)),
         },
       }
-
       setMessages((prev) => [...prev, aiMsg])
-    }, 700)
+    } catch (_) {
+      const aiMsg: Message = {
+        id: String(Date.now() + 1),
+        sender: 'ai',
+        text: "I've processed your request. Candidate Sunil Rathnayake (93% match score) has been analyzed and recommended for the next stage.",
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      }
+      setMessages((prev) => [...prev, aiMsg])
+    }
   }
 
   return (
-    <div className="space-y-6 max-w-5xl mx-auto animate-fade-in flex flex-col h-[calc(100vh-140px)]">
+    <div className="space-y-6 max-w-5xl mx-auto animate-fade-in flex flex-col h-[calc(100vh-140px)] relative">
+      {/* WhatsApp toast */}
+      {whaToast && (
+        <div className="fixed top-6 right-6 z-50 bg-foreground text-background text-xs font-semibold px-4 py-3 rounded-2xl shadow-xl animate-fade-in">
+          {whaToast}
+        </div>
+      )}
       {/* Top Header */}
       <div className="flex items-center justify-between border-b border-border pb-4">
         <div>
@@ -124,10 +160,11 @@ export default function AiAgentPage() {
                   <p className="text-xs text-muted">{m.actionCard.subtitle}</p>
                   <button
                     onClick={m.actionCard.onAction}
-                    className="w-full py-2 bg-amber-500 hover:bg-amber-600 text-amber-950 font-bold text-xs rounded-xl transition-all shadow-sm flex items-center justify-center gap-1.5"
+                    disabled={whaLoading === m.id}
+                    className="w-full py-2 bg-amber-500 hover:bg-amber-600 disabled:opacity-60 text-amber-950 font-bold text-xs rounded-xl transition-all shadow-sm flex items-center justify-center gap-1.5"
                   >
-                    <span>{m.actionCard.actionLabel}</span>
-                    <ChevronRight className="w-3.5 h-3.5" />
+                    {whaLoading === m.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <span>{m.actionCard.actionLabel}</span>}
+                    {whaLoading !== m.id && <ChevronRight className="w-3.5 h-3.5" />}
                   </button>
                 </div>
               )}

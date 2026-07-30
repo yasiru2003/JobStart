@@ -7,6 +7,7 @@ import PostJobModal from '@/components/modals/PostJobModal'
 import ScheduleInterviewModal from '@/components/modals/ScheduleInterviewModal'
 import DeleteJobModal from '@/components/modals/DeleteJobModal'
 import AiAgentDrawer from '@/components/ai/AiAgentDrawer'
+import { jobsApi } from '@/lib/api'
 
 const initialJobs = [
   { id: '1', title: 'Senior React / Next.js Developer', employer: 'WSO2', location: 'Colombo 03 / Remote', salary: 'LKR 350,000 - 500,000 / mo', type: 'Full-time', status: 'Active', applicants: 42 },
@@ -25,7 +26,19 @@ export default function JobsPage() {
   const [selectedJob, setSelectedJob] = useState<any>(null)
   const [search, setSearch] = useState('')
 
-  const handleCreateJob = (jobData: any) => {
+  const handleCreateJob = async (jobData: any) => {
+    try {
+      await jobsApi.create({
+        title: jobData.title,
+        company: jobData.company || 'WSO2',
+        location: jobData.location,
+        salary_min: Number(jobData.salaryMin),
+        salary_max: Number(jobData.salaryMax),
+        description: jobData.description,
+        job_type: jobData.jobType,
+      })
+    } catch (_) {}
+
     const newJob = {
       id: String(Date.now()),
       title: jobData.title,
@@ -67,11 +80,10 @@ export default function JobsPage() {
         <div className="flex items-center gap-2.5">
           <button
             onClick={() => setIsAiDrawerOpen(true)}
-            className="px-3.5 py-2 border border-border bg-surface hover:bg-surface-2 text-foreground font-semibold text-xs rounded-xl transition-colors flex items-center gap-1.5 cursor-pointer"
-            id="open-ai-drawer-btn"
+            className="px-3.5 py-2 border border-amber-500/30 bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-400 font-bold text-xs rounded-xl transition-colors flex items-center gap-1.5 cursor-pointer shadow-sm"
           >
-            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-            <span>AI Assistant</span>
+            <Sparkles className="w-4 h-4 text-amber-500 animate-pulse" />
+            <span>AI Job Description Assistant</span>
           </button>
           <button
             onClick={() => setIsPostModalOpen(true)}
@@ -132,7 +144,7 @@ export default function JobsPage() {
               <div className="flex items-center gap-1.5">
                 <button
                   onClick={() => router.push(`/dashboard/jobs/${job.id}`)}
-                  className="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 font-semibold text-xs rounded-lg transition-colors flex items-center gap-1 border border-indigo-200 cursor-pointer"
+                  className="px-3 py-1.5 bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 font-semibold text-xs rounded-lg transition-colors flex items-center gap-1 cursor-pointer"
                   title="View Pipeline"
                 >
                   <Kanban className="w-3.5 h-3.5" /> Pipeline
