@@ -16,18 +16,16 @@ import { useRouter } from 'next/navigation'
 
 const SAMPLE_EMPLOYER_PIPELINE: PipelineColumns = {
   matched: [
-    { id: 'c1', initials: 'KP', name: 'Kasun Perera', location: 'Colombo', verified: false, rating: '4.0', matchScore: 72 },
-    { id: 'c2', initials: 'NF', name: 'Nimal Fernando', location: 'Gampaha', verified: true, rating: '4.2', matchScore: 81 },
+    { id: '7', initials: 'RW', name: 'Ruwan Wickramasinghe', location: 'Moratuwa', verified: true, rating: '4.4', matchScore: 85 },
   ],
   shortlisted: [
-    { id: 'c4', initials: 'SR', name: 'Sunil Rathnayake', location: 'Negombo', verified: true, rating: '4.5', matchScore: 93 },
-    { id: 'c5', initials: 'PJ', name: 'Priyanka Jayasuriya', location: 'Colombo', verified: true, rating: '4.1', matchScore: 87 },
+    { id: '1', initials: 'KP', name: 'Kasun Perera', location: 'Colombo 03', verified: true, rating: '4.8', matchScore: 92 },
   ],
   interviewing: [
-    { id: 'c6', initials: 'CW', name: 'Chamara Wickramasinghe', location: 'Kandy', verified: true, rating: '4.6', matchScore: 95 },
+    { id: '6', initials: 'JA', name: 'Janith Alwis', location: 'Colombo 05', verified: true, rating: '4.7', matchScore: 89 },
   ],
   hired: [
-    { id: 'c7', initials: 'DG', name: 'Dilani Gunawardena', location: 'Colombo', verified: true, rating: '4.8', matchScore: 97 },
+    { id: '3', initials: 'PJ', name: 'Priyanka Jayasuriya', location: 'Rajagiriya', verified: true, rating: '4.9', matchScore: 95 },
   ],
 }
 

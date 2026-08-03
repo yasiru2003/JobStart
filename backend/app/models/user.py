@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime, timezone
-from sqlalchemy import String, Boolean, DateTime, Enum as SAEnum
+from sqlalchemy import String, Boolean, DateTime, ForeignKey, Enum as SAEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.dialects.postgresql import UUID
 from app.core.database import Base
@@ -38,12 +38,11 @@ class User(Base):
         onupdate=lambda: datetime.now(timezone.utc),
     )
 
-    # Relationships
     employer_profile: Mapped["EmployerProfile | None"] = relationship(
         "EmployerProfile", back_populates="user", uselist=False
     )
     candidate_profile: Mapped["CandidateProfile | None"] = relationship(
-        "CandidateProfile", back_populates="user", uselist=False
+        "CandidateProfile", back_populates="user", uselist=False, foreign_keys="[CandidateProfile.user_id]"
     )
 
     def __repr__(self) -> str:

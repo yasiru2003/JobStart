@@ -72,7 +72,15 @@ export default function AiAgentPage() {
     if (!textToSend) setInput('')
 
     try {
-      const res = await aiApi.chat({ prompt: text, context_tags: text.includes('@') ? [text.slice(text.indexOf('@'))] : [] })
+      const historyPayload = messages.map((m) => ({
+        role: m.sender === 'user' ? 'user' : 'assistant',
+        content: m.text,
+      }))
+      const res = await aiApi.chat({
+        prompt: text,
+        context_tags: text.includes('@') ? [text.slice(text.indexOf('@'))] : [],
+        history: historyPayload,
+      })
       const aiReply = res.data?.reply || "I've processed your request. Candidate Sunil Rathnayake (93% match score) has been analyzed and recommended for the next stage."
       
       const aiMsg: Message = {

@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     REFRESH_TOKEN_EXPIRE_DAYS: int = 30
 
     # Database
-    DATABASE_URL: str = "postgresql+asyncpg://jobstart:jobstart@localhost:5432/jobstart"
+    DATABASE_URL: str = "sqlite+aiosqlite:///./jobstart.db"
 
     # Redis
     REDIS_URL: str = "redis://localhost:6379/0"
@@ -40,8 +40,8 @@ class Settings(BaseSettings):
     FROM_EMAIL: str = "noreply@jobstart.lk"
 
     # OpenRouter LLM (Gemini Flash via LangChain)
-    OPENROUTER_API_KEY: str = ""  # Set via OPENROUTER_API_KEY in .env
-    OPENROUTER_MODEL: str = "google/gemini-2.5-flash-lite"
+    OPENROUTER_API_KEY: str = ""
+    OPENROUTER_MODEL: str = "openai/gpt-4o-mini"
     OPENROUTER_BASE_URL: str = "https://openrouter.ai/api/v1"
 
     # WAHA Cloud (WhatsApp HTTP API)

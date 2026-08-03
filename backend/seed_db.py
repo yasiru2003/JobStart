@@ -7,6 +7,7 @@ from sqlalchemy import select
 
 from app.core.database import engine, AsyncSessionLocal, Base
 from app.models.user import User, UserRole
+from app.models.tenant import Tenant, TenantTier, TenantStatus
 from app.models.profile import EmployerProfile, CandidateProfile, VerificationStatus
 from app.models.job import JobPosting, JobType, JobStatus, JobApplication, ApplicationStatus
 from app.models.notification import Notification, NotificationType
@@ -96,13 +97,11 @@ async def seed_database():
             candidate_profile = CandidateProfile(
                 id=uuid.uuid4(),
                 user=candidate_user,
-                headline="Senior Full Stack / Next.js Developer",
-                bio="6 years building scalable web apps with React, Next.js, and TypeScript.",
+                bio="Senior Full Stack / Next.js Developer with 6 years experience building scalable web apps with React, Next.js, and TypeScript.",
                 skills=["React", "Next.js", "TypeScript", "Node.js", "PostgreSQL", "Docker"],
                 experience_years=6,
                 location="Colombo 05, Sri Lanka",
                 verification_status=VerificationStatus.verified,
-                verified_nic="941234567V",
             )
             session.add(candidate_profile)
 
@@ -142,7 +141,7 @@ async def seed_database():
                 candidate_id=candidate_profile.id,
                 status=ApplicationStatus.interview,
                 ai_match_score=92,
-                notes="Candidate screened with AI agent. Credentials verified via TVEC.",
+                recruiter_notes="Candidate screened with AI agent. Credentials verified via TVEC.",
             )
             session.add(app1)
 

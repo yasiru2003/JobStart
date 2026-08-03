@@ -1,8 +1,8 @@
 import uuid
 from datetime import datetime, timezone
-from sqlalchemy import String, Boolean, DateTime, ForeignKey, Text, Integer, Enum as SAEnum
+from sqlalchemy import String, Boolean, DateTime, ForeignKey, Text, Integer, JSON, Enum as SAEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy.dialects.postgresql import UUID, JSONB
+from sqlalchemy.dialects.postgresql import UUID
 from app.core.database import Base
 import enum
 
@@ -65,7 +65,7 @@ class CandidateProfile(Base):
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     user_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("users.id"), unique=True)
     bio: Mapped[str | None] = mapped_column(Text)
-    skills: Mapped[list] = mapped_column(JSONB, default=list)
+    skills: Mapped[list] = mapped_column(JSON, default=list)
     experience_years: Mapped[int | None] = mapped_column(Integer)
     education: Mapped[str | None] = mapped_column(String(255))
     location: Mapped[str | None] = mapped_column(String(255))

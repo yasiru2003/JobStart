@@ -27,18 +27,16 @@ async def get_employer_dashboard(db: AsyncSession = Depends(get_db)):
             "recent_job": "Senior React / Next.js Developer",
             "pipeline": {
                 "matched": [
-                    {"id": "c1", "name": "Kasun Perera", "location": "Colombo", "verified": False, "rating": "4.0", "matchScore": 72},
-                    {"id": "c2", "name": "Nimal Fernando", "location": "Gampaha", "verified": True, "rating": "4.2", "matchScore": 81}
+                    {"id": "7", "initials": "RW", "name": "Ruwan Wickramasinghe", "location": "Moratuwa", "verified": True, "rating": "4.4", "matchScore": 85}
                 ],
                 "shortlisted": [
-                    {"id": "c4", "name": "Sunil Rathnayake", "location": "Negombo", "verified": True, "rating": "4.5", "matchScore": 93},
-                    {"id": "c5", "name": "Priyanka Jayasuriya", "location": "Colombo", "verified": True, "rating": "4.1", "matchScore": 87}
+                    {"id": "1", "initials": "KP", "name": "Kasun Perera", "location": "Colombo 03", "verified": True, "rating": "4.8", "matchScore": 92}
                 ],
                 "interviewing": [
-                    {"id": "c6", "name": "Chamara Wickramasinghe", "location": "Kandy", "verified": True, "rating": "4.6", "matchScore": 95}
+                    {"id": "6", "initials": "JA", "name": "Janith Alwis", "location": "Colombo 05", "verified": True, "rating": "4.7", "matchScore": 89}
                 ],
                 "hired": [
-                    {"id": "c7", "name": "Dilani Gunawardena", "location": "Colombo", "verified": True, "rating": "4.8", "matchScore": 97}
+                    {"id": "3", "initials": "PJ", "name": "Priyanka Jayasuriya", "location": "Rajagiriya", "verified": True, "rating": "4.9", "matchScore": 95}
                 ]
             }
         }
@@ -52,16 +50,16 @@ async def get_employer_dashboard(db: AsyncSession = Depends(get_db)):
             "recent_job": "Senior React / Next.js Developer",
             "pipeline": {
                 "matched": [
-                    {"id": "c1", "name": "Kasun Perera", "location": "Colombo", "verified": False, "rating": "4.0", "matchScore": 72}
+                    {"id": "7", "initials": "RW", "name": "Ruwan Wickramasinghe", "location": "Moratuwa", "verified": True, "rating": "4.4", "matchScore": 85}
                 ],
                 "shortlisted": [
-                    {"id": "c4", "name": "Sunil Rathnayake", "location": "Negombo", "verified": True, "rating": "4.5", "matchScore": 93}
+                    {"id": "1", "initials": "KP", "name": "Kasun Perera", "location": "Colombo 03", "verified": True, "rating": "4.8", "matchScore": 92}
                 ],
                 "interviewing": [
-                    {"id": "c6", "name": "Chamara Wickramasinghe", "location": "Kandy", "verified": True, "rating": "4.6", "matchScore": 95}
+                    {"id": "6", "initials": "JA", "name": "Janith Alwis", "location": "Colombo 05", "verified": True, "rating": "4.7", "matchScore": 89}
                 ],
                 "hired": [
-                    {"id": "c7", "name": "Dilani Gunawardena", "location": "Colombo", "verified": True, "rating": "4.8", "matchScore": 97}
+                    {"id": "3", "initials": "PJ", "name": "Priyanka Jayasuriya", "location": "Rajagiriya", "verified": True, "rating": "4.9", "matchScore": 95}
                 ]
             }
         }
@@ -79,16 +77,16 @@ async def get_recruiter_dashboard(db: AsyncSession = Depends(get_db)):
         "success_rate": "88%",
         "pipeline": {
             "matched": [
-                {"id": "c1", "name": "Kasun Perera", "location": "Colombo", "verified": False, "rating": "4.0", "matchScore": 72}
+                {"id": "7", "initials": "RW", "name": "Ruwan Wickramasinghe", "location": "Moratuwa", "verified": True, "rating": "4.4", "matchScore": 85}
             ],
             "shortlisted": [
-                {"id": "c4", "name": "Sunil Rathnayake", "location": "Negombo", "verified": True, "rating": "4.5", "matchScore": 93}
+                {"id": "1", "initials": "KP", "name": "Kasun Perera", "location": "Colombo 03", "verified": True, "rating": "4.8", "matchScore": 92}
             ],
             "interviewing": [
-                {"id": "c6", "name": "Chamara Wickramasinghe", "location": "Kandy", "verified": True, "rating": "4.6", "matchScore": 95}
+                {"id": "6", "initials": "JA", "name": "Janith Alwis", "location": "Colombo 05", "verified": True, "rating": "4.7", "matchScore": 89}
             ],
             "hired": [
-                {"id": "c7", "name": "Dilani Gunawardena", "location": "Colombo", "verified": True, "rating": "4.8", "matchScore": 97}
+                {"id": "3", "initials": "PJ", "name": "Priyanka Jayasuriya", "location": "Rajagiriya", "verified": True, "rating": "4.9", "matchScore": 95}
             ]
         }
     }

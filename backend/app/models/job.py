@@ -1,8 +1,8 @@
 import uuid
 from datetime import datetime, timezone
-from sqlalchemy import String, Boolean, DateTime, ForeignKey, Text, Integer, Numeric, Enum as SAEnum
+from sqlalchemy import String, Boolean, DateTime, ForeignKey, Text, Integer, Numeric, JSON, Enum as SAEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy.dialects.postgresql import UUID, JSONB, ARRAY
+from sqlalchemy.dialects.postgresql import UUID
 from app.core.database import Base
 import enum
 
@@ -39,6 +39,7 @@ class JobPosting(Base):
     employer_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("employer_profiles.id"))
     tenant_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("tenants.id"), index=True, nullable=True)
     title: Mapped[str] = mapped_column(String(255), nullable=False)
+    company: Mapped[str | None] = mapped_column(String(255), nullable=True, default="WSO2 Lanka")
     description: Mapped[str] = mapped_column(Text, nullable=False)
     requirements: Mapped[str | None] = mapped_column(Text)
     location: Mapped[str | None] = mapped_column(String(255))
@@ -46,7 +47,7 @@ class JobPosting(Base):
     status: Mapped[JobStatus] = mapped_column(SAEnum(JobStatus), default=JobStatus.draft)
     salary_min: Mapped[int | None] = mapped_column(Integer)  # LKR
     salary_max: Mapped[int | None] = mapped_column(Integer)  # LKR
-    skills_required: Mapped[list] = mapped_column(JSONB, default=list)
+    skills_required: Mapped[list] = mapped_column(JSON, default=list)
     is_remote: Mapped[bool] = mapped_column(Boolean, default=False)
     experience_required: Mapped[str | None] = mapped_column(String(50))
     views_count: Mapped[int] = mapped_column(Integer, default=0)
@@ -75,6 +76,7 @@ class Application(Base):
     status: Mapped[ApplicationStatus] = mapped_column(
         SAEnum(ApplicationStatus), default=ApplicationStatus.applied
     )
+    ai_match_score: Mapped[int | None] = mapped_column(Integer, default=0)
     recruiter_notes: Mapped[str | None] = mapped_column(Text)
     applied_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
@@ -88,3 +90,6 @@ class Application(Base):
     # Relationships
     job: Mapped["JobPosting"] = relationship("JobPosting", back_populates="applications")
     candidate: Mapped["CandidateProfile"] = relationship("CandidateProfile", back_populates="applications")
+
+
+JobApplication = Application

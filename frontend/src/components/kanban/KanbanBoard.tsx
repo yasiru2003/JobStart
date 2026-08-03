@@ -288,7 +288,10 @@ export default function KanbanBoard({ initialColumns, jobTitle }: KanbanBoardPro
         <CandidateDetailModal
           isOpen={true}
           onClose={() => setSelectedCand(null)}
-          candidate={selectedCand}
+          candidate={{
+            ...selectedCand,
+            jobTitle: jobTitle || (selectedCand as any).jobTitle || (selectedCand as any).title || 'DevOps & Cloud Architect'
+          }}
         />
       )}
 

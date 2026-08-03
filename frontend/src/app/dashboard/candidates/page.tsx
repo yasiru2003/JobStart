@@ -6,19 +6,27 @@ import CandidateDetailModal from '@/components/modals/CandidateDetailModal'
 import FilterModal from '@/components/modals/FilterModal'
 import AiAgentDrawer from '@/components/ai/AiAgentDrawer'
 
+import { useAuthStore } from '@/lib/stores'
+
 const sampleCandidates = [
-  { id: '1', initials: 'KP', name: 'Kasun Perera', title: 'Senior Full Stack Engineer', location: 'Colombo 03', exp: '6 years', verified: false, docs: 'NIC + NVQ Level 6', matchScore: 92, rating: '4.8', phone: '+94 77 123 4567' },
-  { id: '2', initials: 'SJ', name: 'Sanduni Jayawardena', title: 'UI/UX Product Designer', location: 'Kandy', exp: '4 years', verified: false, docs: 'NIC', matchScore: 78, rating: '4.2', phone: '+94 71 987 6543' },
-  { id: '3', initials: 'PJ', name: 'Priyanka Jayasuriya', title: 'DevOps & Cloud Architect', location: 'Rajagiriya', exp: '8 years', verified: true, docs: 'NIC + Police Report', matchScore: 95, rating: '4.9', phone: '+94 75 456 7890' },
-  { id: '4', initials: 'DF', name: 'Dilshan Fernando', title: 'Data Analyst & ML Specialist', location: 'Galle', exp: '3 years', verified: false, docs: 'NIC + Driving License', matchScore: 84, rating: '4.5', phone: '+94 77 555 1212' },
-  { id: '5', initials: 'NS', name: 'Nirosha Silva', title: 'QA Automation Engineer', location: 'Negombo', exp: '5 years', verified: false, docs: 'Police Report', matchScore: 81, rating: '4.1', phone: '+94 77 888 9999' },
+  { id: '1', initials: 'KP', name: 'Kasun Perera', title: 'Senior React / Next.js Developer', location: 'Colombo 03', exp: '6 years', verified: true, docs: 'NIC + NVQ Level 6 (Verified)', matchScore: 92, rating: '4.8', phone: '+94 77 123 4567' },
+  { id: '6', initials: 'JA', name: 'Janith Alwis', title: 'Senior React / Next.js Developer', location: 'Colombo 05', exp: '5 years', verified: false, docs: 'NIC Verified (Degree Audit Pending)', matchScore: 89, rating: '4.7', phone: '+94 71 222 3344' },
+  { id: '7', initials: 'RW', name: 'Ruwan Wickramasinghe', title: 'Senior React / Next.js Developer', location: 'Moratuwa', exp: '4 years', verified: false, docs: 'NIC Pending TVEC Audit', matchScore: 85, rating: '4.4', phone: '+94 75 333 4455' },
+  { id: '2', initials: 'SJ', name: 'Sanduni Jayawardena', title: 'UI/UX Product Designer', location: 'Kandy', exp: '4 years', verified: true, docs: 'NIC + NVQ Level 5 (Verified)', matchScore: 88, rating: '4.6', phone: '+94 71 987 6543' },
+  { id: '3', initials: 'PJ', name: 'Priyanka Jayasuriya', title: 'DevOps & Cloud Architect', location: 'Rajagiriya', exp: '8 years', verified: true, docs: 'AWS + CKA + Police (Verified)', matchScore: 95, rating: '4.9', phone: '+94 75 456 7890' },
+  { id: '4', initials: 'DF', name: 'Dilshan Fernando', title: 'Data Analyst & ML Specialist', location: 'Galle', exp: '3 years', verified: false, docs: 'NIC Verified (Degree Audit Pending)', matchScore: 84, rating: '4.5', phone: '+94 77 555 1212' },
+  { id: '5', initials: 'NS', name: 'Nirosha Silva', title: 'QA Automation Engineer', location: 'Negombo', exp: '5 years', verified: false, docs: 'ISTQB Audit Pending', matchScore: 81, rating: '4.1', phone: '+94 77 888 9999' },
 ]
 
 export default function CandidatesPage() {
+  const { user, viewingAs } = useAuthStore()
   const [selectedCand, setSelectedCand] = useState<any | null>(null)
   const [isFilterOpen, setIsFilterOpen] = useState(false)
   const [isAiDrawerOpen, setIsAiDrawerOpen] = useState(false)
   const [search, setSearch] = useState('')
+
+  const isEmployerOrRecruiter = viewingAs === 'employer' || viewingAs === 'recruiter'
+  const userCompany = user?.tenantDomain || (isEmployerOrRecruiter ? 'WSO2 Lanka' : null)
 
   const filtered = sampleCandidates.filter((cand) =>
     cand.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -26,8 +34,11 @@ export default function CandidatesPage() {
     cand.location.toLowerCase().includes(search.toLowerCase())
   )
 
+  const [aiPrompt, setAiPrompt] = useState('')
+
   const handleAnalyzeWithAi = (cand: any, e: React.MouseEvent) => {
     e.stopPropagation()
+    setAiPrompt(`Analyze @${cand.name} for ${cand.title}`)
     setIsAiDrawerOpen(true)
   }
 
@@ -133,6 +144,7 @@ export default function CandidatesPage() {
       <AiAgentDrawer
         isOpen={isAiDrawerOpen}
         onClose={() => setIsAiDrawerOpen(false)}
+        initialPrompt={aiPrompt}
       />
     </div>
   )

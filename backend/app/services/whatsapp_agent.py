@@ -96,6 +96,8 @@ class WhatsAppAgentService:
 
     async def _llm_reply(self, system_prompt: str, user_message: str) -> Optional[str]:
         """Call OpenRouter LLM to generate a contextual WhatsApp reply."""
+        if not self.api_key or self.api_key.strip() == "":
+            return None
         try:
             async with httpx.AsyncClient(timeout=12.0) as client:
                 resp = await client.post(

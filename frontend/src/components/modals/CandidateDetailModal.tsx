@@ -35,8 +35,8 @@ export default function CandidateDetailModal({
   if (!isOpen || !candidate) return null
 
   const phone = candidate.phone || '+94 77 123 4567'
-  const experience = candidate.experience || '3 years'
-  const jobTitle = candidate.jobTitle || 'Electrician — Colombo'
+  const experience = candidate.experience || (candidate as any).exp || '6 years'
+  const jobTitle = candidate.jobTitle || (candidate as any).title || 'Senior Full Stack Engineer'
 
   return (
     <>

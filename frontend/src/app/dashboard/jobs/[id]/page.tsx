@@ -8,6 +8,7 @@ import {
 } from 'lucide-react'
 import KanbanBoard, { PipelineColumns } from '@/components/kanban/KanbanBoard'
 import ScheduleInterviewModal from '@/components/modals/ScheduleInterviewModal'
+import { useAuthStore } from '@/lib/stores'
 
 // ── mock data (replace with API calls) ──────────────────────────────────────
 const JOBS_DATA: Record<string, {
@@ -17,33 +18,27 @@ const JOBS_DATA: Record<string, {
 }> = {
   '1': {
     title: 'Senior React / Next.js Developer',
-    employer: 'WSO2',
+    employer: 'WSO2 Lanka',
     location: 'Colombo 03 / Remote',
     salary: 'LKR 350,000 – 500,000 / mo',
     type: 'Full-time',
     status: 'Active',
-    applicants: 42,
+    applicants: 3,
     pipeline: {
       matched: [
-        { id: 'c1', initials: 'KP', name: 'Kasun Perera',        location: 'Colombo', verified: false, rating: '4.0', matchScore: 72 },
-        { id: 'c2', initials: 'NF', name: 'Nimal Fernando',      location: 'Gampaha', verified: true,  rating: '4.2', matchScore: 81 },
-        { id: 'c3', initials: 'SJ', name: 'Sanduni Jayawardena', location: 'Colombo', verified: true,  rating: '3.8', matchScore: 65 },
+        { id: '7', initials: 'RW', name: 'Ruwan Wickramasinghe', location: 'Moratuwa', verified: true, rating: '4.4', matchScore: 85 },
       ],
       shortlisted: [
-        { id: 'c4', initials: 'SR', name: 'Sunil Rathnayake',    location: 'Negombo', verified: true,  rating: '4.5', matchScore: 93 },
-        { id: 'c5', initials: 'PJ', name: 'Priyanka Jayasuriya', location: 'Colombo', verified: true,  rating: '4.1', matchScore: 87 },
+        { id: '1', initials: 'KP', name: 'Kasun Perera', location: 'Colombo 03', verified: true, rating: '4.8', matchScore: 92 },
       ],
       interviewing: [
-        { id: 'c6', initials: 'CW', name: 'Chamara Wickramasinghe', location: 'Kandy', verified: true, rating: '4.6', matchScore: 95 },
+        { id: '6', initials: 'JA', name: 'Janith Alwis', location: 'Colombo 05', verified: true, rating: '4.7', matchScore: 89 },
       ],
-      hired: [
-        { id: 'c7', initials: 'DG', name: 'Dilani Gunawardena', location: 'Colombo', verified: true, rating: '4.8', matchScore: 97 },
-      ],
+      hired: [],
     },
     interviews: [
-      { candidate: 'Sunil Rathnayake',        job: 'Senior React / Next.js Developer', date: '24 Jul 2026', time: '10:00 AM–11:00 AM', mode: 'Video Call', status: 'confirmed' },
-      { candidate: 'Priyanka Jayasuriya',     job: 'Senior React / Next.js Developer', date: '24 Jul 2026', time: '2:00 PM–3:00 PM',   mode: 'Video Call', status: 'awaiting'  },
-      { candidate: 'Chamara Wickramasinghe',  job: 'Senior React / Next.js Developer', date: '26 Jul 2026', time: '11:00 AM–12:00 PM', mode: 'On-site',   status: 'declined'  },
+      { candidate: 'Janith Alwis', job: 'Senior React / Next.js Developer', date: '25 Jul 2026', time: '10:00 AM–11:00 AM', mode: 'Google Meet', status: 'confirmed' },
+      { candidate: 'Kasun Perera', job: 'Senior React / Next.js Developer', date: '26 Jul 2026', time: '02:00 PM–03:00 PM', mode: 'WhatsApp Call', status: 'awaiting' },
     ] as any,
   },
   '2': {
@@ -93,6 +88,7 @@ export default function JobDetailPage() {
   const id      = (params?.id as string) ?? '1'
   const job     = JOBS_DATA[id] ?? JOBS_DATA['1']
 
+  const { viewingAs } = useAuthStore()
   const [tab, setTab] = useState<Tab>('pipeline')
   const [scheduleOpen, setScheduleOpen] = useState(false)
 
@@ -129,13 +125,15 @@ export default function JobDetailPage() {
             </div>
           </div>
 
-          <button
-            onClick={() => setScheduleOpen(true)}
-            className="px-4 py-2 bg-accent hover:bg-amber-600 text-amber-950 font-bold text-xs rounded-xl shadow-md transition-colors flex items-center gap-2 whitespace-nowrap"
-          >
-            <Calendar className="w-4 h-4" />
-            + Schedule Interview
-          </button>
+          {(viewingAs === 'recruiter' || viewingAs === 'admin') && (
+            <button
+              onClick={() => setScheduleOpen(true)}
+              className="px-4 py-2 bg-accent hover:bg-amber-600 text-amber-950 font-bold text-xs rounded-xl shadow-md transition-colors flex items-center gap-2 whitespace-nowrap"
+            >
+              <Calendar className="w-4 h-4" />
+              + Schedule Interview
+            </button>
+          )}
         </div>
       </div>
 

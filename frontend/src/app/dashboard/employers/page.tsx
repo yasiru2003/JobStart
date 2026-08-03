@@ -5,11 +5,11 @@ import { Building2, Plus, Search, Filter, CheckCircle } from 'lucide-react'
 import EmployerRegistrationModal from '@/components/modals/EmployerRegistrationModal'
 
 const initialEmployers = [
-  { id: '1', name: 'Dialog Axiata', industry: 'Telecommunications', size: '1000+ employees', jobs: 12, plan: 'Scale / Enterprise' },
-  { id: '2', name: 'WSO2', industry: 'Software / Technology', size: '500-1000 employees', jobs: 8, plan: 'Growth' },
-  { id: '3', name: 'Sysco LABS', industry: 'Information Technology', size: '500+ employees', jobs: 15, plan: 'Scale / Enterprise' },
-  { id: '4', name: 'Brandix', industry: 'Apparel & Textiles', size: '1000+ employees', jobs: 5, plan: 'Starter' },
-  { id: '5', name: 'MAS Holdings', industry: 'Apparel & Innovation', size: '1000+ employees', jobs: 10, plan: 'Growth' },
+  { id: '1', name: 'WSO2 Lanka', industry: 'Software / Enterprise Middleware', size: '500–1000 employees', jobs: 8, recruiters: 'Kavinda Fernando, Nalaka Bandara', plan: 'Enterprise' },
+  { id: '2', name: 'Dialog Axiata', industry: 'Telecommunications', size: '1000+ employees', jobs: 12, recruiters: 'Chaminda Silva', plan: 'Enterprise' },
+  { id: '3', name: 'Sysco LABS', industry: 'Information Technology', size: '500+ employees', jobs: 15, recruiters: 'Dinithi Abeysekara', plan: 'Enterprise' },
+  { id: '4', name: 'Brandix Tech', industry: 'Apparel Tech & Innovation', size: '1000+ employees', jobs: 5, recruiters: 'Malini Perera', plan: 'Growth' },
+  { id: '5', name: 'MAS Holdings', industry: 'Apparel & Innovation', size: '1000+ employees', jobs: 10, recruiters: 'Dilshan Perera', plan: 'Growth' },
 ]
 
 export default function EmployersPage() {
@@ -23,7 +23,8 @@ export default function EmployersPage() {
       industry: formData.industry,
       size: formData.companySize,
       jobs: 0,
-      plan: formData.plan === 'enterprise' ? 'Scale / Enterprise' : formData.plan === 'growth' ? 'Growth' : 'Starter',
+      recruiters: 'Kavinda Fernando',
+      plan: formData.plan === 'enterprise' ? 'Enterprise' : formData.plan === 'growth' ? 'Growth' : 'Starter',
     }
     setEmployers([newEmp, ...employers])
   }
@@ -32,12 +33,12 @@ export default function EmployersPage() {
     <div className="space-y-6 max-w-7xl mx-auto animate-fade-in">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Employers</h1>
-          <p className="text-sm text-muted">Manage employer accounts and subscription tier allocations.</p>
+          <h1 className="text-2xl font-bold text-foreground">Employers Directory</h1>
+          <p className="text-sm text-muted">Manage employer accounts, assigned recruiter teams, and subscription tiers.</p>
         </div>
         <button
           onClick={() => setIsRegisterModalOpen(true)}
-          className="px-4 py-2 bg-primary hover:bg-primary-light text-white font-semibold text-xs rounded-xl shadow-sm transition-colors flex items-center justify-center gap-2"
+          className="px-4 py-2 bg-primary hover:bg-primary-light text-white font-semibold text-xs rounded-xl shadow-sm transition-colors flex items-center justify-center gap-2 cursor-pointer"
           id="add-employer-modal-btn"
         >
           <Plus className="w-4 h-4" />
@@ -50,7 +51,7 @@ export default function EmployersPage() {
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
           <input
             type="text"
-            placeholder="Search employers by name or industry..."
+            placeholder="Search employers by name, industry, or recruiters..."
             className="w-full pl-9 pr-4 py-2 bg-surface-2 border border-border rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-primary/20"
           />
         </div>
@@ -63,6 +64,7 @@ export default function EmployersPage() {
               <th className="p-4">Employer</th>
               <th className="p-4">Industry</th>
               <th className="p-4">Company Size</th>
+              <th className="p-4">Assigned Recruiters</th>
               <th className="p-4">Active Jobs</th>
               <th className="p-4">Plan</th>
             </tr>
@@ -78,6 +80,11 @@ export default function EmployersPage() {
                 </td>
                 <td className="p-4 text-muted">{emp.industry}</td>
                 <td className="p-4 text-muted">{emp.size}</td>
+                <td className="p-4">
+                  <span className="text-xs font-semibold text-primary bg-primary/10 px-2.5 py-1 rounded-lg border border-primary/20">
+                    {emp.recruiters}
+                  </span>
+                </td>
                 <td className="p-4 font-semibold text-foreground">{emp.jobs} jobs</td>
                 <td className="p-4">
                   <span className="badge-info font-medium px-2.5 py-1 text-xs">{emp.plan}</span>

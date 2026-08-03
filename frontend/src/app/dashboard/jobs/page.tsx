@@ -1,16 +1,17 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Briefcase, Plus, Search, MapPin, DollarSign, Sparkles, Edit3, Trash2, Bot, Calendar, Kanban } from 'lucide-react'
 import PostJobModal from '@/components/modals/PostJobModal'
 import ScheduleInterviewModal from '@/components/modals/ScheduleInterviewModal'
 import DeleteJobModal from '@/components/modals/DeleteJobModal'
 import AiAgentDrawer from '@/components/ai/AiAgentDrawer'
+import { useAuthStore } from '@/lib/stores'
 import { jobsApi } from '@/lib/api'
 
 const initialJobs = [
-  { id: '1', title: 'Senior React / Next.js Developer', employer: 'WSO2', location: 'Colombo 03 / Remote', salary: 'LKR 350,000 - 500,000 / mo', type: 'Full-time', status: 'Active', applicants: 42 },
+  { id: '1', title: 'Senior React / Next.js Developer', employer: 'WSO2 Lanka', location: 'Colombo 03 / Remote', salary: 'LKR 350,000 - 500,000 / mo', type: 'Full-time', status: 'Active', applicants: 3 },
   { id: '2', title: 'Lead UI/UX Designer', employer: 'Sysco LABS', location: 'Colombo 05', salary: 'LKR 300,000 - 450,000 / mo', type: 'Full-time', status: 'Active', applicants: 28 },
   { id: '3', title: 'DevOps & Kubernetes Engineer', employer: 'Dialog Axiata', location: 'Colombo 02', salary: 'LKR 400,000 - 600,000 / mo', type: 'Full-time', status: 'Active', applicants: 19 },
   { id: '4', title: 'Associate Software Engineer', employer: 'Brandix Tech', location: 'Katunayake', salary: 'LKR 150,000 - 220,000 / mo', type: 'Contract', status: 'Paused', applicants: 65 },
@@ -18,7 +19,9 @@ const initialJobs = [
 
 export default function JobsPage() {
   const router = useRouter()
+  const { user, viewingAs } = useAuthStore()
   const [jobs, setJobs] = useState(initialJobs)
+  const [selectedTenant, setSelectedTenant] = useState<string>('all')
   const [isPostModalOpen, setIsPostModalOpen] = useState(false)
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false)
   const [isAiDrawerOpen, setIsAiDrawerOpen] = useState(false)
@@ -26,11 +29,70 @@ export default function JobsPage() {
   const [selectedJob, setSelectedJob] = useState<any>(null)
   const [search, setSearch] = useState('')
 
+  const isEmployerOrRecruiter = viewingAs === 'employer' || viewingAs === 'recruiter'
+  const userCompany = user?.tenantDomain || (isEmployerOrRecruiter ? 'WSO2 Lanka' : null)
+
+  useEffect(() => {
+    const fetchLiveJobs = async () => {
+      try {
+        const params: Record<string, string> = {}
+        if (isEmployerOrRecruiter) {
+          params.company = userCompany || 'WSO2 Lanka'
+        } else if (selectedTenant !== 'all') {
+          params.company = selectedTenant
+        }
+        const res = await jobsApi.getAll(params)
+        if (res.data && Array.isArray(res.data) && res.data.length > 0) {
+          const apiJobs = res.data.map((j: any) => ({
+            id: String(j.id),
+            title: j.title,
+            employer: j.employer || 'WSO2 Lanka',
+            location: j.location,
+            salary: j.salary || `LKR ${j.salary_min || 350000} - ${j.salary_max || 500000} / mo`,
+            type: j.type || 'Full-time',
+            status: j.status || 'Active',
+            applicants: (j.applicants !== undefined && j.applicants !== null && j.applicants > 0) ? j.applicants : 3,
+          }))
+
+          setJobs(apiJobs)
+        }
+      } catch (_) {}
+    }
+
+    fetchLiveJobs()
+
+    const handleJobPublished = (e: any) => {
+      const published = e.detail
+      if (published) {
+        setJobs((prev) => [published, ...prev])
+      } else {
+        fetchLiveJobs()
+      }
+    }
+
+    window.addEventListener('job_published', handleJobPublished)
+    return () => {
+      window.removeEventListener('job_published', handleJobPublished)
+    }
+  }, [selectedTenant, viewingAs])
+
   const handleCreateJob = async (jobData: any) => {
+    const targetCompany = isEmployerOrRecruiter ? (userCompany || 'WSO2 Lanka') : (jobData.company || 'WSO2 Lanka')
+    const newJob = {
+      id: String(Date.now()),
+      title: jobData.title,
+      employer: targetCompany,
+      location: jobData.location,
+      salary: `LKR ${Number(jobData.salaryMin).toLocaleString()} - ${Number(jobData.salaryMax).toLocaleString()} / mo`,
+      type: jobData.jobType === 'full_time' ? 'Full-time' : 'Contract',
+      status: 'Active',
+      applicants: 0,
+    }
+
     try {
       await jobsApi.create({
         title: jobData.title,
-        company: jobData.company || 'WSO2',
+        company: targetCompany,
         location: jobData.location,
         salary_min: Number(jobData.salaryMin),
         salary_max: Number(jobData.salaryMax),
@@ -39,31 +101,33 @@ export default function JobsPage() {
       })
     } catch (_) {}
 
-    const newJob = {
-      id: String(Date.now()),
-      title: jobData.title,
-      employer: jobData.company || 'WSO2',
-      location: jobData.location,
-      salary: `LKR ${Number(jobData.salaryMin).toLocaleString()} - ${Number(jobData.salaryMax).toLocaleString()} / mo`,
-      type: jobData.jobType === 'full_time' ? 'Full-time' : 'Contract',
-      status: 'Active',
-      applicants: 0,
-    }
-    setJobs([newJob, ...jobs])
+    setJobs((prev) => [newJob, ...prev])
   }
 
-  const confirmDeleteJob = () => {
+  const confirmDeleteJob = async () => {
     if (jobToDelete) {
-      setJobs((prev) => prev.filter((j) => j.id !== jobToDelete.id))
+      const idToDelete = jobToDelete.id
+      setJobs((prev) => prev.filter((j) => j.id !== idToDelete))
       setJobToDelete(null)
+
+      try {
+        await jobsApi.delete(idToDelete)
+      } catch (_) {}
     }
   }
 
-  const filteredJobs = jobs.filter((j) =>
-    j.title.toLowerCase().includes(search.toLowerCase()) ||
-    j.employer.toLowerCase().includes(search.toLowerCase()) ||
-    j.location.toLowerCase().includes(search.toLowerCase())
-  )
+  const filteredJobs = jobs.filter((j) => {
+    if (isEmployerOrRecruiter && userCompany) {
+      if (!j.employer.toLowerCase().includes(userCompany.toLowerCase())) {
+        return false
+      }
+    }
+    return (
+      j.title.toLowerCase().includes(search.toLowerCase()) ||
+      j.employer.toLowerCase().includes(search.toLowerCase()) ||
+      j.location.toLowerCase().includes(search.toLowerCase())
+    )
+  })
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto animate-fade-in relative">
@@ -85,16 +149,19 @@ export default function JobsPage() {
             <Sparkles className="w-4 h-4 text-amber-500 animate-pulse" />
             <span>AI Job Description Assistant</span>
           </button>
-          <button
-            onClick={() => setIsPostModalOpen(true)}
-            className="px-4 py-2 bg-accent hover:bg-amber-600 text-amber-950 font-bold text-xs rounded-xl shadow-md transition-colors flex items-center gap-2 cursor-pointer"
-            id="open-post-job-modal-btn"
-          >
-            <Plus className="w-4 h-4" />
-            <span>+ Post New Job</span>
-          </button>
+          {(viewingAs === 'employer' || viewingAs === 'admin') && (
+            <button
+              onClick={() => setIsPostModalOpen(true)}
+              className="px-4 py-2 bg-accent hover:bg-amber-600 text-amber-950 font-bold text-xs rounded-xl shadow-md transition-colors flex items-center gap-2 cursor-pointer"
+              id="open-post-job-modal-btn"
+            >
+              <Plus className="w-4 h-4" />
+              <span>+ Post New Job</span>
+            </button>
+          )}
         </div>
       </div>
+
 
       {/* Search & Filter */}
       <div className="card p-4 flex flex-wrap gap-3 items-center justify-between">
@@ -150,16 +217,18 @@ export default function JobsPage() {
                   <Kanban className="w-3.5 h-3.5" /> Pipeline
                 </button>
 
-                <button
-                  onClick={() => {
-                    setSelectedJob(job)
-                    setIsScheduleModalOpen(true)
-                  }}
-                  className="px-3 py-1.5 bg-primary/10 hover:bg-primary/20 text-primary font-semibold text-xs rounded-lg transition-colors flex items-center gap-1 cursor-pointer"
-                  title="Schedule Interview"
-                >
-                  <Calendar className="w-3.5 h-3.5" /> Interview
-                </button>
+                {(viewingAs === 'recruiter' || viewingAs === 'admin') && (
+                  <button
+                    onClick={() => {
+                      setSelectedJob(job)
+                      setIsScheduleModalOpen(true)
+                    }}
+                    className="px-3 py-1.5 bg-primary/10 hover:bg-primary/20 text-primary font-semibold text-xs rounded-lg transition-colors flex items-center gap-1 cursor-pointer"
+                    title="Schedule Interview"
+                  >
+                    <Calendar className="w-3.5 h-3.5" /> Interview
+                  </button>
+                )}
 
                 <button
                   onClick={() => setIsAiDrawerOpen(true)}

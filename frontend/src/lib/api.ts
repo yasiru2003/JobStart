@@ -51,7 +51,7 @@ export const aiApi = {
     api.post('/ai/analyze-candidate', data),
   draftJob: (data: { role_title: string; department?: string; location?: string; key_requirements?: string[] }) =>
     api.post('/ai/draft-job', data),
-  chat: (data: { prompt: string; context_tags?: string[] }) =>
+  chat: (data: { prompt: string; context_tags?: string[]; history?: Array<{ role: string; content: string }> }) =>
     api.post('/ai/chat', data),
 }
 
@@ -76,11 +76,12 @@ export const dashboardApi = {
 // ── Jobs ──
 export const jobsApi = {
   list: (params?: Record<string, unknown>) => api.get('/jobs', { params }),
+  getAll: (params?: Record<string, unknown>) => api.get('/jobs', { params }),
   get: (id: string) => api.get(`/jobs/${id}`),
   create: (data: { title: string; company?: string; location?: string; salary_min?: number; salary_max?: number; description?: string; job_type?: string }) =>
     api.post('/jobs', data),
   update: (id: string, data: Record<string, unknown>) => api.patch(`/jobs/${id}`, data),
-  delete: (id: string) => api.delete(`/jobs/${id}`),
+  delete: (id: string) => api.delete(`/jobs/${id}/`),
 }
 
 // ── Applications ──
