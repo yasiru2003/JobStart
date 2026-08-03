@@ -1,4 +1,10 @@
-from pydantic_settings import BaseSettings
+try:
+    from pydantic_settings import BaseSettings
+except ImportError:
+    try:
+        from pydantic.v1 import BaseSettings
+    except ImportError:
+        from pydantic import BaseModel as BaseSettings
 from functools import lru_cache
 
 
@@ -44,10 +50,12 @@ class Settings(BaseSettings):
     OPENROUTER_MODEL: str = "google/gemini-2.5-flash-lite"
     OPENROUTER_BASE_URL: str = "https://openrouter.ai/api/v1"
 
-    # WAHA Cloud (WhatsApp HTTP API)
-    WAHA_BASE_URL: str = ""
-    WAHA_SESSION: str = "default"
-    WAHA_API_KEY: str = ""
+    # Supabase & Lovable AI Integration
+    SUPABASE_URL: str = ""
+    SUPABASE_ANON_KEY: str = ""
+    SUPABASE_SERVICE_ROLE_KEY: str = ""
+    LOVABLE_API_KEY: str = ""
+    LOVABLE_EDGE_FUNCTION_NAME: str = "lovable-whatsapp-agent"
 
     # CORS
     ALLOWED_ORIGINS: list[str] = [
