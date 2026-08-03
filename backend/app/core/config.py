@@ -46,7 +46,7 @@ class Settings(BaseSettings):
     FROM_EMAIL: str = "noreply@jobstart.lk"
 
     # OpenRouter LLM (Gemini Flash via LangChain)
-    OPENROUTER_API_KEY: str = ""
+    OPENROUTER_API_KEY: str = ""  # Set via OPENROUTER_API_KEY env variable
     OPENROUTER_MODEL: str = "openai/gpt-4o-mini"
     OPENROUTER_BASE_URL: str = "https://openrouter.ai/api/v1"
 
