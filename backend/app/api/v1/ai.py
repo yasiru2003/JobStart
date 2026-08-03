@@ -110,3 +110,23 @@ async def chat(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"AI Agent chat error: {str(e)}"
         )
+
+
+@router.post("/lovable-chat")
+async def lovable_chat(payload: AgentChatRequest, is_manager: bool = Depends(verify_platform_manager)):
+    """
+    Routes queries to Lovable AI System via Supabase Deno Edge Functions.
+    """
+    from app.services.lovable_agent import lovable_ai_service
+    try:
+        result = await lovable_ai_service.process_frontend_query(
+            prompt=payload.prompt,
+            context_tags=payload.context_tags,
+        )
+        return result
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Lovable AI processing error: {str(e)}"
+        )
+
