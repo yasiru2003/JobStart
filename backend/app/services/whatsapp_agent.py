@@ -1375,6 +1375,31 @@ class WhatsAppAgentService:
 
     # ── Outbound Messages ─────────────────────────────────────────────────
 
+    async def send_offer(
+        self,
+        phone: str,
+        candidate_name: str,
+        job_title: str,
+        employer_name: str,
+    ) -> Dict[str, Any]:
+        """Send a formal job offer notification via WhatsApp."""
+        from app.services.waha import waha_service
+
+        message = (
+            f"🎉 *CONGRATULATIONS {candidate_name}!* 🎉\n\n"
+            f"We are thrilled to inform you that *{employer_name}* has officially issued you a *Job Offer* "
+            f"for the position of *{job_title}*!\n\n"
+            f"Our HR team will reach out to you shortly via email with the official offer letter and next steps.\n\n"
+            f"Welcome aboard! 🚀\n"
+            f"— *{self.agent_name}*"
+        )
+        result = await waha_service.send_text(phone, message)
+        conversation_store.upsert(phone, message, "agent", {
+            "candidate_name": candidate_name,
+            "job_title": job_title,
+        })
+        return result
+
     async def send_interview_invite(
         self,
         phone: str,

@@ -59,6 +59,13 @@ class NotifyMatchRequest(BaseModel):
     matched_jobs: List[Dict[str, Any]] = Field(..., example=[{"job_title": "Senior React Developer", "score": 92}])
 
 
+class SendOfferRequest(BaseModel):
+    phone: str = Field(..., example="94771234567")
+    candidate_name: str = Field(..., example="Kasun Perera")
+    job_title: str = Field(..., example="Senior React Developer")
+    employer_name: str = Field(default="HirePth Client", example="WSO2 Lanka")
+
+
 class StartScreeningRequest(BaseModel):
     phone: str = Field(..., example="94771234567")
     candidate_name: str = Field(..., example="Kasun Perera")
@@ -261,6 +268,20 @@ async def send_interview_slots(payload: SendSlotsRequest, _: None = Depends(requ
         slots=payload.slots,
     )
     return {"message": f"Interview slots sent to {payload.candidate_name}", "detail": result}
+
+
+@router.post("/agent/send-offer", summary="Send formal job offer via WhatsApp")
+async def send_offer(payload: SendOfferRequest, _: None = Depends(require_admin)):
+    if not waha_service.is_configured:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="WAHA is not configured")
+
+    result = await whatsapp_agent.send_offer(
+        phone=payload.phone,
+        candidate_name=payload.candidate_name,
+        job_title=payload.job_title,
+        employer_name=payload.employer_name,
+    )
+    return {"message": f"Job offer sent to {payload.candidate_name}", "detail": result}
 
 
 @router.post("/agent/notify-match", summary="Send proactive job-match notification")

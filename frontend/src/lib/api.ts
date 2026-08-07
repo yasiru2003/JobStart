@@ -176,5 +176,8 @@ export const wahaApi = {
   toggleAgent: (enabled: boolean) => api.put('/whatsapp/agent/toggle', { enabled }),
   /** Get candidate screening response time & quality analytics */
   screeningResults: (phone: string) => api.get(`/whatsapp/agent/screening-results?phone=${phone}`),
+  /** Send job offer notification */
+  sendOffer: (data: { phone: string; candidate_name: string; job_title: string; employer_name?: string }) =>
+    api.post('/whatsapp/agent/send-offer', data),
 }
 

@@ -57,7 +57,14 @@ export default function ApplicationsPage() {
 
         setApplications((prev) => {
           const staticFiltered = prev.filter((item) => !item.id.startsWith('wa-app-'))
-          return [...liveApps, ...staticFiltered]
+          const mergedLiveApps = liveApps.map((live: any) => {
+            const existing = prev.find(p => p.id === live.id)
+            if (existing && existing.status === 'offer') {
+              return { ...live, status: 'offer' }
+            }
+            return live
+          })
+          return [...mergedLiveApps, ...staticFiltered]
         })
       } catch (_) {}
     }
@@ -67,11 +74,25 @@ export default function ApplicationsPage() {
     return () => clearInterval(timer)
   }, [])
 
-  const handleUpdateStatus = (id: string, newStatus: string) => {
+  const handleUpdateStatus = async (id: string, newStatus: string) => {
     const target = applications.find((a) => a.id === id)
+    if (!target) return
+
     setApplications((prev) => prev.map((a) => (a.id === id ? { ...a, status: newStatus } : a)))
-    if (newStatus === 'offer' && target) {
-      setToastMsg(`🎉 Job Offer Dispatched! Formal offer issued to ${target.candidate}.`)
+    
+    if (newStatus === 'offer') {
+      try {
+        await wahaApi.sendOffer({
+          phone: (target as any).phone || '94765225044',
+          candidate_name: target.candidate,
+          job_title: target.job,
+          employer_name: target.employer || 'HirePth Client',
+        })
+        setToastMsg(`🎉 Job Offer Dispatched! Formal offer issued to ${target.candidate}.`)
+      } catch (err) {
+        console.error('Failed to send offer:', err)
+        setToastMsg(`❌ Failed to send offer to ${target.candidate}.`)
+      }
       setTimeout(() => setToastMsg(null), 4000)
     }
   }
