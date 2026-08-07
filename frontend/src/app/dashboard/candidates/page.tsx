@@ -179,16 +179,16 @@ export default function CandidatesPage() {
             </div>
 
             <div className="space-y-2 pt-2 border-t border-border">
-              <div className="flex gap-2">
-                <button
-                  onClick={(e) => handleAnalyzeWithAi(cand, e)}
-                  className="flex-1 py-2 bg-amber-500/10 hover:bg-amber-500/20 text-amber-900 dark:text-amber-300 font-bold text-xs rounded-xl transition-all border border-amber-500/30 flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
-                  title={`Ask AI Agent about @${cand.name}`}
-                >
-                  <Bot className="w-4 h-4 text-amber-500" />
-                  <span>Ask AI Agent (@{cand.name})</span>
-                </button>
-              </div>
+              <button
+                onClick={(e) => handleAnalyzeWithAi(cand, e)}
+                className="w-full py-2.5 px-3.5 bg-gradient-to-r from-teal-700 to-teal-900 hover:from-teal-800 hover:to-teal-950 text-white font-bold text-xs rounded-xl transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer border border-teal-600/30"
+                title={`Ask AI Agent about @${cand.name}`}
+              >
+                <div className="w-5 h-5 rounded-md bg-amber-500 text-amber-950 flex items-center justify-center font-bold shrink-0">
+                  <Bot className="w-3.5 h-3.5 text-amber-950" />
+                </div>
+                <span>Ask AI Agent (@{cand.name})</span>
+              </button>
 
               <button
                 onClick={() => setSelectedCand(cand)}

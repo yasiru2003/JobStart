@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 
-import { FileText, Calendar, CheckCircle, XCircle, Clock, Filter, Plus, Sparkles } from 'lucide-react'
+import { FileText, Calendar, CheckCircle, XCircle, Clock, Filter, Plus, Sparkles, Bot } from 'lucide-react'
 import ScheduleInterviewModal from '@/components/modals/ScheduleInterviewModal'
 import AiCandidateModal from '@/components/modals/AiCandidateModal'
 import { wahaApi } from '@/lib/api'
@@ -173,11 +173,18 @@ export default function ApplicationsPage() {
                     )}
 
                     <button
-                      onClick={() => setAiCandidate({ name: app.candidate, title: app.job, phone: (app as any).phone || '+94 77 123 4567' })}
-                      className="px-2.5 py-1.5 bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 font-bold rounded-lg text-xs flex items-center gap-1 transition-colors cursor-pointer shadow-sm"
-                      title="Open AI Candidate Copilot"
+                      onClick={() => {
+                        if (typeof window !== 'undefined') {
+                          window.dispatchEvent(new CustomEvent('open-ai-drawer', {
+                            detail: { type: 'candidate', name: app.candidate, title: app.job }
+                          }))
+                        }
+                      }}
+                      className="px-3 py-1.5 bg-gradient-to-r from-teal-700 to-teal-900 hover:from-teal-800 hover:to-teal-950 text-white font-bold text-xs rounded-xl shadow-sm transition-all flex items-center gap-1.5 cursor-pointer border border-teal-600/30"
+                      title={`Ask AI Agent about @${app.candidate}`}
                     >
-                      <Sparkles className="w-3.5 h-3.5" /> AI Copilot
+                      <Bot className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                      <span>AI Copilot (@{app.candidate})</span>
                     </button>
 
                     <button

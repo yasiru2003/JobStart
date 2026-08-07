@@ -72,9 +72,9 @@ export function StructuredAiContent({ text }: { text: string }) {
         return (
           <span
             key={idx}
-            className="inline-flex items-center gap-1 px-2 py-0.5 mx-1 rounded-md bg-indigo-500/10 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 font-mono text-[11px] border border-indigo-500/30"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1 mx-1 rounded-lg bg-teal-950 text-teal-100 dark:bg-[#06201b] dark:text-teal-200 font-mono text-[11px] font-bold border border-teal-500/60 shadow-md my-0.5"
           >
-            <Sparkles className="w-3 h-3 text-indigo-500" />
+            <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0" />
             <span>{cleanedMath}</span>
           </span>
         )
@@ -182,17 +182,7 @@ export default function AiAgentDrawer({ isOpen, onClose }: AiAgentDrawerProps) {
       let welcomeBanner = ''
       let initialPrompt = ''
 
-      if (detail.type === 'job' || detail.title) {
-        tagLabel = detail.title || 'Senior React / Next.js Developer'
-        welcomeBanner =
-          `## 🤖 Active Context Loaded: **@${tagLabel}** (WSO2 Lanka)\n\n` +
-          `### 📊 Job Target Metrics (LaTeX Math)\n` +
-          `- \\( \\text{Target Match Score} \\ge 85\\% \\)\n` +
-          `- \\( \\text{Required Experience} \\ge 3\\text{ years} \\)\n` +
-          `- \\( \\text{Benchmarked Salary} = \\text{LKR } 350,000 - 500,000 / \\text{mo} \\)\n\n` +
-          `Ask me to evaluate candidate applications, draft job specifications, or refine screener questions.`
-        initialPrompt = `Evaluate candidate match scores and draft recruitment strategy for @${tagLabel}`
-      } else if (detail.type === 'candidate' || detail.name) {
+      if (detail.type === 'candidate' || (detail.name && detail.type !== 'job')) {
         tagLabel = detail.name || 'Hasini Dikkumbura'
         const roleTitle = detail.title || 'Flutter Mobile Developer'
         welcomeBanner =
@@ -200,12 +190,22 @@ export default function AiAgentDrawer({ isOpen, onClose }: AiAgentDrawerProps) {
           `### 📊 AI Evaluation Metrics (LaTeX Math)\n` +
           `- \\( \\text{AI Suitability Score} = 98\\% \\)\n` +
           `- \\( \\text{National Registry Verification} = \\text{Verified (TVEC + NIC)} \\)\n` +
-          `- \\( \\text{Experience Benchmark} \\ge 4\\text{ years} \\)\n` +
+          `- \\( \\text{Experience Benchmark} = 4\\text{ years} \\)\n` +
           `- \\( \\text{Performance Rating} = 4.9 / 5.0 \\)\n\n` +
           `### 📝 Executive AI Reasoning Summary\n` +
-          `Candidate **${tagLabel}** demonstrates exceptional technical competency with verified identity credentials on national databases. ` +
-          `Ask me to generate tailored interview questions, evaluate skill gaps, or schedule a technical screening call.`
+          `Candidate **${tagLabel}** demonstrates exceptional technical competency for the **${roleTitle}** position with verified NIC and Degree credentials on Sri Lanka national databases.\n\n` +
+          `Ask me to generate tailored technical interview questions, evaluate skill gaps, or schedule a technical screening call.`
         initialPrompt = `Analyze TVEC verification status, candidate qualifications, and job match score for @${tagLabel}`
+      } else if (detail.type === 'job' || detail.title) {
+        tagLabel = detail.title || 'Senior React / Next.js Developer'
+        welcomeBanner =
+          `## 💼 Job Context Loaded: **@${tagLabel}** (WSO2 Lanka)\n\n` +
+          `### 📊 Job Target Metrics (LaTeX Math)\n` +
+          `- \\( \\text{Target Match Score} \\ge 85\\% \\)\n` +
+          `- \\( \\text{Required Experience} \\ge 3\\text{ years} \\)\n` +
+          `- \\( \\text{Benchmarked Salary} = \\text{LKR } 350,000 - 500,000 / \\text{mo} \\)\n\n` +
+          `Ask me to evaluate candidate applications, draft job specifications, or refine screener questions.`
+        initialPrompt = `Evaluate candidate match scores and draft recruitment strategy for @${tagLabel}`
       } else if (typeof detail === 'string') {
         tagLabel = detail
         welcomeBanner = `🤖 Active Context Loaded: **@${tagLabel}**`
