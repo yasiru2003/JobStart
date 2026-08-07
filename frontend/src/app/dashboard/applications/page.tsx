@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import { FileText, Calendar, CheckCircle, XCircle, Clock, Filter, Plus, Sparkles, Bot } from 'lucide-react'
 import ScheduleInterviewModal from '@/components/modals/ScheduleInterviewModal'
 import AiCandidateModal from '@/components/modals/AiCandidateModal'
+import AiAgentDrawer from '@/components/ai/AiAgentDrawer'
 import { wahaApi } from '@/lib/api'
 import { useAuthStore } from '@/lib/stores'
 
@@ -21,8 +22,9 @@ export default function ApplicationsPage() {
   const [applications, setApplications] = useState(initialApplications)
   const [activeTab, setActiveTab] = useState('all')
   const [selectedApp, setSelectedApp] = useState<any>(null)
-  const [aiCandidate, setAiCandidate] = useState<any>(null)
+  const [isAiDrawerOpen, setIsAiDrawerOpen] = useState(false)
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false)
+  const [toastMsg, setToastMsg] = useState<string | null>(null)
 
   // Enforce Tenant Data Isolation
   const tenantApplications = applications.filter((a) => {
@@ -38,44 +40,20 @@ export default function ApplicationsPage() {
       try {
         const res = await wahaApi.conversations()
         const convs = res.data || []
-        const liveApps: any[] = []
-
-        convs.forEach((c: any) => {
-          if (c.collected_name || c.candidate_name || c.pdf_received || c.cv_media_url || c.interview_confirmed || c.selected_job_title) {
-            let appStatus = 'interview'
-            if (c.interview_confirmed) {
-              appStatus = 'interview'
-            } else if (c.pdf_received || c.cv_media_url) {
-              appStatus = 'screening'
-            }
-
-            liveApps.push({
-              id: `wa-app-${c.phone}`,
-              candidate: c.collected_name || c.candidate_name || 'Hasini Dikkumbura',
-              phone: `+${c.phone}`,
-              job: c.selected_job_title || c.job_title || 'Flutter Mobile Developer',
-              employer: 'WSO2 Lanka (Pvt) Ltd',
-              applied: 'Just Now (via WhatsApp)',
-              status: appStatus,
-              cvUrl: c.cv_media_url || '230143V - Hasini-Dikkumbura (1).pdf',
-              interviewTime: c.interview_time || 'Wed 11:30 AM',
-            })
+        
+        const liveApps = convs.map((c: any, idx: number) => {
+          const name = c.collected_name || c.candidate_name || 'Hasini Dikkumbura'
+          return {
+            id: `wa-app-${c.phone || idx}`,
+            candidate: name,
+            job: c.selected_job_title || 'Flutter Mobile Developer',
+            employer: 'WSO2 Lanka',
+            applied: 'Just now (WhatsApp)',
+            status: c.interview_confirmed ? 'interview' : 'screening',
+            phone: c.phone || '94765225044',
+            cvUrl: c.cv_media_url || '/dashboard/whatsapp'
           }
         })
-
-        if (!liveApps.some((a) => a.candidate.includes('Hasini'))) {
-          liveApps.unshift({
-            id: 'wa-app-94765225044',
-            candidate: 'Hasini Dikkumbura',
-            phone: '+94765225044',
-            job: 'Flutter Mobile Developer',
-            employer: 'WSO2 Lanka (Pvt) Ltd',
-            applied: 'Just Now (via WhatsApp)',
-            status: 'interview',
-            cvUrl: '230143V - Hasini-Dikkumbura (1).pdf',
-            interviewTime: 'Wed 11:30 AM',
-          })
-        }
 
         setApplications((prev) => {
           const staticFiltered = prev.filter((item) => !item.id.startsWith('wa-app-'))
@@ -84,20 +62,32 @@ export default function ApplicationsPage() {
       } catch (_) {}
     }
 
-
     fetchLiveApplications()
     const timer = setInterval(fetchLiveApplications, 5000)
     return () => clearInterval(timer)
   }, [])
 
   const handleUpdateStatus = (id: string, newStatus: string) => {
+    const target = applications.find((a) => a.id === id)
     setApplications((prev) => prev.map((a) => (a.id === id ? { ...a, status: newStatus } : a)))
+    if (newStatus === 'offer' && target) {
+      setToastMsg(`🎉 Job Offer Dispatched! Formal offer issued to ${target.candidate}.`)
+      setTimeout(() => setToastMsg(null), 4000)
+    }
   }
 
   const filtered = activeTab === 'all' ? tenantApplications : tenantApplications.filter((a) => a.status === activeTab)
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto animate-fade-in">
+    <div className="space-y-6 max-w-7xl mx-auto animate-fade-in relative">
+      {/* Toast Alert */}
+      {toastMsg && (
+        <div className="fixed top-20 right-8 z-50 p-4 rounded-2xl bg-emerald-600 text-white font-bold text-xs shadow-2xl animate-slide-in-right flex items-center gap-2 border border-white/20">
+          <CheckCircle className="w-4 h-4 text-amber-300 shrink-0" />
+          <span>{toastMsg}</span>
+        </div>
+      )}
+
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
@@ -109,28 +99,20 @@ export default function ApplicationsPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex border-b border-border space-x-2 text-xs font-semibold overflow-x-auto">
-        {['all', 'applied', 'screening', 'interview', 'offer', 'rejected'].map((tab) => {
-          const count = tab === 'all' ? tenantApplications.length : tenantApplications.filter((a) => a.status === tab).length
-          return (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`pb-2.5 px-3 border-b-2 capitalize transition-colors flex items-center gap-1.5 shrink-0 ${
-                activeTab === tab
-                  ? 'border-primary text-primary font-bold'
-                  : 'border-transparent text-muted hover:text-foreground'
-              }`}
-            >
-              <span>{tab}</span>
-              <span className={`px-1.5 py-0.2 rounded-full text-[10px] ${
-                activeTab === tab ? 'bg-primary/10 text-primary font-bold' : 'bg-surface-2 text-muted'
-              }`}>
-                {count}
-              </span>
-            </button>
-          )
-        })}
+      <div className="flex items-center gap-2 border-b border-border pb-3 overflow-x-auto">
+        {['all', 'applied', 'screening', 'interview', 'offer', 'rejected'].map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold capitalize transition-all cursor-pointer whitespace-nowrap ${
+              activeTab === tab
+                ? 'bg-primary text-white shadow-sm'
+                : 'bg-surface text-muted hover:text-foreground hover:bg-surface-2 border border-border/60'
+            }`}
+          >
+            {tab}
+          </button>
+        ))}
       </div>
 
       {/* Table */}
@@ -175,6 +157,7 @@ export default function ApplicationsPage() {
 
                     <button
                       onClick={() => {
+                        setIsAiDrawerOpen(true)
                         if (typeof window !== 'undefined') {
                           window.dispatchEvent(new CustomEvent('open-ai-drawer', {
                             detail: { type: 'candidate', name: app.candidate, title: app.job }
@@ -222,15 +205,17 @@ export default function ApplicationsPage() {
         onClose={() => setIsScheduleModalOpen(false)}
         candidateName={selectedApp?.candidate}
         jobTitle={selectedApp?.job}
-        onScheduleSubmit={(data) => handleUpdateStatus(selectedApp?.id, 'interview')}
+        onScheduleSubmit={(data) => {
+          handleUpdateStatus(selectedApp?.id, 'interview')
+          setToastMsg(`📅 Interview Scheduled with ${selectedApp?.candidate} on ${data.date || 'Tomorrow 10:00 AM'}!`)
+          setTimeout(() => setToastMsg(null), 4000)
+        }}
       />
 
-      <AiCandidateModal
-        isOpen={Boolean(aiCandidate)}
-        onClose={() => setAiCandidate(null)}
-        candidate={aiCandidate}
+      <AiAgentDrawer
+        isOpen={isAiDrawerOpen}
+        onClose={() => setIsAiDrawerOpen(false)}
       />
     </div>
   )
 }
-
