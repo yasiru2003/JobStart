@@ -39,7 +39,7 @@ export default function LandingPage() {
             </div>
             <div>
               <span className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
-                JobStart <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold animate-pulse">Recruiter Suite</span>
+                HirePth <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold animate-pulse">Recruiter Suite</span>
               </span>
               <p className="text-[11px] text-slate-400 font-medium">WhatsApp Recruitment & Screening Engine</p>
             </div>
@@ -83,7 +83,7 @@ export default function LandingPage() {
 
           {/* Subtitle - High Contrast Readable Text */}
           <p className="text-base sm:text-lg text-slate-300 max-w-3xl mx-auto leading-relaxed font-normal animate-fade-in">
-            JobStart automates initial candidate screening, CV document processing, credential verification, and interview scheduling directly through WhatsApp.
+            HirePth automates initial candidate screening, CV document processing, credential verification, and interview scheduling directly through WhatsApp.
 
           </p>
 
@@ -175,7 +175,7 @@ export default function LandingPage() {
                   <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-400 border-2 border-slate-800 rounded-full" />
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-white">JobStart AI Screening Agent</p>
+                  <p className="text-xs font-bold text-white">HirePth AI Screening Agent</p>
                   <p className="text-[11px] text-emerald-400 flex items-center gap-1">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> Live Auto-Responder
                   </p>
@@ -184,7 +184,7 @@ export default function LandingPage() {
 
               <div className="space-y-3 text-xs p-2 max-h-[380px] overflow-y-auto">
                 <div className="p-3 rounded-xl rounded-tl-none bg-slate-800 text-white max-w-[90%] space-y-1 border border-slate-700 animate-scale-in">
-                  <p className="font-bold text-emerald-400 text-[11px]">JobStart Agent</p>
+                  <p className="font-bold text-emerald-400 text-[11px]">HirePth Agent</p>
                   <p className="text-slate-100 leading-relaxed">ආයුබෝවන් Hasini! WSO2 Lanka හි Senior React Developer තනතුරට සාදරයෙන් පිළිගනිමු.</p>
                 </div>
 
@@ -206,7 +206,7 @@ export default function LandingPage() {
                 </div>
 
                 <div className="p-3 rounded-xl rounded-tl-none bg-slate-800 text-white max-w-[90%] space-y-1 border border-slate-700 animate-scale-in">
-                  <p className="font-bold text-emerald-400 text-[11px]">JobStart Agent</p>
+                  <p className="font-bold text-emerald-400 text-[11px]">HirePth Agent</p>
                   <p className="text-slate-100 leading-relaxed">ස්තූතියි! ඔබේ සම්මුඛ පරීක්ෂණ වේලාව සාර්ථකව තහවුරු විය (Wed 10:00 AM).</p>
                 </div>
               </div>
@@ -421,7 +421,7 @@ export default function LandingPage() {
         <section className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
           <div className="p-10 sm:p-14 rounded-2xl bg-slate-900 border border-slate-800 hover:border-emerald-500/40 text-white text-center space-y-5 shadow-xl transition-all duration-300 group">
             <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight group-hover:scale-[1.01] transition-transform duration-300">
-              Streamline Candidate Evaluation with JobStart
+              Streamline Candidate Evaluation with HirePth
             </h2>
             <p className="text-sm text-slate-300 max-w-2xl mx-auto">
               Access the recruiter dashboard to manage job listings, evaluate applicant responses, and schedule interviews.
@@ -441,7 +441,7 @@ export default function LandingPage() {
 
       {/* ── FOOTER ── */}
       <footer className="border-t border-slate-800 py-8 bg-[#05070C] text-xs text-slate-400 text-center">
-        <p>© 2026 JobStart Recruitment Platform. All rights reserved.</p>
+        <p>© 2026 HirePth Recruitment Platform. All rights reserved.</p>
       </footer>
     </div>
   )

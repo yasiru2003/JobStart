@@ -47,7 +47,7 @@ class SendInviteRequest(BaseModel):
     phone: str = Field(..., example="94771234567")
     candidate_name: str = Field(..., example="Kasun Perera")
     job_title: str = Field(..., example="Senior React Developer")
-    employer_name: str = Field(default="JobStart Sri Lanka", example="WSO2 Lanka")
+    employer_name: str = Field(default="HirePth Sri Lanka", example="WSO2 Lanka")
     date: str = Field(..., example="2026-08-05")
     time_slot: str = Field(..., example="10:00 AM")
     mode: str = Field(default="Google Meet", example="Google Meet / Onsite")
@@ -146,10 +146,10 @@ async def send_test_message(payload: WAHATestRequest, _: None = Depends(require_
     result = await waha_service.send_text(
         phone=payload.phone,
         text=(
-            "✅ *JobStart WAHA Test*\n\n"
-            "This is a test message from the JobStart recruitment platform. "
+            "✅ *HirePth WAHA Test*\n\n"
+            "This is a test message from the HirePth recruitment platform. "
             "If you received this, your WhatsApp integration is working correctly!\n\n"
-            "— *JobStart Admin*"
+            "— *HirePth Admin*"
         ),
     )
     if result.get("status") == "error" or result.get("simulated"):
@@ -244,7 +244,7 @@ class SendSlotsRequest(BaseModel):
     phone: str = Field(..., example="94771234567")
     candidate_name: str = Field(..., example="Kasun Perera")
     job_title: str = Field(..., example="Senior Developer")
-    employer_name: str = Field(default="JobStart Client", example="TechCorp")
+    employer_name: str = Field(default="HirePth Client", example="TechCorp")
     slots: List[str] = Field(..., example=["Mon 10:00 AM", "Tue 2:00 PM", "Wed 11:30 AM"])
 
 
@@ -464,21 +464,21 @@ async def notify_new_job(payload: NewJobNotificationRequest):
         # Build job listing lines
         job_lines = "\n\n".join(
             f"💼 *{i+1}. {j.get('title')}*\n"
-            f"🏢 {j.get('company', 'JobStart Client')}, {j.get('location', 'Colombo')}\n"
+            f"🏢 {j.get('company', 'HirePth Client')}, {j.get('location', 'Colombo')}\n"
             f"💰 LKR {j.get('salary_min', 'N/A'):,} – {j.get('salary_max', 'N/A'):,}\n"
             f"🕐 {j.get('job_type', 'Full-time')}"
             for i, j in enumerate(jobs_to_notify[:3])
         )
 
         msg = (
-            f"🔔 *නව රැකියා දැන්වීම!* — JobStart Sri Lanka\n\n"
+            f"🔔 *නව රැකියා දැන්වීම!* — HirePth Sri Lanka\n\n"
             f"👋 ආයුබෝවන් *{candidate_name}*! ඔබේ profile සමඟ ගැළපෙන නව Job Opportunities!\n\n"
             f"━━━━━━━━━━━━━━━━━━━━━━━\n"
             f"{job_lines}\n"
             f"━━━━━━━━━━━━━━━━━━━━━━━\n\n"
             f"✅ *Apply කිරීමට*: ජොබ් අංකය *1*, *2*, හෝ *3* ලෙස reply කරන්න!\n"
             f"📎 ඔබේ CV ලෙස PDF file එකද reply කළ හොත් apply process සම්පූර්ණ!\n\n"
-            f"— *JobStart AI Recruitment*"
+            f"— *HirePth AI Recruitment*"
         )
 
         # Save pending notification jobs to candidate session so replies resolve correctly
@@ -553,7 +553,7 @@ async def waha_webhook(request: Request):
         body = await request.json()
         print(f"--> [WAHA WEBHOOK RECEIVED]: {body}")
         import logging
-        logging.getLogger("jobstart.waha").info(f"Received WAHA webhook body: {body}")
+        logging.getLogger("hirepth.waha").info(f"Received WAHA webhook body: {body}")
     except Exception as e:
         print(f"--> [WAHA WEBHOOK ERROR]: {e}")
         return {"status": "ignored", "reason": "invalid JSON"}

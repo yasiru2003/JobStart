@@ -95,7 +95,7 @@ export default function CandidateDetailModal({
             <div className="mt-4 p-4 rounded-xl bg-primary/5 border border-primary/20 space-y-2">
               <div className="flex items-center gap-1.5 text-primary text-xs font-bold">
                 <Sparkles className="w-4 h-4 animate-pulse" />
-                <span>JobStart AI Analysis Summary</span>
+                <span>HirePth AI Analysis Summary</span>
 
               </div>
               <p className="text-[11px] text-foreground leading-relaxed">

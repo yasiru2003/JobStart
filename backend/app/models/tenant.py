@@ -22,7 +22,7 @@ class Tenant(Base):
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     name: Mapped[str] = mapped_column(String(255), nullable=False)
-    domain: Mapped[str] = mapped_column(String(255), unique=True, index=True, nullable=False)  # e.g., wso2.jobstart.lk
+    domain: Mapped[str] = mapped_column(String(255), unique=True, index=True, nullable=False)  # e.g., wso2.hirepth.lk
     tier: Mapped[TenantTier] = mapped_column(SAEnum(TenantTier), default=TenantTier.growth)
     status: Mapped[TenantStatus] = mapped_column(SAEnum(TenantStatus), default=TenantStatus.active)
     created_at: Mapped[datetime] = mapped_column(

@@ -9,7 +9,7 @@ from typing import Any, Dict, List, Optional
 import httpx
 from app.core.config import settings
 
-logger = logging.getLogger("jobstart.sinhala_chat")
+logger = logging.getLogger("hirepth.sinhala_chat")
 
 PUBLIC_CHAT_URL = "https://sinhala-spark-chat.lovable.app/api/public/chat"
 EDGE_PROXY_URL = "https://aokegdujihtenngqdteu.supabase.co/functions/v1/chat-proxy"
@@ -52,7 +52,7 @@ class SinhalaChatService:
         if settings.OPENROUTER_API_KEY:
             try:
                 formatted_messages = []
-                system_prompt = "You are the official JobStart Sri Lanka Recruitment AI Assistant. Reply in native Sinhala script for Sinhala/Singlish, English for English."
+                system_prompt = "You are the official HirePth Sri Lanka Recruitment AI Assistant. Reply in native Sinhala script for Sinhala/Singlish, English for English."
 
                 if history:
                     for h in history:
@@ -69,8 +69,8 @@ class SinhalaChatService:
                         headers={
                             "Authorization": f"Bearer {settings.OPENROUTER_API_KEY}",
                             "Content-Type": "application/json",
-                            "HTTP-Referer": "https://jobstart.lk",
-                            "X-Title": "JobStart AI Agent",
+                            "HTTP-Referer": "https://hirepth.lk",
+                            "X-Title": "HirePth AI Agent",
                         },
                         json={
                             "model": settings.OPENROUTER_MODEL or "google/gemini-2.5-flash",

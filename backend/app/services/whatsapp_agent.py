@@ -22,7 +22,7 @@ import httpx
 from app.core.config import settings
 from app.services.waha import waha_service
 
-logger = logging.getLogger("jobstart.whatsapp_agent")
+logger = logging.getLogger("hirepth.whatsapp_agent")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -34,7 +34,7 @@ TAMIL_PATTERN = re.compile(r"[\u0B80-\u0BFF]")
 
 LANG_TEMPLATES = {
     "si": {
-        "greeting":         "ආයුබෝවන්! 👋 JobStart වෙත සාදරයෙන් පිළිගනිමු.",
+        "greeting":         "ආයුබෝවන්! 👋 HirePth වෙත සාදරයෙන් පිළිගනිමු.",
         "show_jobs":        "🔍 ලබාගත හැකි රැකියා ලැයිස්තුව:",
         "ask_name":         "ඔබේ සම්පූර්ණ නම කුමක්ද?",
         "ask_experience":   "ඔබට කොපමණ කාලයක් සේවා පළපුරුද්ද ඇත්ද? (වර්ෂ ගණනින්)",
@@ -48,7 +48,7 @@ LANG_TEMPLATES = {
         "question_fallback":"ස්තූතියි! අපගේ කණ්ඩායම ඉක්මනින් ඔබව සම්බන්ධ කරගන්නෙමු.",
     },
     "ta": {
-        "greeting":         "வணக்கம்! 👋 JobStart-ல் உங்களை வரவேற்கிறோம்.",
+        "greeting":         "வணக்கம்! 👋 HirePth-ல் உங்களை வரவேற்கிறோம்.",
         "show_jobs":        "🔍 கிடைக்கும் வேலை வாய்ப்புகள்:",
         "ask_name":         "உங்கள் முழு பெயர் என்ன?",
         "ask_experience":   "உங்களுக்கு எத்தனை ஆண்டுகள் அனுபவம் உள்ளது?",
@@ -62,7 +62,7 @@ LANG_TEMPLATES = {
         "question_fallback":"நன்றி! எங்கள் குழு விரைவில் உங்களை தொடர்பு கொள்ளும்.",
     },
     "en": {
-        "greeting":         "Hello! 👋 Welcome to JobStart — Sri Lanka's AI Recruitment Platform.",
+        "greeting":         "Hello! 👋 Welcome to HirePth — Sri Lanka's AI Recruitment Platform.",
         "show_jobs":        "🔍 Available Job Listings:",
         "ask_name":         "What is your full name?",
         "ask_experience":   "How many years of work experience do you have?",
@@ -408,7 +408,7 @@ conversation_store = ConversationStore()
 
 class WhatsAppAgentService:
     """
-    Full-featured AI-powered WhatsApp recruitment agent for JobStart.
+    Full-featured AI-powered WhatsApp recruitment agent for HirePth.
 
     Handles:
     - Multilingual communication (EN / Sinhala / Tamil)
@@ -423,7 +423,7 @@ class WhatsAppAgentService:
         self.model = settings.OPENROUTER_MODEL
         self.base_url = settings.OPENROUTER_BASE_URL
         self.auto_reply_enabled = True
-        self.agent_name = "JobStart Recruitment Team"
+        self.agent_name = "HirePth Recruitment Team"
 
     # ── LLM ───────────────────────────────────────────────────────────────
 
@@ -442,8 +442,8 @@ class WhatsAppAgentService:
                     f"{self.base_url}/chat/completions",
                     headers={
                         "Authorization": f"Bearer {self.api_key}",
-                        "HTTP-Referer": "https://jobstart.lk",
-                        "X-Title": "JobStart WhatsApp Agent",
+                        "HTTP-Referer": "https://hirepth.lk",
+                        "X-Title": "HirePth WhatsApp Agent",
                         "Content-Type": "application/json",
                     },
                     json={
@@ -549,8 +549,8 @@ class WhatsAppAgentService:
                     f"{self.base_url}/chat/completions",
                     headers={
                         "Authorization": f"Bearer {self.api_key}",
-                        "HTTP-Referer": "https://jobstart.lk",
-                        "X-Title": "JobStart Intent Classifier",
+                        "HTTP-Referer": "https://hirepth.lk",
+                        "X-Title": "HirePth Intent Classifier",
                         "Content-Type": "application/json",
                     },
                     json={
@@ -670,7 +670,7 @@ class WhatsAppAgentService:
                     "interview_confirmed": True,
                     "application_stage": "interview_confirmed",
                 })
-                meet_link = "https://meet.google.com/jobstart-interview-room"
+                meet_link = "https://meet.google.com/hirepth-interview-room"
                 cand_name = session.get("collected_name") or session.get("candidate_name") or "Candidate"
                 job_t = session.get("selected_job_title") or session.get("job_title") or "Position"
                 date_t = session.get("interview_date") or "Scheduled Date"
@@ -763,7 +763,7 @@ class WhatsAppAgentService:
                         f"🏢 {matched_job.get('company', '')} — {matched_job.get('location', '')}\n"
                         f"💰 *වැටුප*: {sal}\n\n"
                         f"📎 දැන් ඔබේ *CV (PDF)* file එක WhatsApp හරහා send කරන්න — apply සම්පූර්ණ!\n\n"
-                        f"— *JobStart Recruitment Team*"
+                        f"— *HirePth Recruitment Team*"
                     )
                     conversation_store.upsert(phone, confirm_reply, "agent")
                     await waha_service.send_text(phone, confirm_reply)
@@ -780,14 +780,14 @@ class WhatsAppAgentService:
                     "available_slots": [],
                     "last_notification": None,
                 })
-                meet_link = f"https://meet.google.com/jobstart-{phone[-4:]}"
+                meet_link = f"https://meet.google.com/hirepth-{phone[-4:]}"
                 reply = (
                     f"✅ *සම්මුඛ පරීක්ෂණ වේලාව තහවුරු කරන ලදී!*\n\n"
                     f"📌 *තනතුර*: {session.get('selected_job_title') or session.get('job_title') or 'React Developer'}\n"
                     f"⏰ *වෙන්කළ වේලාව*: {chosen_slot}\n"
                     f"💻 *Google Meet Link*: {meet_link}\n\n"
                     f"ස්තූතියි! නියමිත වේලාවට මිනිත්තු 5කට පෙර ඉහත Google Meet සබැඳිය ඔස්සේ සම්බන්ධ වන්න.\n\n"
-                    f"— *JobStart Recruitment Team*"
+                    f"— *HirePth Recruitment Team*"
                 )
                 conversation_store.upsert(phone, reply, "agent")
                 return {
@@ -833,7 +833,7 @@ class WhatsAppAgentService:
         jobs_list = available_jobs or []
         if jobs_list:
             jobs_context = "\n".join(
-                f"• [{i+1}] *{j.get('title')}* — {j.get('company', 'JobStart Client')} ({j.get('location', 'Sri Lanka')})\n"
+                f"• [{i+1}] *{j.get('title')}* — {j.get('company', 'HirePth Client')} ({j.get('location', 'Sri Lanka')})\n"
                 f"   💰 වැටුප: LKR {j.get('salary_min', 'N/A'):,}–{j.get('salary_max', 'N/A'):,} | {j.get('job_type','Full-time')}"
                 for i, j in enumerate(jobs_list[:10])
             )
@@ -872,8 +872,8 @@ class WhatsAppAgentService:
 
         # Super Accuracy System Context Directive
         system_context_prompt = (
-            f"=== JOBSTART SRI LANKA OFFICIAL AI RECRUITMENT DIRECTIVE ===\n"
-            f"ROLE: You are the Lead AI Recruitment Executive for JobStart Sri Lanka (jobstart.lk).\n"
+            f"=== HIREPTH SRI LANKA OFFICIAL AI RECRUITMENT DIRECTIVE ===\n"
+            f"ROLE: You are the Lead AI Recruitment Executive for HirePth Sri Lanka (hirepth.lk).\n"
             f"CANDIDATE CONTEXT:\n"
             f"- Name: {candidate_name}\n"
             f"- Phone: {phone}\n"
@@ -1031,7 +1031,7 @@ class WhatsAppAgentService:
                 return lovable_res["reply"]
 
             system_prompt = (
-                f"You are a professional WhatsApp recruitment assistant for JobStart Sri Lanka. "
+                f"You are a professional WhatsApp recruitment assistant for HirePth Sri Lanka. "
                 f"Keep responses short (under 100 words), friendly, and professional. "
                 f"Candidate {candidate_name} has applied for {job_title or 'a position'} and is asking a question. "
                 f"Sign off as '— {self.agent_name}'"
@@ -1051,7 +1051,7 @@ class WhatsAppAgentService:
         """Generate ultra-clean welcome card asking candidate for job title/location preferences."""
         if lang == "si":
             return (
-                "👋 *ආයුබෝවන්! JobStart AI රැකියා සෙවුම* 🇱🇰\n\n"
+                "👋 *ආයුබෝවන්! HirePth AI රැකියා සෙවුම* 🇱🇰\n\n"
                 "🎯 *ඔබ සොයන රැකියාව කුමක්ද?*\n"
                 "ඔබේ කැමති *තනතුර* (උදා: *Developer, Accountant, Sales, Driver*) හෝ *නගරය* අපට යවන්න.\n\n"
                 "අපගේ AI පද්ධතිය ඔබට ගැලපෙනම රැකියා වහාම සොයා දෙයි! 🔍\n\n"
@@ -1059,7 +1059,7 @@ class WhatsAppAgentService:
             )
         else:
             return (
-                "👋 *Welcome to JobStart AI Job Finder!* 🇱🇰\n\n"
+                "👋 *Welcome to HirePth AI Job Finder!* 🇱🇰\n\n"
                 "🎯 *What job are you looking for?*\n"
                 "Type your preferred *job title* (e.g. *Developer, Accountant, Sales*) or *city*.\n\n"
                 "Our AI system will instantly match the best jobs for you! 🔍\n\n"
@@ -1433,7 +1433,7 @@ class WhatsAppAgentService:
             f"🎉 *{employer_name}* ආයතනයේ *{job_title}* තනතුර සඳහා ඔබව තෝරාගෙන ඇත!\n\n"
             f"📅 *ලබාගත හැකි සම්මුඛ පරීක්ෂණ වේලාවන්*:\n{slots_formatted}\n\n"
             f"ඔබ කැමති වේලාවේ අංකය (උදා: *1* හෝ *2*) මෙතැනට යවා වේලාව වෙන්කර ගන්න.\n\n"
-            f"— *JobStart Recruitment Team*"
+            f"— *HirePth Recruitment Team*"
         )
         result = await waha_service.send_text(phone, message)
         conversation_store.upsert(phone, message, "agent", {
@@ -1460,7 +1460,7 @@ class WhatsAppAgentService:
             f"✨ ඔබට ගැලපෙන අලුත් රැකියාවක් හමුවිය!\n"
             f"📌 *තනතුර*: {job_title} ({company})\n\n"
             f"අයදුම් කිරීමට *APPLY* හෝ *1* ලෙස පිළිතුරු යවන්න!\n\n"
-            f"— *JobStart Recruitment Team*"
+            f"— *HirePth Recruitment Team*"
         )
         result = await waha_service.send_text(phone, message)
         conversation_store.upsert(phone, message, "agent", {

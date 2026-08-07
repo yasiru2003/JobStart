@@ -45,7 +45,7 @@ MOCK_NOTIFICATIONS_DB: List[Dict[str, Any]] = [
   {
     "id": "notif-3",
     "title": "AI Agent Candidate Analysis Ready",
-    "message": "JobStart AI agent finished CV screening for 5 new applicants.",
+    "message": "HirePth AI agent finished CV screening for 5 new applicants.",
 
     "type": "ai_alert",
     "is_read": True,

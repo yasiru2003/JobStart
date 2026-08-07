@@ -3,15 +3,15 @@ import './globals.css'
 
 export const metadata: Metadata = {
   title: {
-    default: 'JobStart — Sri Lanka\'s Premier Recruitment Platform',
-    template: '%s | JobStart',
+    default: 'HirePth — Sri Lanka\'s Premier Recruitment Platform',
+    template: '%s | HirePth',
   },
   description:
-    'JobStart connects employers, recruiters, and candidates across Sri Lanka. Post jobs, manage applications, and find your next opportunity.',
-  keywords: ['jobs', 'recruitment', 'Sri Lanka', 'employment', 'careers', 'JobStart'],
-  authors: [{ name: 'JobStart' }],
+    'HirePth connects employers, recruiters, and candidates across Sri Lanka. Post jobs, manage applications, and find your next opportunity.',
+  keywords: ['jobs', 'recruitment', 'Sri Lanka', 'employment', 'careers', 'HirePth'],
+  authors: [{ name: 'HirePth' }],
   openGraph: {
-    title: 'JobStart',
+    title: 'HirePth',
     description: 'Sri Lanka\'s Premier Recruitment Platform',
     type: 'website',
     locale: 'en_LK',

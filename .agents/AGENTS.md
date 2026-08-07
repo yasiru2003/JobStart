@@ -1,4 +1,4 @@
-# 🧠 JobStart AI Architecture & Development Guidelines
+# 🧠 HirePth AI Architecture & Development Guidelines
 
 ## 1. AI-First Context & Clarification Principle (CRITICAL)
 - **Zero Hardcoded Assumptions**: Never assume candidate input is a strict answer or fixed machine state.

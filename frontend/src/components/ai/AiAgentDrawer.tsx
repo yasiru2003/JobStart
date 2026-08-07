@@ -164,7 +164,7 @@ export default function AiAgentDrawer({ isOpen, onClose }: AiAgentDrawerProps) {
   const [messages, setMessages] = useState([
     {
       sender: 'ai',
-      text: 'JobStart AI Assistant. Ask me to evaluate candidate CVs, draft job postings, or query live pipeline databases.',
+      text: 'HirePth AI Assistant. Ask me to evaluate candidate CVs, draft job postings, or query live pipeline databases.',
     },
   ])
   const [input, setInput] = useState('')
@@ -359,11 +359,11 @@ export default function AiAgentDrawer({ isOpen, onClose }: AiAgentDrawerProps) {
     const taggedName = taggedMatch ? taggedMatch[1].trim() : null
 
     if (taggedName) {
-      return `JobStart AI Evaluation (${timestamp}): Analyzed tagged subject "${taggedName}". Match Score: 94%. Candidate credentials (NIC & Professional Degree) verified against national databases. Status: Recommended for technical interview.`
+      return `HirePth AI Evaluation (${timestamp}): Analyzed tagged subject "${taggedName}". Match Score: 94%. Candidate credentials (NIC & Professional Degree) verified against national databases. Status: Recommended for technical interview.`
     }
 
     if (lower.includes('why')) {
-      return `JobStart AI Reasoning (${timestamp}): High match index calculated based on verified skill alignment, technical interview history, and confirmed Sri Lankan national identity & educational qualifications.`
+      return `HirePth AI Reasoning (${timestamp}): High match index calculated based on verified skill alignment, technical interview history, and confirmed Sri Lankan national identity & educational qualifications.`
     }
 
 
@@ -377,7 +377,7 @@ export default function AiAgentDrawer({ isOpen, onClose }: AiAgentDrawerProps) {
       else if (lower.includes('qa') || lower.includes('test') || lower.includes('automation')) roleTitle = 'QA Automation Engineer'
       else if (lower.includes('data') || lower.includes('ml') || lower.includes('python')) roleTitle = 'Senior Data Analyst & ML Specialist'
 
-      return `JobStart AI Generated Job Description (${timestamp}):\n\n` +
+      return `HirePth AI Generated Job Description (${timestamp}):\n\n` +
         `Role: ${roleTitle}\n` +
         `Location: Colombo 03, Sri Lanka / Remote\n` +
         `Salary Benchmark: LKR 350,000 – 550,000 / month\n\n` +
@@ -391,23 +391,23 @@ export default function AiAgentDrawer({ isOpen, onClose }: AiAgentDrawerProps) {
     }
 
     if (lower.includes('kasun') || lower.includes('perera')) {
-      return `JobStart AI Candidate Dossier (${timestamp}): Kasun Perera · Senior Full Stack Engineer. 92% Role Match. 6 Years Experience. Credentials: NIC + Degree Verified.`
+      return `HirePth AI Candidate Dossier (${timestamp}): Kasun Perera · Senior Full Stack Engineer. 92% Role Match. 6 Years Experience. Credentials: NIC + Degree Verified.`
     }
 
 
     if (lower.includes('sanduni') || lower.includes('jayawardena')) {
-      return `JobStart AI Candidate Dossier (${timestamp}): Sanduni Jayawardena · Lead UI/UX Product Designer. 88% Role Match. 4 Years Experience. Credentials: NIC Verified.`
+      return `HirePth AI Candidate Dossier (${timestamp}): Sanduni Jayawardena · Lead UI/UX Product Designer. 88% Role Match. 4 Years Experience. Credentials: NIC Verified.`
     }
 
     if (lower.includes('react') || lower.includes('developer') || lower.includes('engineer')) {
-      return `JobStart AI Candidate Ranking (${timestamp}): Top matches for "${msg}" — 1. Kasun Perera (92% match), 2. Priyanka Jayasuriya (95% match), 3. Dilshan Fernando (84% match).`
+      return `HirePth AI Candidate Ranking (${timestamp}): Top matches for "${msg}" — 1. Kasun Perera (92% match), 2. Priyanka Jayasuriya (95% match), 3. Dilshan Fernando (84% match).`
     }
 
     if (lower.includes('verify') || lower.includes('check') || lower.includes('nic')) {
-      return `JobStart AI Verification Audit (${timestamp}): National Identity Card (NIC) & Police clearance records verified. Overall platform verification rate: 94.2%.`
+      return `HirePth AI Verification Audit (${timestamp}): National Identity Card (NIC) & Police clearance records verified. Overall platform verification rate: 94.2%.`
     }
 
-    return `JobStart AI Assistant (${timestamp}): Processed query "${msg}". Live pipeline status: 4 active job postings, 61 candidates screened, zero pending verification flags.`
+    return `HirePth AI Assistant (${timestamp}): Processed query "${msg}". Live pipeline status: 4 active job postings, 61 candidates screened, zero pending verification flags.`
   }
 
   const handleChipClick = (promptText: string) => {
@@ -429,7 +429,7 @@ export default function AiAgentDrawer({ isOpen, onClose }: AiAgentDrawerProps) {
           </div>
           <div>
             <h3 className="font-bold text-foreground text-sm flex items-center gap-1.5">
-              JobStart AI Assistant
+              HirePth AI Assistant
               <span className="badge-info text-[10px] px-1.5 py-0.2">v2.4</span>
             </h3>
             <p className="text-[11px] text-muted">AI-Powered Recruitment & Verification Agent</p>
@@ -551,7 +551,7 @@ export default function AiAgentDrawer({ isOpen, onClose }: AiAgentDrawerProps) {
         {isGenerating && (
           <div className="flex items-center gap-2 text-xs text-muted p-2">
             <RefreshCw className="w-3.5 h-3.5 animate-spin text-primary" />
-            <span>JobStart AI Engine is analyzing context...</span>
+            <span>HirePth AI Engine is analyzing context...</span>
 
           </div>
         )}

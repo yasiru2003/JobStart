@@ -10,12 +10,12 @@ from typing import Any, Dict, List, Optional
 import httpx
 from app.core.config import settings
 
-logger = logging.getLogger("jobstart.lovable_agent")
+logger = logging.getLogger("hirepth.lovable_agent")
 
 
 class LovableAIService:
     """
-    Service wrapper connecting JobStart to Lovable AI via Supabase Deno Edge Functions.
+    Service wrapper connecting HirePth to Lovable AI via Supabase Deno Edge Functions.
     Executes edge functions for WhatsApp conversation processing and frontend AI agent queries.
     """
 

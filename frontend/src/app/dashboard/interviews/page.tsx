@@ -52,7 +52,7 @@ export default function InterviewsPage() {
               time: c.interview_time || '11:30 AM (Confirmed via WhatsApp)',
               mode: 'Google Meet',
               status: c.interview_confirmed ? 'confirmed' : 'awaiting',
-              interviewer: 'JobStart AI Recruitment Team',
+              interviewer: 'HirePth AI Recruitment Team',
               wahaSent: true,
             })
           }
@@ -69,7 +69,7 @@ export default function InterviewsPage() {
             time: '11:30 AM (Confirmed via WhatsApp)',
             mode: 'Google Meet',
             status: 'confirmed',
-            interviewer: 'JobStart AI Recruitment Team',
+            interviewer: 'HirePth AI Recruitment Team',
             wahaSent: true,
           })
         }
@@ -108,7 +108,7 @@ export default function InterviewsPage() {
         time: `${data.startTime || '11:30 AM'} – ${data.endTime || '12:30 PM'}`,
         mode: data.locationType === 'virtual' ? 'Google Meet' : 'On-site',
         status: 'confirmed',
-        interviewer: 'JobStart Recruitment Team',
+        interviewer: 'HirePth Recruitment Team',
         wahaSent: true,
       }
       newItems.push(newIv)

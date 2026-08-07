@@ -86,7 +86,7 @@ export default function ResumePreviewModal({
         {/* Footer */}
         <div className="px-6 py-3 border-t border-border flex justify-between items-center">
           <a
-            href="/api/files/jobstart/3B43EDAAF01965E31B57.pdf"
+            href="/api/files/hirepth/3B43EDAAF01965E31B57.pdf"
             target="_blank"
             rel="noopener noreferrer"
             className="px-4 py-2 bg-primary hover:bg-primary/90 text-white font-bold text-xs rounded-xl shadow-sm transition-all flex items-center gap-1.5"

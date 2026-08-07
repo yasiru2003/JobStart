@@ -322,14 +322,14 @@ export default function DashboardOverviewPage() {
     )
   }
 
-  // Platform Admin (JobStart Core Team) View
+  // Platform Admin (HirePth Core Team) View
   return (
     <div className="space-y-6 max-w-7xl mx-auto animate-fade-in">
       {/* Admin Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
-            <span>JobStart Platform Command Center</span>
+            <span>HirePth Platform Command Center</span>
             <span className="badge-verified text-xs bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20">
               Platform Admin System
             </span>

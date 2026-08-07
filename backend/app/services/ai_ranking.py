@@ -12,7 +12,7 @@ import httpx
 
 from app.core.config import settings
 
-logger = logging.getLogger("jobstart.ai_ranking")
+logger = logging.getLogger("hirepth.ai_ranking")
 
 
 # ── Data Structures ────────────────────────────────────────────────────────
@@ -122,8 +122,8 @@ class AIRankingService:
                     f"{self.base_url}/chat/completions",
                     headers={
                         "Authorization": f"Bearer {self.api_key}",
-                        "HTTP-Referer": "https://jobstart.lk",
-                        "X-Title": "JobStart AI Ranking Engine",
+                        "HTTP-Referer": "https://hirepth.lk",
+                        "X-Title": "HirePth AI Ranking Engine",
                         "Content-Type": "application/json",
                     },
                     json={
@@ -172,7 +172,7 @@ class AIRankingService:
         Returns: { candidate_id, name, score, skill_match, experience_match, reasoning, strengths, gaps }
         """
         system_prompt = (
-            "You are an expert AI recruitment analyst for JobStart Sri Lanka. "
+            "You are an expert AI recruitment analyst for HirePth Sri Lanka. "
             "Evaluate candidates fairly against job requirements. "
             "Always respond with valid JSON only — no markdown, no extra text."
         )
@@ -268,7 +268,7 @@ class AIRankingService:
         Returns structured comparison with winner recommendation.
         """
         system_prompt = (
-            "You are an expert AI recruiter for JobStart Sri Lanka. "
+            "You are an expert AI recruiter for HirePth Sri Lanka. "
             "Compare two candidates for a job objectively. "
             "Always respond with valid JSON only."
         )
@@ -340,7 +340,7 @@ class AIRankingService:
             return []
 
         system_prompt = (
-            "You are a job-matching AI for JobStart Sri Lanka. "
+            "You are a job-matching AI for HirePth Sri Lanka. "
             "Match a candidate to multiple jobs and return match scores. "
             "Always respond with valid JSON only."
         )

@@ -41,7 +41,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-primary to-accent flex items-center justify-center text-white font-bold text-lg animate-bounce">
             J
           </div>
-          <p className="text-xs text-muted font-medium">Loading JobStart...</p>
+          <p className="text-xs text-muted font-medium">Loading HirePth...</p>
         </div>
       </div>
     )

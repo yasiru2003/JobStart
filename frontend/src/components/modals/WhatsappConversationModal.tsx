@@ -26,7 +26,7 @@ export default function WhatsappConversationModal({
     { sender: 'bot', text: `📅 Interview Invitation: Hello ${candidateName}! You have been invited for a technical interview for ${jobTitle}.`, time: '09:00 AM' },
     { sender: 'bot', text: '🗓 Scheduled Date: Tomorrow at 10:00 AM (Online Google Meet / Zoom). Please confirm your attendance.', time: '09:01 AM' },
     { sender: 'candidate', text: 'Thank you! I confirm I will join the interview tomorrow at 10:00 AM.', time: '09:15 AM' },
-    { sender: 'bot', text: '✅ Interview Confirmed! Here is your meeting link: https://meet.google.com/jobstart-interview-room', time: '09:16 AM' },
+    { sender: 'bot', text: '✅ Interview Confirmed! Here is your meeting link: https://meet.google.com/hirepth-interview-room', time: '09:16 AM' },
     { sender: 'bot', text: '🔔 Reminder: Your interview starts in 24 hours. Automated reminder sent via WhatsApp.', time: '10:00 AM' },
   ]
 

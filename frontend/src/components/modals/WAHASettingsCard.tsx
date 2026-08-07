@@ -111,7 +111,7 @@ export default function WAHASettingsCard({ onToast }: WAHASettingsCardProps) {
   // Config form
   const [host, setHost] = useState('http://178.104.127.220:3000')
   const [apiKey, setApiKey] = useState('key_Z9s561T3AdkBlkciQ73wt7oag2yEurGA')
-  const [sessionName, setSessionName] = useState('jobstart')
+  const [sessionName, setSessionName] = useState('hirepth')
   const [showApiKey, setShowApiKey] = useState(false)
   const [configSaving, setConfigSaving] = useState(false)
   const [configSaved, setConfigSaved] = useState(false)

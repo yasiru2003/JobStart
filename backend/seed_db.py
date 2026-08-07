@@ -36,7 +36,7 @@ async def seed_database():
             # 1. Admin User
             admin_user = User(
                 id=uuid.uuid4(),
-                email="nadeeka.dias@jobstart.lk",
+                email="nadeeka.dias@hirepth.lk",
                 hashed_password="$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW", # hashed 'password'
                 full_name="Nadeeka Dias",
                 role=UserRole.admin,
@@ -72,7 +72,7 @@ async def seed_database():
             # 3. Recruiter User
             recruiter_user = User(
                 id=uuid.uuid4(),
-                email="recruiter@jobstart.lk",
+                email="recruiter@hirepth.lk",
                 hashed_password="$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW",
                 full_name="Malini Perera",
                 role=UserRole.recruiter,
