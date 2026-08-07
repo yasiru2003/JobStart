@@ -1508,7 +1508,7 @@
       },
       {
         "sender": "agent",
-        "text": "Hello! Welcome! I am Sinhala Helper (සිංහල සහායක). How can I assist you today? Feel free to ask your questions in English or Sinhala!",
+        "text": "Hello! Welcome! I am HirePth AI Job Finder. How can I assist you today? Feel free to ask your questions in English or Sinhala!",
         "time": "2026-08-07T16:03:57.878725"
       },
       {
@@ -1518,7 +1518,7 @@
       },
       {
         "sender": "agent",
-        "text": "No, I am **Sinhala Helper (සිංහල සහායක)**, a friendly bilingual support assistant. I am not a Hire Path or JobStart assistant. \n\nI am here to help you with Sinhala language translation, learning, typing, or any general inquiries in both English and Sinhala. \n\nHow can I assist you today?",
+        "text": "Yes, I am **HirePth AI Job Finder**, a friendly bilingual recruitment assistant. I am here to help you find jobs and apply to them. \n\nHow can I assist you today?",
         "time": "2026-08-07T16:04:26.567762"
       }
     ],
