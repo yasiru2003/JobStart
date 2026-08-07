@@ -173,6 +173,15 @@ export default function AiAgentDrawer({ isOpen, onClose }: AiAgentDrawerProps) {
   const [mentionFilter, setMentionFilter] = useState('')
   const [toastMsg, setToastMsg] = useState<string | null>(null)
 
+  const [dynamicTags, setDynamicTags] = useState([
+    { label: 'Hasini Dikkumbura', type: 'candidate', subtitle: 'Flutter Mobile Developer (Verified)' },
+    { label: 'Kasun Perera', type: 'candidate', subtitle: 'Senior Full Stack Engineer' },
+    { label: 'Sanduni Jayawardena', type: 'candidate', subtitle: 'UI/UX Product Designer' },
+    { label: 'Sales Executive', type: 'job', subtitle: 'WSO2 Lanka Posting' },
+    { label: 'Senior React / Next.js Developer', type: 'job', subtitle: 'WSO2 Lanka Posting' },
+    { label: 'Lead UI/UX Designer', type: 'job', subtitle: 'Sysco LABS Posting' },
+  ])
+
   useEffect(() => {
     const handleOpenAiDrawer = (e: any) => {
       const detail = e.detail
@@ -226,6 +235,66 @@ export default function AiAgentDrawer({ isOpen, onClose }: AiAgentDrawerProps) {
 
     window.addEventListener('open-ai-drawer', handleOpenAiDrawer)
     return () => window.removeEventListener('open-ai-drawer', handleOpenAiDrawer)
+  }, [])
+
+  useEffect(() => {
+    const syncTags = async () => {
+      try {
+        const [jobsRes, convsRes] = await Promise.all([
+          jobsApi.list().catch(() => null),
+          wahaApi.conversations().catch(() => null),
+        ])
+
+        const fetchedTags: Array<{ label: string; type: string; subtitle: string }> = []
+
+        // Add live jobs
+        if (jobsRes?.data && Array.isArray(jobsRes.data)) {
+          jobsRes.data.forEach((j: any) => {
+            if (j.title) {
+              fetchedTags.push({
+                label: j.title,
+                type: 'job',
+                subtitle: `${j.company || 'WSO2'} Posting (${j.location || 'Colombo'})`,
+              })
+            }
+          })
+        }
+
+        // Add live WhatsApp candidates
+        if (convsRes?.data && Array.isArray(convsRes.data)) {
+          convsRes.data.forEach((c: any) => {
+            const name = c.collected_name || c.candidate_name || 'Hasini Dikkumbura'
+            fetchedTags.push({
+              label: name,
+              type: 'candidate',
+              subtitle: `${c.selected_job_title || 'Flutter Mobile Developer'} Candidate`,
+            })
+          })
+        }
+
+        // Always ensure key demo candidates & jobs exist
+        const defaultCandidates = [
+          { label: 'Hasini Dikkumbura', type: 'candidate', subtitle: 'Flutter Mobile Developer (Verified)' },
+          { label: 'Kasun Perera', type: 'candidate', subtitle: 'Senior Full Stack Engineer' },
+          { label: 'Sanduni Jayawardena', type: 'candidate', subtitle: 'UI/UX Product Designer' },
+          { label: 'Sales Executive', type: 'job', subtitle: 'WSO2 Lanka Posting' },
+          { label: 'Senior React / Next.js Developer', type: 'job', subtitle: 'WSO2 Lanka Posting' },
+        ]
+
+        const merged = [...fetchedTags]
+        defaultCandidates.forEach((def) => {
+          if (!merged.some((m) => m.label.toLowerCase() === def.label.toLowerCase())) {
+            merged.unshift(def)
+          }
+        })
+
+        setDynamicTags(merged)
+      } catch (_) {}
+    }
+
+    syncTags()
+    const interval = setInterval(syncTags, 4000)
+    return () => clearInterval(interval)
   }, [])
 
   if (!isOpen) return null
@@ -344,75 +413,6 @@ export default function AiAgentDrawer({ isOpen, onClose }: AiAgentDrawerProps) {
   const handleChipClick = (promptText: string) => {
     setInput(promptText)
   }
-
-  const [dynamicTags, setDynamicTags] = useState([
-    { label: 'Hasini Dikkumbura', type: 'candidate', subtitle: 'Flutter Mobile Developer (Verified)' },
-    { label: 'Kasun Perera', type: 'candidate', subtitle: 'Senior Full Stack Engineer' },
-    { label: 'Sanduni Jayawardena', type: 'candidate', subtitle: 'UI/UX Product Designer' },
-    { label: 'Sales Executive', type: 'job', subtitle: 'WSO2 Lanka Posting' },
-    { label: 'Senior React / Next.js Developer', type: 'job', subtitle: 'WSO2 Lanka Posting' },
-    { label: 'Lead UI/UX Designer', type: 'job', subtitle: 'Sysco LABS Posting' },
-  ])
-
-  useEffect(() => {
-    const syncTags = async () => {
-      try {
-        const [jobsRes, convsRes] = await Promise.all([
-          jobsApi.list().catch(() => null),
-          wahaApi.conversations().catch(() => null),
-        ])
-
-        const fetchedTags: Array<{ label: string; type: string; subtitle: string }> = []
-
-        // Add live jobs
-        if (jobsRes?.data && Array.isArray(jobsRes.data)) {
-          jobsRes.data.forEach((j: any) => {
-            if (j.title) {
-              fetchedTags.push({
-                label: j.title,
-                type: 'job',
-                subtitle: `${j.company || 'WSO2'} Posting (${j.location || 'Colombo'})`,
-              })
-            }
-          })
-        }
-
-        // Add live WhatsApp candidates
-        if (convsRes?.data && Array.isArray(convsRes.data)) {
-          convsRes.data.forEach((c: any) => {
-            const name = c.collected_name || c.candidate_name || 'Hasini Dikkumbura'
-            fetchedTags.push({
-              label: name,
-              type: 'candidate',
-              subtitle: `${c.selected_job_title || 'Flutter Mobile Developer'} Candidate`,
-            })
-          })
-        }
-
-        // Always ensure key demo candidates & jobs exist
-        const defaultCandidates = [
-          { label: 'Hasini Dikkumbura', type: 'candidate', subtitle: 'Flutter Mobile Developer (Verified)' },
-          { label: 'Kasun Perera', type: 'candidate', subtitle: 'Senior Full Stack Engineer' },
-          { label: 'Sanduni Jayawardena', type: 'candidate', subtitle: 'UI/UX Product Designer' },
-          { label: 'Sales Executive', type: 'job', subtitle: 'WSO2 Lanka Posting' },
-          { label: 'Senior React / Next.js Developer', type: 'job', subtitle: 'WSO2 Lanka Posting' },
-        ]
-
-        const merged = [...fetchedTags]
-        defaultCandidates.forEach((def) => {
-          if (!merged.some((m) => m.label.toLowerCase() === def.label.toLowerCase())) {
-            merged.unshift(def)
-          }
-        })
-
-        setDynamicTags(merged)
-      } catch (_) {}
-    }
-
-    syncTags()
-    const interval = setInterval(syncTags, 4000)
-    return () => clearInterval(interval)
-  }, [])
 
   const filteredTags = dynamicTags.filter((t) =>
     t.label.toLowerCase().includes(mentionFilter.toLowerCase()) ||
