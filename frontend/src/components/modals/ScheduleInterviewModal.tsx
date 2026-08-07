@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { wahaApi } from '@/lib/api'
+import { wahaApi, jobsApi, candidatesApi } from '@/lib/api'
 import { X, Calendar, Clock, MapPin, Video, Send, Plus, Trash2, CheckCircle2, User, Search, ShieldCheck, Check } from 'lucide-react'
 
 interface ScheduleInterviewModalProps {
@@ -20,12 +20,11 @@ const MOCK_JOB_OPTIONS = [
 ]
 
 const BASE_CANDIDATES = [
-  { id: 'c-hd', initials: 'HD', name: 'Hasini Dikkumbura', location: 'Colombo 03 / Remote', matchScore: 98, phone: '+94 76 522 5044' },
-  { id: 'c1', initials: 'KP', name: 'Kasun Perera', location: 'Colombo', matchScore: 72, phone: '+94 77 123 4567' },
-  { id: 'c2', initials: 'NF', name: 'Nimal Fernando', location: 'Gampaha', matchScore: 81, phone: '+94 71 987 6543' },
-  { id: 'c4', initials: 'SR', name: 'Sunil Rathnayake', location: 'Negombo', matchScore: 93, phone: '+94 75 456 7890' },
-  { id: 'c5', initials: 'PJ', name: 'Priyanka Jayasuriya', location: 'Colombo', matchScore: 87, phone: '+94 77 555 1212' },
-  { id: 'c6', initials: 'CW', name: 'Chamara Wickramasinghe', location: 'Kandy', matchScore: 95, phone: '+94 77 888 9999' },
+  { id: 'c1', initials: 'KP', name: 'Kasun Perera', location: 'Colombo 03', matchScore: 92, phone: '+94 77 123 4567' },
+  { id: 'c2', initials: 'SJ', name: 'Sanduni Jayawardena', location: 'Kandy', matchScore: 78, phone: '+94 71 987 6543' },
+  { id: 'c3', initials: 'PJ', name: 'Priyanka Jayasuriya', location: 'Rajagiriya', matchScore: 95, phone: '+94 75 456 7890' },
+  { id: 'c4', initials: 'DF', name: 'Dilshan Fernando', location: 'Galle', matchScore: 84, phone: '+94 77 555 1212' },
+  { id: 'c5', initials: 'NS', name: 'Nirosha Silva', location: 'Negombo', matchScore: 81, phone: '+94 77 888 9999' },
 ]
 
 export default function ScheduleInterviewModal({
@@ -36,18 +35,27 @@ export default function ScheduleInterviewModal({
   onScheduleSubmit,
 }: ScheduleInterviewModalProps) {
   const [selectedJob, setSelectedJob] = useState(jobTitle)
+  const [allJobs, setAllJobs] = useState<{id: string, title: string}[]>(MOCK_JOB_OPTIONS)
   const [jobSearch, setJobSearch] = useState('')
   const [candSearch, setCandSearch] = useState('')
   const [allCandidates, setAllCandidates] = useState(BASE_CANDIDATES)
   const [chosenCandidates, setChosenCandidates] = useState<string[]>(
-    candidateName ? [candidateName] : ['Hasini Dikkumbura', 'Sunil Rathnayake']
+    candidateName ? [candidateName] : ['Hasini Dikkumbura']
   )
 
   useEffect(() => {
-    const fetchLiveCandidates = async () => {
+    const fetchLiveData = async () => {
       try {
-        const res = await wahaApi.conversations()
-        const convs = res.data || []
+        const [res, jobsRes] = await Promise.all([
+          wahaApi.conversations().catch(() => null),
+          jobsApi.list().catch(() => null)
+        ])
+        
+        if (jobsRes?.data && Array.isArray(jobsRes.data)) {
+          setAllJobs(jobsRes.data.map((j: any) => ({ id: j.id, title: j.title })))
+        }
+
+        const convs = res?.data || []
         const liveCands = convs.map((c: any) => {
           const name = c.collected_name || c.candidate_name || 'Hasini Dikkumbura'
           const initials = name.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()
@@ -93,7 +101,7 @@ export default function ScheduleInterviewModal({
         })
       } catch (_) {}
     }
-    fetchLiveCandidates()
+    fetchLiveData()
   }, [])
 
   const [slots, setSlots] = useState<{ id: string; date: string; start: string; end: string }[]>([
@@ -185,7 +193,7 @@ export default function ScheduleInterviewModal({
     }, 2000)
   }
 
-  const filteredJobs = MOCK_JOB_OPTIONS.filter((j) =>
+  const filteredJobs = allJobs.filter((j) =>
     j.title.toLowerCase().includes(jobSearch.toLowerCase())
   )
 
