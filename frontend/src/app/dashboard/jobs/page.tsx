@@ -31,13 +31,21 @@ export default function JobsPage() {
   const [search, setSearch] = useState('')
 
   // Enforce Employer Tenant Data Isolation
+  const isEmployerMode = viewingAs === 'employer' || user?.role === 'employer'
+
   const tenantJobs = jobs.filter((j) => {
-    if (viewingAs === 'employer' || user?.role === 'employer') {
+    if (isEmployerMode) {
       const emp = String(j.employer || '').toLowerCase()
       return emp.includes('wso2')
     }
     return true // Admin / Recruiter Agency sees all companies
   })
+
+  const filteredJobs = tenantJobs.filter((j) =>
+    j.title.toLowerCase().includes(search.toLowerCase()) ||
+    j.employer.toLowerCase().includes(search.toLowerCase()) ||
+    j.location.toLowerCase().includes(search.toLowerCase())
+  )
 
   useEffect(() => {
     const syncJobs = async () => {
@@ -110,12 +118,6 @@ export default function JobsPage() {
       setJobToDelete(null)
     }
   }
-
-  const filteredJobs = jobs.filter((j) =>
-    j.title.toLowerCase().includes(search.toLowerCase()) ||
-    j.employer.toLowerCase().includes(search.toLowerCase()) ||
-    j.location.toLowerCase().includes(search.toLowerCase())
-  )
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto animate-fade-in relative">
