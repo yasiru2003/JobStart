@@ -17,6 +17,31 @@ const MOCK_TAGS = [
   { label: 'Lead UI/UX Designer', type: 'job', subtitle: 'Sysco LABS Posting' },
 ]
 
+export function FillableBracketInput({ placeholder }: { placeholder: string }) {
+  const [value, setValue] = useState('')
+  const [isFocused, setIsFocused] = useState(false)
+
+  return (
+    <span className="inline-flex items-center mx-1 my-0.5 align-middle">
+      <input
+        type="text"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        placeholder={`[${placeholder}]`}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
+        className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all outline-none border shadow-sm ${
+          value
+            ? 'bg-emerald-500/15 text-emerald-800 dark:text-emerald-300 border-emerald-500/50 font-bold ring-2 ring-emerald-500/20'
+            : isFocused
+            ? 'bg-amber-500/20 text-amber-950 dark:text-amber-200 border-amber-500 ring-2 ring-amber-500/30 min-w-[200px]'
+            : 'bg-amber-500/10 text-amber-800 dark:text-amber-300 border-amber-500/40 hover:bg-amber-500/20 min-w-[180px]'
+        }`}
+      />
+    </span>
+  )
+}
+
 export function StructuredAiContent({ text }: { text: string }) {
   if (!text) return null
 
@@ -25,6 +50,16 @@ export function StructuredAiContent({ text }: { text: string }) {
     // Check if line contains LaTeX equations like \(...\), \[...\], $...$, \text{}
     const latexRegex = /(\\\([^)]+\\\)|\\\[[^\]]+\\\]|\$[^$]+\$|\\text\{[^}]+\})/g
     const parts = rawStr.split(latexRegex)
+
+    const renderBracketPlaceholders = (textSegment: string) => {
+      const bParts = textSegment.split(/(\[[^\]]+\])/g)
+      return bParts.map((p, pIdx) => {
+        if (p.startsWith('[') && p.endsWith(']') && p.length > 2) {
+          return <FillableBracketInput key={pIdx} placeholder={p.slice(1, -1)} />
+        }
+        return p
+      })
+    }
 
     return parts.map((part, idx) => {
       if (part.match(/^(\\\(|\\\[|\$)/)) {
@@ -53,11 +88,11 @@ export function StructuredAiContent({ text }: { text: string }) {
             if (bp.startsWith('**') && bp.endsWith('**')) {
               return (
                 <strong key={bidx} className="font-bold text-foreground">
-                  {bp.slice(2, -2)}
+                  {renderBracketPlaceholders(bp.slice(2, -2))}
                 </strong>
               )
             }
-            return bp
+            return renderBracketPlaceholders(bp)
           })}
         </span>
       )

@@ -329,12 +329,21 @@ export default function PostJobModal({ isOpen, onClose, onSubmit }: PostJobModal
             <label className="block text-xs font-bold text-foreground mb-1.5">Candidate Screener Questions</label>
             <div className="space-y-2 mb-3">
               {formData.screenerQuestions.map((q, idx) => (
-                <div key={idx} className="flex items-center justify-between p-2.5 bg-surface-2 border border-border rounded-xl text-xs">
-                  <span className="text-foreground font-medium">{q}</span>
+                <div key={idx} className="flex items-center justify-between p-2.5 bg-surface-2 border border-border rounded-xl text-xs gap-2">
+                  <input
+                    type="text"
+                    value={q}
+                    onChange={(e) => {
+                      const updated = [...formData.screenerQuestions]
+                      updated[idx] = e.target.value
+                      setFormData({ ...formData, screenerQuestions: updated })
+                    }}
+                    className="w-full bg-transparent text-xs font-medium text-foreground focus:outline-none focus:ring-1 focus:ring-primary/40 rounded px-1.5 py-0.5"
+                  />
                   <button
                     type="button"
                     onClick={() => handleRemoveQuestion(idx)}
-                    className="text-rose-600 hover:text-rose-700 p-1"
+                    className="text-rose-600 hover:text-rose-700 p-1 shrink-0 cursor-pointer"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
