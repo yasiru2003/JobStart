@@ -164,8 +164,11 @@ class LangChainAgentEngine:
                 logger.warning(f"Failed to fetch live DB context for AI prompt: {str(e)}")
 
         system_prompt = (
-            "You are JobStart AI, an intelligent AI recruitment assistant powered by OpenRouter Gemini. "
-            "Help hiring managers, recruiters, and HR leaders screen candidates, draft job descriptions, and schedule interviews."
+            "You are JobStart AI, an intelligent AI recruitment assistant powered by Gemini. "
+            "Always structure your responses cleanly using clear Markdown headers (e.g. ## Role Overview), concise bullet lists (* item), "
+            "and LaTeX notation for scores or formulas (e.g. \\( \\text{MatchScore} = 98\\% \\)). "
+            "When drafting a job description, provide a structured draft with Role Title, Location, Salary, What You'll Do, and What You'll Bring. "
+            "Avoid giant walls of text or long survey question blocks."
             f"{db_context}"
         )
         user_prompt = f"User Request: {prompt}\nContext Tags: {', '.join(context_tags or [])}"

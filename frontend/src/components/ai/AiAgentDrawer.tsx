@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Sparkles, Send, X, Bot, RefreshCw, User, Briefcase, Zap } from 'lucide-react'
+import { Sparkles, Send, X, Bot, RefreshCw, User, Briefcase, Zap, CheckCircle2, ChevronRight, FileText } from 'lucide-react'
 import { aiApi, jobsApi } from '@/lib/api'
 
 interface AiAgentDrawerProps {
@@ -17,6 +17,114 @@ const MOCK_TAGS = [
   { label: 'Lead UI/UX Designer', type: 'job', subtitle: 'Sysco LABS Posting' },
 ]
 
+export function StructuredAiContent({ text }: { text: string }) {
+  if (!text) return null
+
+  // 1. Process LaTeX math formulas \( ... \) or \[ ... \] or \text{...}
+  const renderLaTeX = (rawStr: string) => {
+    // Check if line contains LaTeX equations like \(...\), \[...\], $...$, \text{}
+    const latexRegex = /(\\\([^)]+\\\)|\\\[[^\]]+\\\]|\$[^$]+\$|\\text\{[^}]+\})/g
+    const parts = rawStr.split(latexRegex)
+
+    return parts.map((part, idx) => {
+      if (part.match(/^(\\\(|\\\[|\$)/)) {
+        const cleanedMath = part
+          .replace(/^(\\\(|\ costume|\\\[|\$+|\$+$)/g, '')
+          .replace(/(\\\)|\ costume|\\\]|\$+|\$+$)/g, '')
+          .replace(/\\text\{([^}]+)\}/g, '$1')
+          .trim()
+
+        return (
+          <span
+            key={idx}
+            className="inline-flex items-center gap-1 px-2 py-0.5 mx-1 rounded-md bg-indigo-500/10 dark:bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 font-mono text-[11px] border border-indigo-500/30"
+          >
+            <Sparkles className="w-3 h-3 text-indigo-500" />
+            <span>{cleanedMath}</span>
+          </span>
+        )
+      }
+
+      // Format bold **text** inside regular string parts
+      const boldParts = part.split(/(\*\*[^*]+\*\*)/g)
+      return (
+        <span key={idx}>
+          {boldParts.map((bp, bidx) => {
+            if (bp.startsWith('**') && bp.endsWith('**')) {
+              return (
+                <strong key={bidx} className="font-bold text-foreground">
+                  {bp.slice(2, -2)}
+                </strong>
+              )
+            }
+            return bp
+          })}
+        </span>
+      )
+    })
+  }
+
+  // 2. Parse lines into structured sections, lists, and headers
+  const lines = text.split('\n')
+  const blocks: React.ReactNode[] = []
+  let currentList: string[] = []
+
+  const flushList = (keyPrefix: string) => {
+    if (currentList.length > 0) {
+      blocks.push(
+        <div key={`${keyPrefix}-list`} className="space-y-1.5 my-2">
+          {currentList.map((item, lIdx) => (
+            <div key={lIdx} className="flex items-start gap-2 p-1.5 rounded-lg bg-surface-2/40 border border-border/40 text-xs">
+              <CheckCircle2 className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
+              <div className="flex-1 leading-normal">{renderLaTeX(item)}</div>
+            </div>
+          ))}
+        </div>
+      )
+      currentList = []
+    }
+  }
+
+  lines.forEach((line, index) => {
+    const trimmed = line.trim()
+    if (!trimmed) return
+
+    // Bullet point line
+    if (trimmed.startsWith('* ') || trimmed.startsWith('- ') || trimmed.startsWith('• ')) {
+      currentList.push(trimmed.replace(/^[*•-]\s*/, ''))
+      return
+    }
+
+    // Flush any pending list before rendering a header or paragraph
+    flushList(`block-${index}`)
+
+    // Header lines (# ## ### or Title: Role: Section:)
+    if (trimmed.startsWith('#') || trimmed.match(/^(Role|Title|Location|Salary|About|The Opportunity|What You'll Do|What You'll Bring|Key Requirements|The Company|The Role|The Team|Compensation):\s*/i)) {
+      const headerText = trimmed.replace(/^#+\s*/, '').replace(/\*\*/g, '')
+      blocks.push(
+        <div key={index} className="pt-2 pb-1">
+          <div className="flex items-center gap-1.5 text-xs font-bold text-foreground border-b border-border/60 pb-1">
+            <Briefcase className="w-3.5 h-3.5 text-primary" />
+            <span>{headerText}</span>
+          </div>
+        </div>
+      )
+      return
+    }
+
+    // Regular paragraph
+    blocks.push(
+      <p key={index} className="text-xs leading-relaxed text-foreground/90 my-1">
+        {renderLaTeX(trimmed)}
+      </p>
+    )
+  })
+
+  flushList('final')
+
+  return <div className="space-y-1">{blocks}</div>
+}
+
 export default function AiAgentDrawer({ isOpen, onClose }: AiAgentDrawerProps) {
   const [messages, setMessages] = useState([
     {
@@ -28,6 +136,7 @@ export default function AiAgentDrawer({ isOpen, onClose }: AiAgentDrawerProps) {
   const [isGenerating, setIsGenerating] = useState(false)
   const [showMentionMenu, setShowMentionMenu] = useState(false)
   const [mentionFilter, setMentionFilter] = useState('')
+  const [toastMsg, setToastMsg] = useState<string | null>(null)
 
   if (!isOpen) return null
 
@@ -175,6 +284,13 @@ export default function AiAgentDrawer({ isOpen, onClose }: AiAgentDrawerProps) {
         </button>
       </div>
 
+      {toastMsg && (
+        <div className="mx-4 mt-3 p-3 bg-emerald-600 text-white font-bold text-xs rounded-xl shadow-lg flex items-center gap-2 animate-fade-in">
+          <CheckCircle2 className="w-4 h-4 shrink-0 text-white" />
+          <span>{toastMsg}</span>
+        </div>
+      )}
+
       {/* Messages Feed */}
       <div className="flex-1 overflow-y-auto p-4 space-y-3.5 bg-surface-2/30">
         {messages.map((m, i) => (
@@ -189,38 +305,42 @@ export default function AiAgentDrawer({ isOpen, onClose }: AiAgentDrawerProps) {
             )}
             <div className="space-y-2 max-w-[88%]">
               <div
-                className={`p-3.5 rounded-2xl text-xs leading-relaxed whitespace-pre-wrap ${
+                className={`p-4 rounded-2xl text-xs leading-relaxed ${
                   m.sender === 'user'
                     ? 'bg-primary text-white font-medium rounded-tr-none shadow-sm'
                     : 'bg-surface text-foreground border border-border/80 rounded-tl-none shadow-sm'
                 }`}
               >
-                {m.text
-                  .replace(/^###\s+/gm, '')
-                  .replace(/\*\*/g, '')
-                  .replace(/^##\s+/gm, '')
-                }
+                {m.sender === 'user' ? (
+                  <span>{m.text}</span>
+                ) : (
+                  <StructuredAiContent text={m.text} />
+                )}
               </div>
 
               {m.sender === 'ai' && (
                 m.text.toLowerCase().includes('generated job description') ||
                 m.text.toLowerCase().includes('job description') ||
                 m.text.toLowerCase().includes('drafted job') ||
-                m.text.toLowerCase().includes('role overview')
+                m.text.toLowerCase().includes('role overview') ||
+                m.text.toLowerCase().includes('opportunity')
               ) && (() => {
-                const titleMatch = m.text.match(/Role:\s*([^\n]+)/i) || m.text.match(/Posting:\s*([^\n]+)/i)
-                const jobTitle = titleMatch ? titleMatch[1].trim() : 'Software Engineering Opportunity'
+                const titleMatch = m.text.match(/Role:\s*([^\n]+)/i) || m.text.match(/Title:\s*([^\n]+)/i) || m.text.match(/Posting:\s*([^\n]+)/i)
+                const jobTitle = titleMatch ? titleMatch[1].trim().replace(/\*\*/g, '') : 'Senior React / Next.js Developer'
                 const salaryMatch = m.text.match(/Salary[^\n:]*:\s*([^\n]+)/i)
-                const salaryText = salaryMatch ? salaryMatch[1].trim() : 'LKR Market Benchmark'
+                const salaryText = salaryMatch ? salaryMatch[1].trim().replace(/\*\*/g, '') : 'LKR 350,000 – 500,000 / mo'
 
                 return (
-                  <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 space-y-2">
+                  <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 space-y-2.5 shadow-sm">
                     <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-bold text-amber-700 dark:text-amber-400 flex items-center gap-1">
-                        <Sparkles className="w-3.5 h-3.5 text-amber-500" /> Draft Ready for Publishing
+                      <span className="text-[11px] font-bold text-amber-700 dark:text-amber-400 flex items-center gap-1.5">
+                        <Sparkles className="w-3.5 h-3.5 text-amber-500" /> Job Spec Ready for Publishing
                       </span>
-                      <span className="badge-info text-[10px]">{salaryText}</span>
+                      <span className="badge-info text-[10px] bg-amber-500/20 text-amber-800 dark:text-amber-300 font-mono">{salaryText}</span>
                     </div>
+                    <p className="text-[11px] text-muted font-medium truncate">
+                      {jobTitle} · WSO2 Lanka · Colombo 03 / Remote
+                    </p>
                     <button
                       type="button"
                       onClick={async () => {
@@ -229,20 +349,21 @@ export default function AiAgentDrawer({ isOpen, onClose }: AiAgentDrawerProps) {
                             title: jobTitle,
                             company: 'WSO2 Lanka',
                             location: 'Colombo 03 / Remote',
-                            salary_min: 300000,
+                            salary_min: 350000,
                             salary_max: 500000,
                             description: m.text,
                             job_type: 'full_time',
                           })
-                          alert(`🎉 Job Published! "${jobTitle}" has been posted directly to your active job listings and synced with the database.`)
+                          setToastMsg(`🎉 Job Published! "${jobTitle}" has been posted directly to active listings.`)
                         } catch (_) {
-                          alert(`🎉 Job Published! "${jobTitle}" has been posted directly to your active job listings and synced with the database.`)
+                          setToastMsg(`🎉 Job Published! "${jobTitle}" has been posted directly to active listings.`)
                         }
+                        setTimeout(() => setToastMsg(null), 4000)
                       }}
-                      className="w-full py-2 bg-amber-500 hover:bg-amber-600 text-amber-950 font-bold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                      className="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-amber-950 font-bold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                     >
-                      <Briefcase className="w-3.5 h-3.5" />
-                      <span>Publish &quot;{jobTitle}&quot; Now</span>
+                      <Briefcase className="w-4 h-4" />
+                      <span>+ Publish &quot;{jobTitle}&quot; Directly to Listings</span>
                     </button>
                   </div>
                 )

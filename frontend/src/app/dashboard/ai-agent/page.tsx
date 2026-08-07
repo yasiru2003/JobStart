@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Bot, Sparkles, Send, User, CheckCircle2, Calendar, FileText, ChevronRight, Loader2 } from 'lucide-react'
 import { aiApi, wahaApi, jobsApi } from '@/lib/api'
+import { StructuredAiContent } from '@/components/ai/AiAgentDrawer'
 
 
 const SUGGESTED_PROMPTS = [
@@ -184,7 +185,11 @@ export default function AiAgentPage() {
                     : 'bg-surface border border-border text-foreground rounded-tl-none shadow-sm'
                 }`}
               >
-                <p>{m.text}</p>
+                {m.sender === 'user' ? (
+                  <p>{m.text}</p>
+                ) : (
+                  <StructuredAiContent text={m.text} />
+                )}
                 <p className={`text-[10px] mt-1.5 text-right ${m.sender === 'user' ? 'opacity-75' : 'text-muted'}`}>
                   {m.time}
                 </p>
