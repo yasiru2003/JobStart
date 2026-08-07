@@ -83,7 +83,11 @@ export default function VerificationReviewModal({
               <p className="text-sm font-bold text-foreground">National Identity Card & Police Clearance Document</p>
               <p className="text-xs text-muted mt-0.5">Scanned resolution: 300 DPI · Verified Digital Stamp</p>
             </div>
-            <button className="px-3.5 py-1.5 bg-surface border border-border hover:bg-surface-2 text-foreground font-semibold text-xs rounded-lg transition-colors">
+            <button
+              type="button"
+              onClick={() => window.open('/api/files/jobstart/3B43EDAAF01965E31B57.pdf', '_blank')}
+              className="px-3.5 py-1.5 bg-surface border border-border hover:bg-surface-2 text-foreground font-semibold text-xs rounded-lg transition-colors cursor-pointer"
+            >
               Open High-Res Document Scanner
             </button>
           </div>

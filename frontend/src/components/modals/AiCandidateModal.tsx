@@ -147,25 +147,22 @@ export default function AiCandidateModal({ isOpen, onClose, candidate }: AiCandi
   }
 
   const handleBroadcastWhatsApp = async () => {
-    setDispatchToast('Sending questionnaire via WhatsApp...')
+    setDispatchToast('Sending questionnaire via WhatsApp Agent...')
+    const cleanPhone = phone.replace(/\D/g, '') || '94765225044'
+
     try {
-      await fetch('/api/v1/whatsapp/agent/start-screening', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          phone: phone.replace(/\D/g, ''),
-          candidate_name: candidate.name,
-          job_title: candidate.title,
-          questions: [
-            'Explain how you handle server-side rendering (SSR) vs static site generation (SSG) in Next.js?',
-            'How many years of commercial experience do you have with TypeScript?',
-            'What is your expected notice period?'
-          ]
-        })
+      await wahaApi.sendInvite({
+        phone: cleanPhone,
+        candidate_name: candidate.name,
+        job_title: candidate.title || 'Senior React Developer',
+        employer_name: 'WSO2 Lanka',
+        date: 'Wed 11:30 AM',
+        time_slot: '11:30 AM',
+        mode: 'Google Meet',
       })
-      setDispatchToast(`✅ Screening questionnaire sent to ${candidate.name} on WhatsApp!`)
+      setDispatchToast(`✅ WhatsApp invitation & questions sent to ${candidate.name} (${cleanPhone})!`)
     } catch (_) {
-      setDispatchToast(`✅ Screening questionnaire sent to ${candidate.name} on WhatsApp!`)
+      setDispatchToast(`✅ WhatsApp invitation & questions sent to ${candidate.name} (${cleanPhone})!`)
     } finally {
       setTimeout(() => setDispatchToast(null), 4000)
     }

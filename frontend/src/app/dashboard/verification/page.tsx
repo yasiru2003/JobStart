@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { Shield, CheckCircle, XCircle, FileText, Eye } from 'lucide-react'
 import VerificationReviewModal from '@/components/modals/VerificationReviewModal'
-import { wahaApi } from '@/lib/api'
+import { wahaApi, verificationApi } from '@/lib/api'
 
 const initialVerificationQueue = [
   { id: 'v-hd', name: 'Hasini Dikkumbura', docType: 'NIC + Degree Certificate (PDF CV Verified)', submitted: 'Just now (WhatsApp Agent)', status: 'Verified', nic: '199878901234' },
@@ -53,7 +53,14 @@ export default function VerificationPage() {
     fetchLiveVerifications()
   }, [])
 
-  const handleDecision = (candidateId: string, status: 'Verified' | 'Rejected', notes: string) => {
+  const handleDecision = async (candidateId: string, status: 'Verified' | 'Rejected', notes: string) => {
+    try {
+      if (status === 'Verified') {
+        await verificationApi.approve(candidateId, notes || 'Verified identity credentials')
+      } else {
+        await verificationApi.reject(candidateId, notes || 'Rejected credentials')
+      }
+    } catch (_) {}
     setList((prev) => prev.map((item) => (item.id === candidateId ? { ...item, status } : item)))
   }
 

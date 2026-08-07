@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { X, Calendar, Clock, MapPin, Video, MessageSquare, CheckCircle, AlertCircle, XCircle, Send, Phone } from 'lucide-react'
-
+import { wahaApi } from '@/lib/api'
 import WhatsappConversationModal from '@/components/modals/WhatsappConversationModal'
 
 interface InterviewDetailModalProps {
@@ -33,9 +33,21 @@ export default function InterviewDetailModal({
 
   const phone = interview.phone || '+94 77 123 4567'
 
-  const handleResend = () => {
+  const handleResend = async () => {
+    const cleanPhone = (interview.phone || '94765225044').replace(/\D/g, '')
+    try {
+      await wahaApi.sendInvite({
+        phone: cleanPhone,
+        candidate_name: interview.candidate,
+        job_title: interview.job,
+        employer_name: (interview as any).employer || 'WSO2 Lanka',
+        date: interview.date,
+        time_slot: interview.time,
+        mode: interview.mode,
+      })
+    } catch (_) {}
     setResentToast(true)
-    setTimeout(() => setResentToast(false), 3000)
+    setTimeout(() => setResentToast(false), 3500)
   }
 
   return (
