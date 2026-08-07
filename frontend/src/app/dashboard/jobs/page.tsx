@@ -10,16 +10,17 @@ import DeleteJobModal from '@/components/modals/DeleteJobModal'
 import AiAgentDrawer from '@/components/ai/AiAgentDrawer'
 import { jobsApi, wahaApi } from '@/lib/api'
 
-const initialJobs = [
-  { id: '1', title: 'Senior React / Next.js Developer', employer: 'WSO2', location: 'Colombo 03 / Remote', salary: 'LKR 350,000 - 500,000 / mo', type: 'Full-time', status: 'Active', applicants: 3 },
-  { id: '2', title: 'Lead UI/UX Designer', employer: 'Sysco LABS', location: 'Colombo 05', salary: 'LKR 300,000 - 450,000 / mo', type: 'Full-time', status: 'Active', applicants: 1 },
-  { id: '3', title: 'DevOps & Kubernetes Engineer', employer: 'Dialog Axiata', location: 'Colombo 02', salary: 'LKR 400,000 - 600,000 / mo', type: 'Full-time', status: 'Active', applicants: 1 },
-  { id: '4', title: 'Associate Software Engineer', employer: 'Brandix Tech', location: 'Katunayake', salary: 'LKR 150,000 - 220,000 / mo', type: 'Contract', status: 'Paused', applicants: 2 },
+// Fallback jobs in case API is down — must match backend JOBS_DB
+const FALLBACK_JOBS = [
+  { id: 'job-1', title: 'Senior React / Next.js Developer', employer: 'WSO2', location: 'Colombo 03 / Remote', salary: 'LKR 350,000 - 500,000 / mo', type: 'Full-time', status: 'Active', applicants: 3 },
+  { id: 'job-2', title: 'Lead UI/UX Designer', employer: 'Sysco LABS', location: 'Colombo 05', salary: 'LKR 300,000 - 450,000 / mo', type: 'Full-time', status: 'Active', applicants: 1 },
+  { id: 'job-3', title: 'DevOps & Kubernetes Engineer', employer: 'Dialog Axiata', location: 'Colombo 02', salary: 'LKR 400,000 - 600,000 / mo', type: 'Full-time', status: 'Active', applicants: 1 },
+  { id: 'job-4', title: 'Associate Software Engineer', employer: 'Brandix Tech', location: 'Katunayake', salary: 'LKR 150,000 - 220,000 / mo', type: 'Contract', status: 'Paused', applicants: 2 },
 ]
 
 export default function JobsPage() {
   const router = useRouter()
-  const [jobs, setJobs] = useState(initialJobs)
+  const [jobs, setJobs] = useState(FALLBACK_JOBS)
   const [isPostModalOpen, setIsPostModalOpen] = useState(false)
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false)
   const [isAiDrawerOpen, setIsAiDrawerOpen] = useState(false)
@@ -28,24 +29,42 @@ export default function JobsPage() {
   const [search, setSearch] = useState('')
 
   useEffect(() => {
-    const syncLiveApplicantCounts = async () => {
+    const syncJobs = async () => {
       try {
-        const res = await wahaApi.conversations()
-        const convs = res.data || []
-        const liveApplicantCount = convs.length
+        // Load jobs from backend API (single source of truth)
+        const apiRes = await jobsApi.list()
+        const apiJobs = (apiRes.data || []).map((j: any) => ({
+          id: j.id,
+          title: j.title,
+          employer: j.company || 'JobStart',
+          location: j.location || '',
+          salary: `LKR ${Number(j.salary_min).toLocaleString()} - ${Number(j.salary_max).toLocaleString()} / mo`,
+          type: j.job_type?.includes('Contract') ? 'Contract' : 'Full-time',
+          status: j.status || 'Active',
+          applicants: 0,
+        }))
 
-        setJobs((prev) =>
-          prev.map((job, idx) => {
-            const dynamicCount = idx === 0 ? Math.max(liveApplicantCount, 3) : Math.max(convs.filter((c: any) => c.selected_job_title === job.title).length, 1)
-            return { ...job, applicants: dynamicCount }
-          })
-        )
+        // Merge with live WhatsApp applicant counts
+        const convsRes = await wahaApi.conversations()
+        const convs = convsRes.data || []
+        const liveCount = convs.length
+
+        const merged = (apiJobs.length > 0 ? apiJobs : FALLBACK_JOBS).map((job: any, idx: number) => ({
+          ...job,
+          applicants: idx === 0
+            ? Math.max(liveCount, 3)
+            : Math.max(convs.filter((c: any) => c.selected_job_title === job.title).length, 1),
+        }))
+
+        setJobs(merged)
       } catch (_) {}
     }
-    syncLiveApplicantCounts()
-    const interval = setInterval(syncLiveApplicantCounts, 5000)
+    syncJobs()
+    const interval = setInterval(syncJobs, 5000)
     return () => clearInterval(interval)
   }, [])
+
+
 
 
   const handleCreateJob = async (jobData: any) => {

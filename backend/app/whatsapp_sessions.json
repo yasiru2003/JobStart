@@ -2,7 +2,7 @@
   "94765225044": {
     "phone": "94765225044",
     "candidate_name": "Hasini Dikkumbura",
-    "language": "en",
+    "language": "si",
     "messages": [
       {
         "sender": "candidate",
@@ -1258,6 +1258,66 @@
         "sender": "agent",
         "text": "බොහොම ස්තූතියි හසිනි මහත්මිය! \n\nඔබගේ *React Developer* තනතුරේ සම්මුඛ පරීක්ෂණයට සහ *Flutter Mobile Developer* අයදුම්පතට අපගෙන් සුබ පැතුම්! \n\nඅනාගතයේදී යම් ගැටලුවක් හෝ තොරතුරක් දැනගැනීමට අවශ්‍ය වුවහොත් ඕනෑම වේලාවක අපව සම්බන්ධ කරගන්න. \n\nසුබ දවසක්!\n\n— *JobStart Recruitment Team*",
         "time": "2026-08-07T03:42:45.427410"
+      },
+      {
+        "sender": "candidate",
+        "text": "hi",
+        "time": "2026-08-07T07:19:53.570727"
+      },
+      {
+        "sender": "agent",
+        "text": "හලෝ හසිනි මහත්මිය! 👋 මාගෙන් ඔබට අද සිදුවිය යුතු උපකාරය කුමක්ද? \n\nඔබගේ *Flutter Mobile Developer* අයදුම්පත හෝ බදාදා පෙ.ව. 11:30 ට පැවැත්වෙන *Senior React Developer* සම්මුඛ පරීක්ෂණය පිළිබඳව යම් දෙයක් දැනගැනීමට අවශ්‍ය නම් මට දන්වන්න!\n\n— *JobStart Recruitment Team*",
+        "time": "2026-08-07T07:20:02.366144"
+      },
+      {
+        "sender": "candidate",
+        "text": "hello",
+        "time": "2026-08-07T07:21:24.530576"
+      },
+      {
+        "sender": "agent",
+        "text": "Hello Hasini! 👋 How can I help you today?\n\nI can assist you with details regarding your application for *Flutter Mobile Developer* at Rootcode Labs or your confirmed interview for *Senior React Developer* on Wednesday at 11:30 AM.\n\nFeel free to ask any questions!\n\n— *JobStart Recruitment Team*",
+        "time": "2026-08-07T07:21:30.017228"
+      },
+      {
+        "sender": "candidate",
+        "text": "hello test via tunnel",
+        "time": "2026-08-07T07:21:40.633321"
+      },
+      {
+        "sender": "agent",
+        "text": "Hello Hasini! 👋 Connection test successful!\n\nHow can I assist you today? If you have any questions regarding your application for *Flutter Mobile Developer* or your upcoming interview for *Senior React Developer*, please feel free to ask!\n\n— *JobStart Recruitment Team*",
+        "time": "2026-08-07T07:21:45.016453"
+      },
+      {
+        "sender": "candidate",
+        "text": "hi",
+        "time": "2026-08-07T07:22:22.699933"
+      },
+      {
+        "sender": "agent",
+        "text": "Hello Hasini! 👋 How can I assist you today? \n\nI'm here to help you with your application for *Flutter Mobile Developer* at Rootcode Labs or your confirmed interview for *Senior React Developer* on Wednesday at 11:30 AM. \n\nPlease let me know if you need details about your status or other available job openings!\n\n— *JobStart Recruitment Team*",
+        "time": "2026-08-07T07:22:28.800149"
+      },
+      {
+        "sender": "candidate",
+        "text": "hi",
+        "time": "2026-08-07T07:23:30.876330"
+      },
+      {
+        "sender": "agent",
+        "text": "Hello Hasini! 👋 How can I assist you today?\n\nI am here to help you with your application for the *Flutter Mobile Developer* role or your upcoming interview for *Senior React Developer* on Wednesday at 11:30 AM (Colombo 03).\n\nPlease let me know if you need any details about your status or other available positions!\n\n— *JobStart Recruitment Team*",
+        "time": "2026-08-07T07:23:37.324750"
+      },
+      {
+        "sender": "candidate",
+        "text": "monwd tyn jobs oylge",
+        "time": "2026-08-07T07:23:44.665554"
+      },
+      {
+        "sender": "agent",
+        "text": "හලෝ හසිනි මහත්මිය! 👋 අප ආයතනයේ දැනට පවතින රැකියා පුරප්පාඩු මෙන්න:\n\n• *1. Senior React Developer* — 99x Technology (කොළඹ 03)\n💰 වැටුප: LKR 350,000–500,000 | Full-time | Hybrid\n\n• *2. Flutter Mobile Developer* — Rootcode Labs (කොළඹ 07)\n💰 වැටුප: LKR 200,000–320,000 | Full-time | Remote\n\n• *3. Node.js Backend Engineer* — IFS R&D International (කොළඹ 02)\n💰 වැටුප: LKR 280,000–420,000 | Full-time | On-site\n\nඔබට මෙම රැකියාවක් ගැන වැඩිදුර විස්තර දැනගැනීමට හෝ අයදුම් කිරීමට අවශ්‍ය නම් මට දන්වන්න!\n\n— *JobStart Recruitment Team*",
+        "time": "2026-08-07T07:23:50.556892"
       }
     ],
     "last_intent": null,
