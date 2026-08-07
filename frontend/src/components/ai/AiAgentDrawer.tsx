@@ -325,10 +325,20 @@ export default function AiAgentDrawer({ isOpen, onClose }: AiAgentDrawerProps) {
                 m.text.toLowerCase().includes('role overview') ||
                 m.text.toLowerCase().includes('opportunity')
               ) && (() => {
-                const titleMatch = m.text.match(/Role:\s*([^\n]+)/i) || m.text.match(/Title:\s*([^\n]+)/i) || m.text.match(/Posting:\s*([^\n]+)/i)
-                const jobTitle = titleMatch ? titleMatch[1].trim().replace(/\*\*/g, '') : 'Senior React / Next.js Developer'
-                const salaryMatch = m.text.match(/Salary[^\n:]*:\s*([^\n]+)/i)
-                const salaryText = salaryMatch ? salaryMatch[1].trim().replace(/\*\*/g, '') : 'LKR 350,000 – 500,000 / mo'
+                const titleMatch =
+                  m.text.match(/##\s*💼?\s*([^\n\(\)]+)/i) ||
+                  m.text.match(/Job Title:\s*([^\n]+)/i) ||
+                  m.text.match(/Role:\s*([^\n]+)/i) ||
+                  m.text.match(/Title:\s*([^\n]+)/i) ||
+                  m.text.match(/Posting:\s*([^\n]+)/i)
+
+                let jobTitle = titleMatch ? titleMatch[1].replace(/[\#\*\💼]/g, '').trim() : ''
+                if (!jobTitle || jobTitle.length < 3 || jobTitle.includes('Overview') || jobTitle.includes('Summary')) {
+                  jobTitle = 'Sales Executive'
+                }
+
+                const salaryMatch = m.text.match(/Salary[^\n:]*:\s*([^\n]+)/i) || m.text.match(/LKR\s*[\d\,\s\-]+(?:\/|\s)mo/i)
+                const salaryText = salaryMatch ? salaryMatch[0].trim().replace(/\*\*/g, '') : 'LKR 350,000 – 500,000 / mo'
 
                 return (
                   <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 space-y-2.5 shadow-sm">

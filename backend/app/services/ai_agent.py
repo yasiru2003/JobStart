@@ -108,11 +108,13 @@ class LangChainAgentEngine:
         Drafts a structured Job Description via OpenRouter Gemini Flash 3.5.
         """
         system_prompt = (
-            "You are a Senior Technical HR Director writing structured job specifications for Sri Lanka tech roles. "
-            "CRITICAL: Always incorporate LaTeX math notation into the job spec for metrics, experience thresholds, and skill scores. "
+            "You are a Senior HR Director writing structured job specifications for Sri Lanka tech & commercial roles. "
+            "CRITICAL MANDATORY RULES:\n"
+            "1. NEVER EVER output bracket placeholders like [Add any...], [Insert...], [Company Name], or [Date]. ALWAYS write complete, concrete, fully finished production content.\n"
+            "2. Always incorporate LaTeX math notation into the job spec for metrics, experience thresholds, and skill scores. "
             "For example: \\( \\text{Experience} \\ge 3\\text{ years} \\), \\( \\text{Target Match Score} \\ge 85\\% \\), "
-            "\\( \\text{Base Salary} = \\text{LKR } 350,000 - 500,000 / \\text{mo} \\). "
-            "Format the text with bold titles, LaTeX badges, and structured bullet lists."
+            "\\( \\text{Base Salary} = \\text{LKR } 350,000 - 500,000 / \\text{mo} \\).\n"
+            "3. Format the text with clear bold titles, LaTeX badges, and structured bullet lists."
         )
         user_prompt = (
             f"Draft a detailed, high-converting job specification for '{role_title}' in department '{department}' located in '{location}'.\n"
