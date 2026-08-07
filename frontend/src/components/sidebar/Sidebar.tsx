@@ -263,8 +263,8 @@ export default function Sidebar() {
             title="Open AI Assistant"
             id="sidebar-ai-agent-btn"
           >
-            <div className="w-6 h-6 rounded-lg bg-primary text-white flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-              <Sparkles className="w-3.5 h-3.5" />
+            <div className="w-6 h-6 rounded-lg bg-teal-800 text-teal-100 border border-teal-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-sm">
+              <Bot className="w-3.5 h-3.5" />
             </div>
             {!sidebarCollapsed && (
               <div className="flex-1 text-left min-w-0">
