@@ -52,7 +52,7 @@ class Settings(BaseSettings):
 
     # WAHA WhatsApp API
     WAHA_BASE_URL: str = "http://178.104.127.220:3000"
-    WAHA_SESSION: str = "hirepth"
+    WAHA_SESSION: str = "jobstart"
     WAHA_API_KEY: str = "key_Z9s561T3AdkBlkciQ73wt7oag2yEurGA"
 
     # Supabase & Lovable AI Integration

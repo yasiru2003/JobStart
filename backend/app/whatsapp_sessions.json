@@ -1508,7 +1508,7 @@
       },
       {
         "sender": "agent",
-        "text": "Hello! Welcome! I am HirePth AI Job Finder. How can I assist you today? Feel free to ask your questions in English or Sinhala!",
+        "text": "Hello! Welcome! I am Sinhala Helper (සිංහල සහායක). How can I assist you today? Feel free to ask your questions in English or Sinhala!",
         "time": "2026-08-07T16:03:57.878725"
       },
       {
@@ -1518,7 +1518,7 @@
       },
       {
         "sender": "agent",
-        "text": "Yes, I am **HirePth AI Job Finder**, a friendly bilingual recruitment assistant. I am here to help you find jobs and apply to them. \n\nHow can I assist you today?",
+        "text": "No, I am **Sinhala Helper (සිංහල සහායක)**, a friendly bilingual support assistant. I am not a Hire Path or JobStart assistant. \n\nI am here to help you with Sinhala language translation, learning, typing, or any general inquiries in both English and Sinhala. \n\nHow can I assist you today?",
         "time": "2026-08-07T16:04:26.567762"
       }
     ],
@@ -1538,5 +1538,96 @@
     "job_title": "",
     "interview_date": "",
     "interview_time": ""
+  },
+  "94711365928": {
+    "phone": "94711365928",
+    "candidate_name": "Candidate",
+    "language": "en",
+    "messages": [
+      {
+        "sender": "candidate",
+        "text": "Hi",
+        "time": "2026-08-07T16:12:45.531403"
+      },
+      {
+        "sender": "agent",
+        "text": "Hello! How can I help you today?",
+        "time": "2026-08-07T16:12:53.275073"
+      },
+      {
+        "sender": "candidate",
+        "text": "Monwd available job opportunities?",
+        "time": "2026-08-07T16:13:07.697245"
+      },
+      {
+        "sender": "agent",
+        "text": "ආයුබෝවන්! JobStart Sri Lanka හරහා දැනට පවතින ප්‍රධාන රැකියා ඇබෑර්තු කිහිපයක් මෙන්න:\n\n1. *Senior React / Next.js Developer* — WSO2 (LKR 350,000–500,000)\n2. *Sales Executive* — WSO2 Lanka (LKR 350,000–500,000)\n3. *Lead UI/UX Designer* — Sysco LABS (LKR 300,000–450,000)\n4. *DevOps & Kubernetes Engineer* — Dialog Axiata (LKR 400,000–600,000)\n5. *Associate Software Engineer* — Brandix Tech (LKR 150,000–220,000)\n\nඔබ කැමති රැකියාවේ අංකය හෝ නම සඳහන් කරන්න. වැඩිදුර තොරතුරු සහ ඉල්ලුම් කරන ආකාරය මට පවසන්න පුළුවන්!",
+        "time": "2026-08-07T16:13:15.074693"
+      },
+      {
+        "sender": "candidate",
+        "text": "Mata dewni job eka gana wistara kiyanna",
+        "time": "2026-08-07T16:13:38.970191"
+      },
+      {
+        "sender": "candidate",
+        "text": "Mata dewni job eka gana wistara kiyanna",
+        "time": "2026-08-07T16:13:41.253773"
+      },
+      {
+        "sender": "agent",
+        "text": "දෙවැනි රැකියාව පිළිබඳ විස්තර මෙන්න:\n\n*තනතුර:* Sales Executive\n*ආයතනය:* WSO2 Lanka\n*ස්ථානය:* කොළඹ 03 / Remote\n*සේවා වර්ගය:* Full-time\n*වැටුප:* LKR 350,000 – 500,000\n\nඔබගේ අයදුම්පත සඳහා CV එක තවම Upload කර නොමැත. මෙම රැකියාවට ඉල්ලුම් කිරීමට හෝ CV එක යොමු කිරීමට අවශ්‍ය නම් මට පවසන්න!",
+        "time": "2026-08-07T16:13:46.318932"
+      },
+      {
+        "sender": "candidate",
+        "text": "[Media Document]",
+        "time": "2026-08-07T16:14:07.577934"
+      },
+      {
+        "sender": "candidate",
+        "text": "[PDF Document Received: http://localhost:3000/api/files/jobstart/3A53B2AC7177B475079A.pdf]",
+        "time": "2026-08-07T16:14:07.585797"
+      },
+      {
+        "sender": "agent",
+        "text": "🎉 *ස්තූතියි! ඔබේ PDF/CV ලේඛනය සාර්ථකව ලැබිණි.* ✅\n\n📌 *තනතුර*: Sales Executive\n📄 *ලේඛනය*: PDF CV Received (Verified)\n\nඅපගේ AI පද්ධතිය ඔබේ CV ලේඛනය පරීක්ෂා කර බලා සුදුසුම සම්මුඛ පරීක්ෂණ වේලාවන් ලබාදීමට ඉක්මනින් ඔබව සම්බන්ධ කරගනු ඇත!\n\n— *JobStart Recruitment Team*",
+        "time": "2026-08-07T16:14:07.592322"
+      },
+      {
+        "sender": "candidate",
+        "text": "Hi",
+        "time": "2026-08-07T16:19:27.826538"
+      },
+      {
+        "sender": "agent",
+        "text": "Hello! *JobStart Recruitment Team* here.\n\nWe have successfully received and verified your CV for the *Sales Executive* position at *WSO2 Lanka*. Your application stage is currently marked as *Submitted*.\n\nHow can I assist you today? If you have any questions regarding your application or other job opportunities, please feel free to ask!",
+        "time": "2026-08-07T16:19:34.571450"
+      },
+      {
+        "sender": "agent",
+        "text": "🔔 Hi *Candidate*!\n\nWe found *1* job(s) that match your profile:\n\n  1. *LSEG Software Engineering* — 98% match\n\nReply *apply* to start your application right here in WhatsApp, or reply *jobs* to see all available positions.\n\n— *HirePth Recruitment Team*",
+        "time": "2026-08-07T16:20:42.935030"
+      }
+    ],
+    "last_intent": null,
+    "interview_confirmed": false,
+    "application_stage": "submitted",
+    "selected_job_id": null,
+    "selected_job_title": "Sales Executive",
+    "collected_name": null,
+    "collected_experience": null,
+    "collected_skills": [],
+    "cv_media_url": "http://localhost:3000/api/files/jobstart/3A53B2AC7177B475079A.pdf",
+    "screening_stage": "idle",
+    "screening_questions": [],
+    "screening_answers": [],
+    "screening_current_index": 0,
+    "job_title": "",
+    "interview_date": "",
+    "interview_time": "",
+    "last_discussed_job_index": 2,
+    "last_discussed_job_title": "Sales Executive",
+    "pdf_received": true
   }
 }
