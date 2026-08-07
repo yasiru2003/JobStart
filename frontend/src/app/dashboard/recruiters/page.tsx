@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Users, Plus, Search, Mail, UserCheck, Trash2, Briefcase, UserPlus, Eye, Phone, MapPin, Calendar, CheckCircle2 } from 'lucide-react'
 import AddTeamMemberModal from '@/components/modals/AddTeamMemberModal'
+import { wahaApi } from '@/lib/api'
 
 const initialStaff = [
   {
@@ -57,6 +58,24 @@ export default function RecruitersPage() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [selectedStaff, setSelectedStaff] = useState<any | null>(null)
   const [search, setSearch] = useState('')
+
+  useEffect(() => {
+    const syncStaffMetrics = async () => {
+      try {
+        const res = await wahaApi.conversations()
+        const convs = res.data || []
+        const waCount = convs.length
+
+        setStaffList((prev) =>
+          prev.map((staff, idx) => ({
+            ...staff,
+            candidatePipeline: idx === 0 ? staff.candidatePipeline + waCount : staff.candidatePipeline,
+          }))
+        )
+      } catch (_) {}
+    }
+    syncStaffMetrics()
+  }, [])
 
   const handleAddSubmit = (data: any) => {
     const newStaff = {

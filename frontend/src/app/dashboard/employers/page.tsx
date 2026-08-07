@@ -1,20 +1,44 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Building2, Plus, Search, Filter, CheckCircle } from 'lucide-react'
 import EmployerRegistrationModal from '@/components/modals/EmployerRegistrationModal'
+import { jobsApi } from '@/lib/api'
 
 const initialEmployers = [
-  { id: '1', name: 'Dialog Axiata', industry: 'Telecommunications', size: '1000+ employees', jobs: 12, plan: 'Scale / Enterprise' },
-  { id: '2', name: 'WSO2', industry: 'Software / Technology', size: '500-1000 employees', jobs: 8, plan: 'Growth' },
-  { id: '3', name: 'Sysco LABS', industry: 'Information Technology', size: '500+ employees', jobs: 15, plan: 'Scale / Enterprise' },
-  { id: '4', name: 'Brandix', industry: 'Apparel & Textiles', size: '1000+ employees', jobs: 5, plan: 'Starter' },
+  { id: '1', name: 'WSO2', industry: 'Software / Technology', size: '500-1000 employees', jobs: 8, plan: 'Growth' },
+  { id: '2', name: 'Sysco LABS', industry: 'Information Technology', size: '500+ employees', jobs: 15, plan: 'Scale / Enterprise' },
+  { id: '3', name: 'Dialog Axiata', industry: 'Telecommunications', size: '1000+ employees', jobs: 12, plan: 'Scale / Enterprise' },
+  { id: '4', name: 'Brandix Tech', industry: 'Apparel & Tech', size: '1000+ employees', jobs: 5, plan: 'Starter' },
   { id: '5', name: 'MAS Holdings', industry: 'Apparel & Innovation', size: '1000+ employees', jobs: 10, plan: 'Growth' },
 ]
 
 export default function EmployersPage() {
   const [employers, setEmployers] = useState(initialEmployers)
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false)
+
+  useEffect(() => {
+    const syncJobsCount = async () => {
+      try {
+        const res = await jobsApi.list()
+        const apiJobs = res.data || []
+        
+        setEmployers((prev) =>
+          prev.map((emp) => {
+            const companyJobs = apiJobs.filter((j: any) =>
+              (j.company || '').toLowerCase().includes(emp.name.toLowerCase()) ||
+              emp.name.toLowerCase().includes((j.company || '').toLowerCase())
+            )
+            return {
+              ...emp,
+              jobs: companyJobs.length > 0 ? companyJobs.length : emp.jobs,
+            }
+          })
+        )
+      } catch (_) {}
+    }
+    syncJobsCount()
+  }, [])
 
   const handleAddEmployer = (formData: any) => {
     const newEmp = {
