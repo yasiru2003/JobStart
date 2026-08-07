@@ -1453,17 +1453,32 @@
         "sender": "agent",
         "text": "Hello Hasini! 👋 \n\nHow can I help you today? Please let me know if you have any questions regarding your scheduled interview or available job opportunities!",
         "time": "2026-08-07T16:06:12.052613"
+      },
+      {
+        "sender": "candidate",
+        "text": "[Media Document]",
+        "time": "2026-08-07T17:47:07.472521"
+      },
+      {
+        "sender": "candidate",
+        "text": "[PDF Document Received: http://localhost:3000/api/files/jobstart/3B4C6D64AA53EBBE1BC2.jpeg]",
+        "time": "2026-08-07T17:47:07.477180"
+      },
+      {
+        "sender": "agent",
+        "text": "🎉 *ස්තූතියි! ඔබේ PDF/CV ලේඛනය සාර්ථකව ලැබිණි.* ✅\n\n📌 *තනතුර*: Flutter Mobile Developer\n📄 *ලේඛනය*: PDF CV Received (Verified)\n\nඅපගේ AI පද්ධතිය ඔබේ CV ලේඛනය පරීක්ෂා කර බලා සුදුසුම සම්මුඛ පරීක්ෂණ වේලාවන් ලබාදීමට ඉක්මනින් ඔබව සම්බන්ධ කරගනු ඇත!\n\n— *HirePath Recruitment Team*",
+        "time": "2026-08-07T17:47:07.479606"
       }
     ],
     "last_intent": null,
     "interview_confirmed": false,
-    "application_stage": "interview_scheduled",
+    "application_stage": "submitted",
     "selected_job_id": null,
     "selected_job_title": "Flutter Mobile Developer",
     "collected_name": "Hasini Dikkumbura",
     "collected_experience": null,
     "collected_skills": [],
-    "cv_media_url": "http://localhost:3000/api/files/jobstart/3B43EDAAF01965E31B57.pdf",
+    "cv_media_url": "http://localhost:3000/api/files/jobstart/3B4C6D64AA53EBBE1BC2.jpeg",
     "screening_stage": "idle",
     "screening_questions": [
       "Explain how you handle server-side rendering (SSR) vs static site generation (SSG) in Next.js?",
@@ -1551,7 +1566,7 @@
       },
       {
         "sender": "agent",
-        "text": "ආයුබෝවන්! HirePth Sri Lanka වෙත ඔබව සාදරයෙන් පිළිගන්නවා. \n\nඔබගේ අධ්‍යාපනික සුදුසුකම් සහ රැකියා ක්ෂේත්‍රයේ රුචිකත්වයන් මොනවාද? දැනට අප සතුව ඇති හොඳම රැකියා අවස්ථා කිහිපයක් මෙන්න:\n\n• *Senior React / Next.js Developer* — WSO2 (LKR 350,000–500,000)\n• *Lead UI/UX Designer* — Sysco LABS (LKR 300,000–450,000)\n• *DevOps & Kubernetes Engineer* — Dialog Axiata (LKR 400,000–600,000)\n\nඔබ උනන්දු වන රැකියාව කුමක්දැයි මට පවසන්න!",
+        "text": "ආයුබෝවන්! HirePath Sri Lanka වෙත ඔබව සාදරයෙන් පිළිගන්නවා. \n\nඔබගේ අධ්‍යාපනික සුදුසුකම් සහ රැකියා ක්ෂේත්‍රයේ රුචිකත්වයන් මොනවාද? දැනට අප සතුව ඇති හොඳම රැකියා අවස්ථා කිහිපයක් මෙන්න:\n\n• *Senior React / Next.js Developer* — WSO2 (LKR 350,000–500,000)\n• *Lead UI/UX Designer* — Sysco LABS (LKR 300,000–450,000)\n• *DevOps & Kubernetes Engineer* — Dialog Axiata (LKR 400,000–600,000)\n\nඔබ උනන්දු වන රැකියාව කුමක්දැයි මට පවසන්න!",
         "time": "2026-08-07T16:32:34.249740"
       },
       {
@@ -1586,7 +1601,7 @@
       },
       {
         "sender": "agent",
-        "text": "✅ *ස්තූතියි! ඔබ තෝරාගත් රැකියාව:*\n\n💼 *Senior React / Next.js Developer*\n🏢 WSO2 — Colombo 03 / Remote\n💰 *වැටුප*: LKR 350,000 – 500,000\n\n📎 දැන් ඔබේ *CV (PDF)* file එක WhatsApp හරහා send කරන්න — apply සම්පූර්ණ!\n\n— *HirePth Recruitment Team*",
+        "text": "✅ *ස්තූතියි! ඔබ තෝරාගත් රැකියාව:*\n\n💼 *Senior React / Next.js Developer*\n🏢 WSO2 — Colombo 03 / Remote\n💰 *වැටුප*: LKR 350,000 – 500,000\n\n📎 දැන් ඔබේ *CV (PDF)* file එක WhatsApp හරහා send කරන්න — apply සම්පූර්ණ!\n\n— *HirePath Recruitment Team*",
         "time": "2026-08-07T16:33:35.983086"
       },
       {
@@ -1601,12 +1616,12 @@
       },
       {
         "sender": "agent",
-        "text": "🎉 *ස්තූතියි! ඔබේ PDF/CV ලේඛනය සාර්ථකව ලැබිණි.* ✅\n\n📌 *තනතුර*: Senior React / Next.js Developer\n📄 *ලේඛනය*: PDF CV Received (Verified)\n\nඅපගේ AI පද්ධතිය ඔබේ CV ලේඛනය පරීක්ෂා කර බලා සුදුසුම සම්මුඛ පරීක්ෂණ වේලාවන් ලබාදීමට ඉක්මනින් ඔබව සම්බන්ධ කරගනු ඇත!\n\n— *HirePth Recruitment Team*",
+        "text": "🎉 *ස්තූතියි! ඔබේ PDF/CV ලේඛනය සාර්ථකව ලැබිණි.* ✅\n\n📌 *තනතුර*: Senior React / Next.js Developer\n📄 *ලේඛනය*: PDF CV Received (Verified)\n\nඅපගේ AI පද්ධතිය ඔබේ CV ලේඛනය පරීක්ෂා කර බලා සුදුසුම සම්මුඛ පරීක්ෂණ වේලාවන් ලබාදීමට ඉක්මනින් ඔබව සම්බන්ධ කරගනු ඇත!\n\n— *HirePath Recruitment Team*",
         "time": "2026-08-07T16:34:11.135278"
       },
       {
         "sender": "agent",
-        "text": "👋 ආයුබෝවන් *Candidate*!\n\n🎉 *WSO2* ආයතනයේ *Senior React / Next.js Developer* තනතුර සඳහා ඔබව තෝරාගෙන ඇත!\n\n📅 *ලබාගත හැකි සම්මුඛ පරීක්ෂණ වේලාවන්*:\n1️⃣ *Monday, 10th Aug - 10:00 AM*\n2️⃣ *Monday, 10th Aug - 02:00 PM*\n3️⃣ *Tuesday, 11th Aug - 11:30 AM*\n\nඔබ කැමති වේලාවේ අංකය (උදා: *1* හෝ *2*) මෙතැනට යවා වේලාව වෙන්කර ගන්න.\n\n— *HirePth Recruitment Team*",
+        "text": "👋 ආයුබෝවන් *Candidate*!\n\n🎉 *WSO2* ආයතනයේ *Senior React / Next.js Developer* තනතුර සඳහා ඔබව තෝරාගෙන ඇත!\n\n📅 *ලබාගත හැකි සම්මුඛ පරීක්ෂණ වේලාවන්*:\n1️⃣ *Monday, 10th Aug - 10:00 AM*\n2️⃣ *Monday, 10th Aug - 02:00 PM*\n3️⃣ *Tuesday, 11th Aug - 11:30 AM*\n\nඔබ කැමති වේලාවේ අංකය (උදා: *1* හෝ *2*) මෙතැනට යවා වේලාව වෙන්කර ගන්න.\n\n— *HirePath Recruitment Team*",
         "time": "2026-08-07T16:35:36.732548"
       },
       {
@@ -1621,12 +1636,12 @@
       },
       {
         "sender": "agent",
-        "text": "✅ *සම්මුඛ පරීක්ෂණ වේලාව තහවුරු කරන ලදී!*\n\n📌 *තනතුර*: Senior React / Next.js Developer\n⏰ *වෙන්කළ වේලාව*: Tuesday, 11th Aug - 11:30 AM\n💻 *Google Meet Link*: https://meet.google.com/hirepth-5928\n\nස්තූතියි! නියමිත වේලාවට මිනිත්තු 5කට පෙර ඉහත Google Meet සබැඳිය ඔස්සේ සම්බන්ධ වන්න.\n\n— *HirePth Recruitment Team*",
+        "text": "✅ *සම්මුඛ පරීක්ෂණ වේලාව තහවුරු කරන ලදී!*\n\n📌 *තනතුර*: Senior React / Next.js Developer\n⏰ *වෙන්කළ වේලාව*: Tuesday, 11th Aug - 11:30 AM\n💻 *Google Meet Link*: https://meet.google.com/hirepath-5928\n\nස්තූතියි! නියමිත වේලාවට මිනිත්තු 5කට පෙර ඉහත Google Meet සබැඳිය ඔස්සේ සම්බන්ධ වන්න.\n\n— *HirePath Recruitment Team*",
         "time": "2026-08-07T16:35:57.307331"
       },
       {
         "sender": "agent",
-        "text": "🔔 ආයුබෝවන් *Candidate*!\n\nඔබගේ සුදුසුකම් වලට ගැලපෙන රැකියා *2* ක් අපට හමුවිය:\n\n  1. *Senior React / Next.js Developer* — 95% match\n  2. *Lead UI/UX Designer* — 88% match\n\nමෙම රැකියාවට අයදුම් කිරීමට අදාල අංකය (උදා: *1*) යොමු කරන්න.\n\n— *HirePth Recruitment Team*",
+        "text": "🔔 ආයුබෝවන් *Candidate*!\n\nඔබගේ සුදුසුකම් වලට ගැලපෙන රැකියා *2* ක් අපට හමුවිය:\n\n  1. *Senior React / Next.js Developer* — 95% match\n  2. *Lead UI/UX Designer* — 88% match\n\nමෙම රැකියාවට අයදුම් කිරීමට අදාල අංකය (උදා: *1*) යොමු කරන්න.\n\n— *HirePath Recruitment Team*",
         "time": "2026-08-07T16:38:24.029919"
       },
       {
@@ -1636,7 +1651,7 @@
       },
       {
         "sender": "agent",
-        "text": "ඔබ අයදුම් කළ WSO2 රැකියාවේ විස්තර මෙන්න:\n\n💼 *තනතුර*: Senior React / Next.js Developer\n🏢 *ආයතනය*: WSO2 (Colombo 03 / Remote)\n💰 *වැටුප*: LKR 350,000 – 500,000\n📌 *වර්ගය*: Full-time | Hybrid\n\n📅 *තහවුරු කළ සම්මුඛ පරීක්ෂණය*:\n• *දිනය සහ වේලාව*: Tuesday, 11th Aug - 11:30 AM\n💻 *Google Meet*: https://meet.google.com/hirepth-5928\n\nඔබගේ CV ලේඛනය සාර්ථකව පරීක්ෂා කර සම්මුඛ පරීක්ෂණය තහවුරු කර ඇත. \n\n— *HirePth Recruitment Team*",
+        "text": "ඔබ අයදුම් කළ WSO2 රැකියාවේ විස්තර මෙන්න:\n\n💼 *තනතුර*: Senior React / Next.js Developer\n🏢 *ආයතනය*: WSO2 (Colombo 03 / Remote)\n💰 *වැටුප*: LKR 350,000 – 500,000\n📌 *වර්ගය*: Full-time | Hybrid\n\n📅 *තහවුරු කළ සම්මුඛ පරීක්ෂණය*:\n• *දිනය සහ වේලාව*: Tuesday, 11th Aug - 11:30 AM\n💻 *Google Meet*: https://meet.google.com/hirepath-5928\n\nඔබගේ CV ලේඛනය සාර්ථකව පරීක්ෂා කර සම්මුඛ පරීක්ෂණය තහවුරු කර ඇත. \n\n— *HirePath Recruitment Team*",
         "time": "2026-08-07T16:40:12.463907"
       },
       {
@@ -1666,12 +1681,12 @@
       },
       {
         "sender": "agent",
-        "text": "✅ *Thank you, Candidate!*\n\nYou've completed the screening. Our team will review your responses and get back to you shortly.\n\n— *HirePth Recruitment Team*",
+        "text": "✅ *Thank you, Candidate!*\n\nYou've completed the screening. Our team will review your responses and get back to you shortly.\n\n— *HirePath Recruitment Team*",
         "time": "2026-08-07T16:44:32.346937"
       },
       {
         "sender": "agent",
-        "text": "🎉 *සුබ පැතුම් Candidate!* 🎉\n\nඔබගේ විශිෂ්ට සම්මුඛ පරීක්ෂණය සහ දක්ෂතා මත පදනම්ව *WSO2* හි *Senior React / Next.js Developer* තනතුර සඳහා ඔබව තෝරාගෙන ඇති බව සතුටින් දන්වා සිටිමු!\n\nකරුණාකර onboarding ක්‍රියාවලිය සඳහා පහත ලිපිලේඛන (PDF/Photos) මෙම අංකයටම WhatsApp කරන්න:\n• ජාතික හැඳුනුම්පතේ (NIC) පිටපතක්\n• බැංකු ගිණුම් විස්තර (Bank Passbook)\n\nඔබ හෙට දින සිට සේවයට වාර්තා කිරීමට නියමිතයි. සුබ පැතුම්! 🚀\n— *HirePth Recruitment Team*",
+        "text": "🎉 *සුබ පැතුම් Candidate!* 🎉\n\nඔබගේ විශිෂ්ට සම්මුඛ පරීක්ෂණය සහ දක්ෂතා මත පදනම්ව *WSO2* හි *Senior React / Next.js Developer* තනතුර සඳහා ඔබව තෝරාගෙන ඇති බව සතුටින් දන්වා සිටිමු!\n\nකරුණාකර onboarding ක්‍රියාවලිය සඳහා පහත ලිපිලේඛන (PDF/Photos) මෙම අංකයටම WhatsApp කරන්න:\n• ජාතික හැඳුනුම්පතේ (NIC) පිටපතක්\n• බැංකු ගිණුම් විස්තර (Bank Passbook)\n\nඔබ හෙට දින සිට සේවයට වාර්තා කිරීමට නියමිතයි. සුබ පැතුම්! 🚀\n— *HirePath Recruitment Team*",
         "time": "2026-08-07T16:45:45.957581"
       }
     ],

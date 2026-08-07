@@ -9,8 +9,8 @@ import Toast from '@/components/ui/Toast'
 import WAHASettingsCard from '@/components/modals/WAHASettingsCard'
 
 const INITIAL_TEAM = [
-  { id: '1', name: 'Nadeeka Dias', email: 'nadeeka.dias@hirepth.lk', role: 'Admin', initials: 'ND' },
-  { id: '2', name: 'Kavinda Fernando', email: 'kavinda@hirepth.lk', role: 'Recruiter', initials: 'KF' },
+  { id: '1', name: 'Nadeeka Dias', email: 'nadeeka.dias@hirepath.lk', role: 'Admin', initials: 'ND' },
+  { id: '2', name: 'Kavinda Fernando', email: 'kavinda@hirepath.lk', role: 'Recruiter', initials: 'KF' },
   { id: '3', name: 'Sahan Gunawardena', email: 'sahan@wso2.com', role: 'Hiring Manager', initials: 'SG' },
 ]
 

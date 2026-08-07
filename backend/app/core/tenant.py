@@ -10,7 +10,7 @@ async def get_current_tenant_id(request: Request) -> Optional[str]:
     if tenant_header:
         return tenant_header
 
-    # Extract subdomain from host (e.g. wso2.hirepth.lk -> wso2)
+    # Extract subdomain from host (e.g. wso2.hirepath.lk -> wso2)
     host = request.headers.get("host", "")
     if "." in host:
         subdomain = host.split(".")[0]

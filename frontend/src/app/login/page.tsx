@@ -10,7 +10,7 @@ const DEMO_PRESETS: { role: UserRole; label: string; email: string; name: string
   {
     role: 'admin',
     label: 'Platform Admin',
-    email: 'nadeeka.dias@hirepth.lk',
+    email: 'nadeeka.dias@hirepath.lk',
     name: 'Nadeeka Dias',
     icon: Shield,
     color: 'bg-rose-500/10 text-rose-600 border-rose-200 hover:bg-rose-500/20',
@@ -26,7 +26,7 @@ const DEMO_PRESETS: { role: UserRole; label: string; email: string; name: string
   {
     role: 'recruiter',
     label: 'Recruiter',
-    email: 'recruiter@hirepth.lk',
+    email: 'recruiter@hirepath.lk',
     name: 'Kavinda Fernando',
     icon: UserCheck,
     color: 'bg-emerald-500/10 text-emerald-600 border-emerald-200 hover:bg-emerald-500/20',

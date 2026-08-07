@@ -5,7 +5,7 @@ from app.core.config import settings
 
 import re
 
-logger = logging.getLogger("hirepth.waha")
+logger = logging.getLogger("hirepath.waha")
 
 
 def format_whatsapp_markdown(text: str) -> str:
@@ -275,7 +275,7 @@ class WAHAService:
             f"⏰ *Time*: {time_slot}\n"
             f"📍 *Mode/Location*: {mode}\n\n"
             f"Please reply *YES* to confirm your attendance or *NO* if you need to reschedule.\n\n"
-            f"— *HirePth Sri Lanka Recruitment Team*"
+            f"— *HirePath Sri Lanka Recruitment Team*"
         )
         return await self.send_text(phone, message)
 

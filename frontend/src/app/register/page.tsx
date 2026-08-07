@@ -81,7 +81,7 @@ export default function RegisterPage() {
           </span>
         </div>
         <h2 className="mt-4 text-center text-2xl font-bold tracking-tight text-foreground">
-          Create your HirePth Account
+          Create your HirePath Account
         </h2>
       </div>
 

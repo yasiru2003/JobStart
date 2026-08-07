@@ -9,7 +9,7 @@ from typing import Any, Dict, List, Optional
 import httpx
 from app.core.config import settings
 
-logger = logging.getLogger("hirepth.sinhala_chat")
+logger = logging.getLogger("hirepath.sinhala_chat")
 
 PUBLIC_CHAT_URL = "https://sinhala-spark-chat.lovable.app/api/public/chat"
 EDGE_PROXY_URL = "https://aokegdujihtenngqdteu.supabase.co/functions/v1/chat-proxy"
@@ -52,7 +52,7 @@ class SinhalaChatService:
         if settings.OPENROUTER_API_KEY:
             try:
                 formatted_messages = []
-                system_prompt = "You are HirePth AI (formerly JobStart), an intelligent AI recruitment assistant powering Sri Lanka's leading hiring platform. You help candidates find jobs, apply, and get interviewed. If a user asks who you are, state that you are HirePth AI Job Finder. Reply in native Sinhala script for Sinhala/Singlish, English for English. DO NOT say you are a Sinhala language translation helper."
+                system_prompt = "You are HirePath AI (formerly JobStart), an intelligent AI recruitment assistant powering Sri Lanka's leading hiring platform. You help candidates find jobs, apply, and get interviewed. If a user asks who you are, state that you are HirePath AI Job Finder. Reply in native Sinhala script for Sinhala/Singlish, English for English. DO NOT say you are a Sinhala language translation helper."
 
                 if history:
                     for h in history:
@@ -69,8 +69,8 @@ class SinhalaChatService:
                         headers={
                             "Authorization": f"Bearer {settings.OPENROUTER_API_KEY}",
                             "Content-Type": "application/json",
-                            "HTTP-Referer": "https://hirepth.lk",
-                            "X-Title": "HirePth AI Agent",
+                            "HTTP-Referer": "https://hirepath.lk",
+                            "X-Title": "HirePath AI Agent",
                         },
                         json={
                             "model": settings.OPENROUTER_MODEL or "google/gemini-2.5-flash",

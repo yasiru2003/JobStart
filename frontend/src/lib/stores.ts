@@ -15,7 +15,7 @@ export interface User {
 
 const defaultAdminUser: User = {
   id: 'usr_admin_1',
-  email: 'nadeeka.dias@hirepth.lk',
+  email: 'nadeeka.dias@hirepath.lk',
   fullName: 'Nadeeka Dias',
   role: 'admin',
 }
@@ -52,7 +52,7 @@ export const useAuthStore = create<AuthState>()(
       logout: () => set({ user: null, token: null, viewingAs: 'admin' }),
     }),
     {
-      name: 'hirepth-auth-v2',
+      name: 'hirepath-auth-v2',
       partialize: (state) => ({ user: state.user, token: state.token, viewingAs: state.viewingAs }),
     }
   )
@@ -73,6 +73,6 @@ export const useUIStore = create<UIState>()(
       toggleSidebar: () => set((s) => ({ sidebarCollapsed: !s.sidebarCollapsed })),
       toggleDarkMode: () => set((s) => ({ darkMode: !s.darkMode })),
     }),
-    { name: 'hirepth-ui-v2' }
+    { name: 'hirepath-ui-v2' }
   )
 )

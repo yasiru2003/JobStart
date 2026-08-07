@@ -85,7 +85,7 @@ export default function VerificationReviewModal({
             </div>
             <button
               type="button"
-              onClick={() => window.open('/api/files/hirepth/3B43EDAAF01965E31B57.pdf', '_blank')}
+              onClick={() => window.open('/api/files/hirepath/3B43EDAAF01965E31B57.pdf', '_blank')}
               className="px-3.5 py-1.5 bg-surface border border-border hover:bg-surface-2 text-foreground font-semibold text-xs rounded-lg transition-colors cursor-pointer"
             >
               Open High-Res Document Scanner

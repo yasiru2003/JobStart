@@ -11,9 +11,9 @@ router = APIRouter(prefix="/auth", tags=["Auth"])
 
 # Demo users for quick development testing
 DEMO_USERS = {
-    "nadeeka.dias@hirepth.lk": {
+    "nadeeka.dias@hirepath.lk": {
         "id": "usr_admin_1",
-        "email": "nadeeka.dias@hirepth.lk",
+        "email": "nadeeka.dias@hirepath.lk",
         "full_name": "Nadeeka Dias",
         "role": UserRole.admin,
         "avatar_url": None,
@@ -29,9 +29,9 @@ DEMO_USERS = {
         "is_active": True,
         "is_verified": True,
     },
-    "recruiter@hirepth.lk": {
+    "recruiter@hirepath.lk": {
         "id": "usr_rec_1",
-        "email": "recruiter@hirepth.lk",
+        "email": "recruiter@hirepath.lk",
         "full_name": "Kavinda Fernando",
         "role": UserRole.recruiter,
         "avatar_url": None,

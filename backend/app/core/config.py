@@ -10,7 +10,7 @@ from functools import lru_cache
 
 class Settings(BaseSettings):
     # App
-    APP_NAME: str = "HirePth"
+    APP_NAME: str = "HirePath"
     APP_ENV: str = "development"
     DEBUG: bool = True
     SECRET_KEY: str = "change-me-in-production-use-openssl-rand-hex-32"
@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     REFRESH_TOKEN_EXPIRE_DAYS: int = 30
 
     # Database
-    DATABASE_URL: str = "postgresql+asyncpg://hirepth:hirepth@localhost:5432/hirepth"
+    DATABASE_URL: str = "postgresql+asyncpg://hirepath:hirepath@localhost:5432/hirepath"
 
     # Redis
     REDIS_URL: str = "redis://localhost:6379/0"
@@ -35,7 +35,7 @@ class Settings(BaseSettings):
     S3_ENDPOINT_URL: str = "https://fsn1.your-objectstorage.com"
     S3_ACCESS_KEY: str = ""
     S3_SECRET_KEY: str = ""
-    S3_BUCKET_NAME: str = "hirepth-docs"
+    S3_BUCKET_NAME: str = "hirepath-docs"
     S3_REGION: str = "fsn1"
 
     # Email
@@ -43,7 +43,7 @@ class Settings(BaseSettings):
     SMTP_PORT: int = 587
     SMTP_USER: str = ""
     SMTP_PASSWORD: str = ""
-    FROM_EMAIL: str = "noreply@hirepth.lk"
+    FROM_EMAIL: str = "noreply@hirepath.lk"
 
     # OpenRouter LLM (Gemini Flash via LangChain)
     OPENROUTER_API_KEY: str = ""  # Set via OPENROUTER_API_KEY in .env
@@ -66,8 +66,8 @@ class Settings(BaseSettings):
     ALLOWED_ORIGINS: list[str] = [
         "http://localhost:3000",
         "http://127.0.0.1:3000",
-        "https://hirepth.lk",
-        "https://www.hirepth.lk",
+        "https://hirepath.lk",
+        "https://www.hirepath.lk",
     ]
 
     # Pagination

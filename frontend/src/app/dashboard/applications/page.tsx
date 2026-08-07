@@ -86,7 +86,7 @@ export default function ApplicationsPage() {
           phone: (target as any).phone || '94765225044',
           candidate_name: target.candidate,
           job_title: target.job,
-          employer_name: target.employer || 'HirePth Client',
+          employer_name: target.employer || 'HirePath Client',
         })
         setToastMsg(`🎉 Job Offer Dispatched! Formal offer issued to ${target.candidate}.`)
       } catch (err) {

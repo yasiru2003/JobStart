@@ -1,6 +1,6 @@
 # Lovable AI + Supabase Edge Functions Integration Guide
 
-This guide details step-by-step how to connect **Lovable AI** to your **HirePth** project using **Supabase Deno Edge Functions**.
+This guide details step-by-step how to connect **Lovable AI** to your **HirePath** project using **Supabase Deno Edge Functions**.
 
 ---
 
@@ -8,7 +8,7 @@ This guide details step-by-step how to connect **Lovable AI** to your **HirePth*
 
 ```
  ┌────────────────────────┐      ┌─────────────────────────┐      ┌─────────────────────────────┐
- │  HirePth Frontend UI  │ ──── │   FastAPI Backend API   │ ──── │  Supabase Edge Functions    │
+ │  HirePath Frontend UI  │ ──── │   FastAPI Backend API   │ ──── │  Supabase Edge Functions    │
  │ (WhatsApp / AI Agent)  │      │ (app/services/lovable)  │      │     (Deno Runtime)          │
  └────────────────────────┘      └─────────────────────────┘      └──────────────┬──────────────┘
                                                                                  │
@@ -21,7 +21,7 @@ This guide details step-by-step how to connect **Lovable AI** to your **HirePth*
 1. **WhatsApp & Frontend Agent** messages arrive at the FastAPI backend.
 2. FastAPI dispatches requests to the **Supabase Edge Function** (`lovable-whatsapp-agent`).
 3. The **Deno runtime** executes the Edge Function and passes context to **Lovable AI**.
-4. Responses (replies, intents, candidate evaluations) stream back to HirePth.
+4. Responses (replies, intents, candidate evaluations) stream back to HirePath.
 
 ---
 
@@ -75,7 +75,7 @@ Your Edge Function will be live at:
 
 ---
 
-## 🔄 Step 3: Triggering Lovable AI from HirePth
+## 🔄 Step 3: Triggering Lovable AI from HirePath
 
 ### 1. WhatsApp Inbound Messages
 In `backend/app/services/lovable_agent.py`, the backend calls:
@@ -126,7 +126,7 @@ python3 -m pytest tests/test_whatsapp_agent.py
 
 ## 📂 Key File Locations
 
-- **Deno Edge Function**: [`supabase/functions/lovable-whatsapp-agent/index.ts`](file:///Users/yasiru/Desktop/Business/HirePth/supabase/functions/lovable-whatsapp-agent/index.ts)
-- **Backend Lovable Connector**: [`backend/app/services/lovable_agent.py`](file:///Users/yasiru/Desktop/Business/HirePth/backend/app/services/lovable_agent.py)
-- **Lovable API Endpoint**: [`backend/app/api/v1/ai.py`](file:///Users/yasiru/Desktop/Business/HirePth/backend/app/api/v1/ai.py#L95)
-- **Config Settings**: [`backend/app/core/config.py`](file:///Users/yasiru/Desktop/Business/HirePth/backend/app/core/config.py#L53)
+- **Deno Edge Function**: [`supabase/functions/lovable-whatsapp-agent/index.ts`](file:///Users/yasiru/Desktop/Business/HirePath/supabase/functions/lovable-whatsapp-agent/index.ts)
+- **Backend Lovable Connector**: [`backend/app/services/lovable_agent.py`](file:///Users/yasiru/Desktop/Business/HirePath/backend/app/services/lovable_agent.py)
+- **Lovable API Endpoint**: [`backend/app/api/v1/ai.py`](file:///Users/yasiru/Desktop/Business/HirePath/backend/app/api/v1/ai.py#L95)
+- **Config Settings**: [`backend/app/core/config.py`](file:///Users/yasiru/Desktop/Business/HirePath/backend/app/core/config.py#L53)

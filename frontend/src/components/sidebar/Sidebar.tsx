@@ -150,7 +150,7 @@ export default function Sidebar() {
                   <CheckSquare className="w-4.5 h-4.5 text-white" strokeWidth={2.5} />
                 </div>
                 <span className="font-display font-bold text-lg text-foreground tracking-tight animate-fade-in">
-                  HirePth
+                  HirePath
                 </span>
               </div>
               <button
@@ -268,7 +268,7 @@ export default function Sidebar() {
             </div>
             {!sidebarCollapsed && (
               <div className="flex-1 text-left min-w-0">
-                <p className="font-bold leading-tight truncate text-primary">HirePth AI</p>
+                <p className="font-bold leading-tight truncate text-primary">HirePath AI</p>
                 <p className="text-[10px] text-muted truncate">Ask anything or automate</p>
               </div>
             )}

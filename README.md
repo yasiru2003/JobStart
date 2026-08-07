@@ -1,8 +1,8 @@
-# HirePth Architecture
+# HirePath Architecture
 
 ## Overview
 
-HirePth is a full-stack application designed to streamline the job application and interview tracking process, featuring AI-assisted capabilities. The system is split into a **Frontend** built with Next.js and a **Backend** built with FastAPI.
+HirePath is a full-stack application designed to streamline the job application and interview tracking process, featuring AI-assisted capabilities. The system is split into a **Frontend** built with Next.js and a **Backend** built with FastAPI.
 
 ## High-Level Architecture
 

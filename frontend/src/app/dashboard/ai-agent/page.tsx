@@ -26,7 +26,7 @@ export default function AiAgentPage() {
     {
       id: '1',
       sender: 'ai',
-      text: "Hi! I'm your HirePth AI Agent. Ask me to compare candidates, shortlist someone, or schedule interviews — I can act directly on your active job pipelines.",
+      text: "Hi! I'm your HirePath AI Agent. Ask me to compare candidates, shortlist someone, or schedule interviews — I can act directly on your active job pipelines.",
       time: 'Just now',
     },
   ])
@@ -42,7 +42,7 @@ export default function AiAgentPage() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${JSON.parse(localStorage.getItem('hirepth-auth-v2') || '{}')?.state?.token || ''}`,
+          Authorization: `Bearer ${JSON.parse(localStorage.getItem('hirepath-auth-v2') || '{}')?.state?.token || ''}`,
         },
         body: JSON.stringify({
           phone, candidate_name: name, job_title: job,

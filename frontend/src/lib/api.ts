@@ -10,7 +10,7 @@ export const api = axios.create({
 // Attach token & tenant headers automatically
 api.interceptors.request.use((config) => {
   if (typeof window !== 'undefined') {
-    const auth = localStorage.getItem('hirepth-auth-v2')
+    const auth = localStorage.getItem('hirepath-auth-v2')
     if (auth) {
       try {
         const { state } = JSON.parse(auth)
@@ -45,7 +45,7 @@ export const authApi = {
     api.post('/auth/refresh', { refresh_token: refreshToken }),
 }
 
-// ── AI Agent (HirePth AI & Gemini 3.6 Flash Engine) ──
+// ── AI Agent (HirePath AI & Gemini 3.6 Flash Engine) ──
 
 export const aiApi = {
   analyzeCandidate: (data: { candidate_name: string; job_title: string; skills?: string[]; experience_years?: number; documents_verified?: string[] }) =>

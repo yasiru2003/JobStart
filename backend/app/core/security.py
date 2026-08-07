@@ -74,7 +74,7 @@ async def get_current_user_optional(
 ):
     class DevUser:
         id = "00000000-0000-0000-0000-000000000000"
-        email = "admin@hirepth.lk"
+        email = "admin@hirepath.lk"
         role = "admin"
         is_active = True
 

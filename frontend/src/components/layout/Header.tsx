@@ -24,14 +24,14 @@ export default function Header() {
   const handleSignOut = () => {
     logout()
     if (typeof window !== 'undefined') {
-      localStorage.removeItem('hirepth-auth-v2')
-      localStorage.removeItem('hirepth-auth')
+      localStorage.removeItem('hirepath-auth-v2')
+      localStorage.removeItem('hirepath-auth')
     }
     router.push('/login')
   }
 
   const roleLabel = (displayRole === 'admin' ? 'Platform Admin' : displayRole).charAt(0).toUpperCase() + (displayRole === 'admin' ? 'Platform Admin' : displayRole).slice(1)
-  const roleSubtext = displayRole === 'admin' ? 'Platform Admin (HirePth Team)' : displayRole
+  const roleSubtext = displayRole === 'admin' ? 'Platform Admin (HirePath Team)' : displayRole
 
   // Generate dynamic breadcrumbs based on route
   const getBreadcrumbs = () => {
@@ -103,7 +103,7 @@ export default function Header() {
           onClick={handleSignOut}
           className="ml-2 px-3 py-1.5 text-xs font-semibold text-rose-600 hover:text-rose-700 bg-rose-500/10 hover:bg-rose-500/20 border border-rose-200 rounded-lg transition-all focus-ring flex items-center gap-1.5 cursor-pointer"
           id="header-signout"
-          title="Sign out of HirePth"
+          title="Sign out of HirePath"
         >
           <LogOut className="w-3.5 h-3.5" />
           <span className="hidden sm:inline">Sign out</span>

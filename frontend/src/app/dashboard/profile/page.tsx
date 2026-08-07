@@ -7,10 +7,10 @@ import { useAuthStore } from '@/lib/stores'
 export default function ProfilePage() {
   const { user } = useAuthStore()
   const [fullName, setFullName] = useState(user?.fullName || 'Nadeeka Dias')
-  const [email, setEmail] = useState(user?.email || 'nadeeka.dias@hirepth.lk')
+  const [email, setEmail] = useState(user?.email || 'nadeeka.dias@hirepath.lk')
   const [phone, setPhone] = useState('+94 77 123 4567')
   const [location, setLocation] = useState('Colombo, Sri Lanka')
-  const [agency, setAgency] = useState('HirePth Recruitment LK')
+  const [agency, setAgency] = useState('HirePath Recruitment LK')
   const [savedSuccess, setSavedSuccess] = useState(false)
 
   const handleSaveProfile = (e: React.FormEvent) => {

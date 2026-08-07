@@ -220,7 +220,7 @@ export default function WhatsAppAgentPage() {
     }
     setInviteSending(true); setError(null)
     try {
-      const token = JSON.parse(localStorage.getItem('hirepth-auth-v2') || '{}')?.state?.token || ''
+      const token = JSON.parse(localStorage.getItem('hirepath-auth-v2') || '{}')?.state?.token || ''
       const res = await fetch('/api/v1/whatsapp/agent/send-invite', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
@@ -256,7 +256,7 @@ export default function WhatsAppAgentPage() {
     }
     setScreenSending(true); setError(null)
     try {
-      const token = JSON.parse(localStorage.getItem('hirepth-auth-v2') || '{}')?.state?.token || ''
+      const token = JSON.parse(localStorage.getItem('hirepath-auth-v2') || '{}')?.state?.token || ''
       const questions = [screenQ1, screenQ2, screenQ3].filter(q => q.trim())
       const res = await fetch('/api/v1/whatsapp/agent/start-screening', {
         method: 'POST',
@@ -286,7 +286,7 @@ export default function WhatsAppAgentPage() {
   const handleRunAIRanking = async () => {
     setRankingLoading(true); setError(null)
     try {
-      const token = JSON.parse(localStorage.getItem('hirepth-auth-v2') || '{}')?.state?.token || ''
+      const token = JSON.parse(localStorage.getItem('hirepath-auth-v2') || '{}')?.state?.token || ''
       const skillsArray = rankJobSkills.split(',').map(s => s.trim()).filter(Boolean)
 
       // Sample candidate pool for ranking demonstration
@@ -328,7 +328,7 @@ export default function WhatsAppAgentPage() {
     }
     setNotifySending(true); setError(null)
     try {
-      const token = JSON.parse(localStorage.getItem('hirepth-auth-v2') || '{}')?.state?.token || ''
+      const token = JSON.parse(localStorage.getItem('hirepath-auth-v2') || '{}')?.state?.token || ''
       const res = await fetch('/api/v1/whatsapp/agent/notify-match', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
@@ -356,7 +356,7 @@ export default function WhatsAppAgentPage() {
   const handleToggleAgent = async () => {
     if (!agentStatus) return
     try {
-      const token = JSON.parse(localStorage.getItem('hirepth-auth-v2') || '{}')?.state?.token || ''
+      const token = JSON.parse(localStorage.getItem('hirepath-auth-v2') || '{}')?.state?.token || ''
       await fetch('/api/v1/whatsapp/agent/toggle', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },

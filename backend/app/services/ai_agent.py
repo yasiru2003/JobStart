@@ -5,7 +5,7 @@ from typing import Dict, Any, List, Optional
 import httpx
 from app.core.config import settings
 
-logger = logging.getLogger("hirepth.ai")
+logger = logging.getLogger("hirepath.ai")
 
 class LangChainAgentEngine:
     """
@@ -27,8 +27,8 @@ class LangChainAgentEngine:
                     f"{self.base_url}/chat/completions",
                     headers={
                         "Authorization": f"Bearer {self.api_key}",
-                        "HTTP-Referer": "https://hirepth.lk",
-                        "X-Title": "HirePth AI Recruitment Assistant",
+                        "HTTP-Referer": "https://hirepath.lk",
+                        "X-Title": "HirePath AI Recruitment Assistant",
                         "Content-Type": "application/json",
                     },
                     json={
@@ -94,7 +94,7 @@ class LangChainAgentEngine:
                 "Verify secondary educational certificates via TVEC",
                 "Schedule automated WhatsApp join reminder"
             ],
-            "engine": f"HirePth AI Engine ({self.model_name})"
+            "engine": f"HirePath AI Engine ({self.model_name})"
         }
 
     async def draft_job_description(
@@ -163,7 +163,7 @@ class LangChainAgentEngine:
             "draft_markdown": description,
             "suggested_skills": key_requirements,
             "screener_questions": suggested_questions,
-            "engine": f"HirePth AI Engine ({self.model_name})"
+            "engine": f"HirePath AI Engine ({self.model_name})"
         }
 
     async def chat_interaction(self, prompt: str, context_tags: Optional[List[str]] = None, db: Optional[Any] = None) -> Dict[str, Any]:
@@ -194,7 +194,7 @@ class LangChainAgentEngine:
                 logger.warning(f"Failed to fetch live DB context for AI prompt: {str(e)}")
 
         system_prompt = (
-            "You are HirePth AI, an intelligent AI recruitment assistant powered by Gemini. "
+            "You are HirePath AI, an intelligent AI recruitment assistant powered by Gemini. "
             "Always structure your responses cleanly using clear Markdown headers (e.g. ## Role Overview), concise bullet lists (* item), "
             "and LaTeX notation for scores or formulas (e.g. \\( \\text{MatchScore} = 98\\% \\)). "
             "CRITICAL: If the user explicitly asks about or tags a CANDIDATE (e.g. @Hasini Dikkumbura or @Kasun), you MUST provide a Candidate Dossier, NOT a job description. Use headers: ## 🤖 Candidate Analysis: [Name], ### 📊 AI Evaluation Metrics, and ### 📝 Executive AI Reasoning Summary. Include mock match scores and verification status. "
@@ -266,7 +266,7 @@ class LangChainAgentEngine:
             "prompt": prompt,
             "action": action,
             "tags_processed": context_tags or [],
-            "engine": f"HirePth AI Engine ({self.model_name})"
+            "engine": f"HirePath AI Engine ({self.model_name})"
         }
 
 
@@ -304,7 +304,7 @@ class LangChainAgentEngine:
             "candidate_name": candidate_name,
             "job_title": job_title,
             "questions_markdown": questions,
-            "engine": f"HirePth AI Engine ({self.model_name})"
+            "engine": f"HirePath AI Engine ({self.model_name})"
         }
 
     async def evaluate_candidate_answers(
@@ -367,7 +367,7 @@ class LangChainAgentEngine:
             "overall_quality_score": overall_score,
             "ai_executive_summary": llm_reply or f"AI Evaluation for {candidate_name}: Completed screening questions for {job_title}.",
             "per_question_breakdown": per_question,
-            "engine": f"HirePth AI Engine ({self.model_name})"
+            "engine": f"HirePath AI Engine ({self.model_name})"
         }
 
 # Global Singleton Agent Instance

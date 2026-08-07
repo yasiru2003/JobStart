@@ -108,7 +108,7 @@ export default function ScheduleInterviewModal({
     { id: '1', date: '2026-07-29', start: '10:00', end: '11:00' },
   ])
   const [mode, setMode] = useState<'Online' | 'Physical'>('Online')
-  const [meetingLink, setMeetingLink] = useState('https://meet.google.com/hirepth-interview-01')
+  const [meetingLink, setMeetingLink] = useState('https://meet.google.com/hirepath-interview-01')
   const [address, setAddress] = useState('WSO2 HQ, 20 Palm Grove, Colombo 03')
   const [reminderFreqs, setReminderFreqs] = useState<string[]>(['1 hour before', 'Morning of + 1h'])
 
@@ -440,7 +440,7 @@ export default function ScheduleInterviewModal({
                     <button
                       key={plat.label}
                       type="button"
-                      onClick={() => setMeetingLink(`${plat.prefix}hirepth-interview-${Date.now().toString().slice(-4)}`)}
+                      onClick={() => setMeetingLink(`${plat.prefix}hirepath-interview-${Date.now().toString().slice(-4)}`)}
                       className="px-2.5 py-1 rounded-lg border border-border bg-surface-2 hover:bg-border text-[11px] font-semibold text-foreground transition-colors cursor-pointer"
                     >
                       + Quick {plat.label}

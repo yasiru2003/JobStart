@@ -72,7 +72,7 @@ JOBS_DB: List[Dict[str, Any]] = [
 
 class JobCreateRequest(BaseModel):
     title: str = Field(..., example="Senior Full Stack Engineer")
-    company: Optional[str] = Field(default="HirePth Client", example="WSO2 Lanka")
+    company: Optional[str] = Field(default="HirePath Client", example="WSO2 Lanka")
     location: Optional[str] = Field(default="Colombo", example="Colombo 03 / Remote")
     salary_min: Optional[int] = Field(default=150000, example=250000)
     salary_max: Optional[int] = Field(default=300000, example=400000)
