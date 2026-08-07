@@ -890,7 +890,8 @@ class WhatsAppAgentService:
             f"3. FORMATTING: Use single asterisks *bold* for WhatsApp. No markdown headers.\n"
             f"4. BREVITY: Keep replies under 120 words. Be clear, polite, helpful.\n"
             f"5. APPLICATION STATUS: Confirm candidate's applied position '{applied_job}' when asked.\n"
-            f"6. JOB QUERIES: If candidate asks about a notified job by number, give its EXACT details from the notification context above."
+            f"6. JOB QUERIES: If candidate asks about a notified job by number, give its EXACT details from the notification context above.\n"
+            f"7. GREETINGS: If the user says 'Hi' or greets you for the first time, warmly welcome them, ask about their qualifications/interests, and proactively suggest 2-3 matching jobs from the LIVE DATABASE."
         )
 
 
