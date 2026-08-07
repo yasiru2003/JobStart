@@ -1,75 +1,119 @@
-# HirePath Architecture
+# HirePath 🚀
 
-## Overview
+**Sri Lanka's Premier AI-Powered Recruitment & Verification Platform**
 
-HirePath is a full-stack application designed to streamline the job application and interview tracking process, featuring AI-assisted capabilities. The system is split into a **Frontend** built with Next.js and a **Backend** built with FastAPI.
+*Submitted for the Open Category Innovation Challenge*
 
-## High-Level Architecture
+---
 
-The architecture follows a standard client-server model:
+## 🎯 Project Purpose
 
-- **Frontend (Client)**: Next.js application handling the user interface, routing, and client-side state. It communicates with the backend via RESTful APIs.
-- **Backend (Server)**: FastAPI application responsible for business logic, database operations, AI integrations, and authentication.
-- **Database**: Relational database (likely PostgreSQL or SQLite) managed through SQLAlchemy ORM via Alembic for migrations.
+HirePath is an end-to-end, AI-driven recruitment platform designed to solve the critical challenges of modern hiring: **candidate friction, manual screening overload, and credential fraud.** 
 
-## Backend Architecture (FastAPI)
+Traditional job applications are tedious, often resulting in candidate drop-off, while recruiters spend countless hours manually parsing CVs and verifying credentials. HirePath revolutionizes this by allowing candidates to apply seamlessly via WhatsApp, while an autonomous AI Agent handles the entire top-of-funnel pipeline—from intelligent CV parsing and initial screening to automated interview scheduling and credential verification.
 
-The backend is structured around domain-driven design principles, keeping concerns separated.
+Our goal is to create a frictionless, zero-barrier entry for job seekers while providing recruiters with a highly curated, instantly verified pipeline of top talent.
 
-### Directory Structure
+---
+
+## 🧠 The AI Agent Workflow (Core Innovation)
+
+HirePath is not a simple chatbot or a single-prompt wrapper. It features a robust, multi-agent architecture capable of **real reasoning, decision-making, and autonomous action-taking**.
+
+### How the AI Agent Operates:
+1. **Context-Aware Intent Classification**: When a candidate messages the platform via WhatsApp, the AI analyzes the conversational history to determine the user's intent (e.g., greeting, asking about a job, uploading a CV, answering a screening question).
+2. **Autonomous Candidate Profiling**: Upon receiving a CV (PDF), the agent triggers a background processing pipeline. It extracts structured data, identifies core skills, and automatically matches the candidate against active job postings in the database.
+3. **Multi-Step Screening Workflows**: If a candidate applies for a role, the AI orchestrates a dynamic screening interview. It asks role-specific questions, evaluates the responses in real-time, and assigns a match score.
+4. **Action-Taking & State Memory**: The AI autonomously progresses the candidate through the hiring pipeline (e.g., moving them from "Applied" to "Screening" to "Interview Scheduled"). It proactively sends pre-allocated Google Meet interview slots and securely registers the candidate's selection.
+5. **Proactive Job Matching**: The agent continuously monitors the database and proactively reaches out to past candidates (in English or localized Sinhala/Singlish) when new jobs matching their profile are posted.
+
+---
+
+## ⚙️ Tech Stack
+
+This project leverages a modern, scalable tech stack, precisely matching our original proposal.
+
+### Frontend
+* **Framework:** Next.js (App Router)
+* **Language:** TypeScript
+* **Styling:** Tailwind CSS + Radix UI
+* **State Management:** Zustand
+* **Data Fetching:** Axios
+
+### Backend
+* **Framework:** FastAPI
+* **Language:** Python 3.11+
+* **Database:** SQLite (Development) / PostgreSQL (Production ready) via SQLAlchemy ORM
+* **Migrations:** Alembic
+* **Authentication:** JWT (JSON Web Tokens)
+
+### AI & Integrations
+* **LLM Engine:** Gemini 1.5 Flash (via Google AI Studio) for fast, context-aware reasoning and localized Sinhala support.
+* **Orchestration:** Custom Python-based Agentic Workflow Engine (handling state persistence, tool use, and multi-turn memory).
+* **Communication:** WAHA (WhatsApp HTTP API) for seamless, authenticated WhatsApp integration.
+
+*Note: All third-party tools, including Next.js, FastAPI, and WAHA, are utilized under their respective Open-Source (MIT/Apache 2.0) licenses. The Gemini API is utilized in compliance with Google's Developer Terms of Service.*
+
+---
+
+## ✨ Core Features
+
+* **Omnichannel AI Application**: Candidates apply and complete initial screenings entirely via WhatsApp, eliminating the need for complex web forms.
+* **Intelligent Job Matching Engine**: The system algorithmically ranks candidates against job descriptions, providing recruiters with a match percentage and a detailed AI dossier.
+* **Automated Interview Scheduling**: The AI agent proposes available time slots, handles candidate selection, and dispatches Google Meet links automatically.
+* **Native Sinhala / Singlish Support**: The AI is explicitly trained to understand and respond in localized Sri Lankan dialects, ensuring accessibility for all candidates.
+* **Recruiter Dashboard**: A comprehensive Kanban-style Next.js dashboard for recruiters to monitor pipelines, trigger AI candidate comparisons, and manage job postings.
+* **Credential Verification**: Automated cross-checking of National Identity Cards (NIC) and educational certificates.
+
+---
+
+## 🛠️ Setup Instructions
+
+Follow these steps to run HirePath locally on your machine.
+
+### Prerequisites
+* Node.js (v18+)
+* Python (3.11+)
+* Git
+
+### 1. Backend Setup (FastAPI)
+```bash
+# Navigate to the backend directory
+cd backend
+
+# Create and activate a virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Create a .env file (configure your GEMINI_API_KEY here)
+cp .env.example .env
+
+# Run database migrations and seed initial data
+alembic upgrade head
+python seed_db.py
+
+# Start the FastAPI server
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
-backend/
-├── app/
-│   ├── api/        # API routers (v1 endpoints for auth, ai, dashboard, notifications)
-│   ├── core/       # Core configurations (config, database, security)
-│   ├── models/     # SQLAlchemy database models
-│   ├── schemas/    # Pydantic schemas for data validation (requests/responses)
-│   ├── services/   # Business logic and external integrations (e.g., AI agents, WAHA)
-│   └── main.py     # FastAPI application entry point
-├── alembic/        # Database migrations
-└── seed_db.py      # Database seeding script
+
+### 2. Frontend Setup (Next.js)
+```bash
+# Navigate to the frontend directory
+cd frontend
+
+# Install dependencies
+npm install
+
+# Start the development server
+npm run dev
 ```
 
-### Key Components
-1. **API Layer (`app/api/`)**: Defines the REST endpoints and routes requests to the appropriate services.
-2. **Core (`app/core/`)**: Handles application-wide settings, database session management, and security (JWT authentication, password hashing).
-3. **Data Layer (`app/models/` & `app/schemas/`)**: `models` define the database tables using SQLAlchemy. `schemas` use Pydantic to validate incoming and outgoing data, ensuring strict type checking and serialization.
-4. **Service Layer (`app/services/`)**: Contains the core business logic. Includes integrations with external services such as AI tools (`ai_agent.py`) and messaging APIs (`waha.py`).
+### 3. WhatsApp Integration (Optional for local dev)
+To fully test the WhatsApp agent locally, ensure the backend is exposed via a service like ngrok to receive webhooks from your WAHA instance.
 
-## Frontend Architecture (Next.js)
+---
 
-The frontend is a modern React application utilizing the Next.js App Router for server-side rendering and optimized routing.
-
-### Directory Structure
-```
-frontend/
-├── src/
-│   ├── app/        # Next.js App Router pages and layouts (e.g., providers.tsx)
-│   ├── components/ # Reusable UI components organized by domain
-│   └── lib/        # Utility functions and shared libraries
-├── public/         # Static assets
-└── package.json    # Dependencies and scripts
-```
-
-### Key Components
-1. **App Router (`src/app/`)**: Handles application routing, pages, and global providers (like state management and theme providers).
-2. **UI Components (`src/components/`)**:
-   - **`ai/`**: Components related to AI features (e.g., `AiAgentDrawer.tsx`).
-   - **`modals/`**: Modal dialogs for user interactions (e.g., `ScheduleInterviewModal.tsx`, `ChangePlanModal.tsx`).
-   - **`layout/`**: Structural components like `Header.tsx`, sidebars, etc.
-   - **`kanban/`**: Kanban board components for tracking job applications.
-   - **`charts/`**: Data visualization components.
-3. **Styling**: Tailwind CSS is used for utility-first styling, integrated with components (e.g., via Radix UI for accessible primitives).
-4. **State Management**: Uses modern state management solutions like `zustand` and data fetching with `@tanstack/react-query`.
-
-## External Integrations
-
-- **AI Services**: Integrates with OpenRouter (via `OPENROUTER_API_KEY`) for AI agent capabilities to assist users.
-- **Messaging (WAHA)**: Integration with WAHA API for communication features.
-
-## Deployment & Execution
-
-- **Development**:
-  - Backend: Run via `uvicorn app.main:app --reload` (default port 8000).
-  - Frontend: Run via `npm run dev` (default port 3000).
-- **Environment**: Environment variables manage configurations like database URLs, JWT secrets, and API keys.
+*Built with ❤️ for the future of recruitment.*
