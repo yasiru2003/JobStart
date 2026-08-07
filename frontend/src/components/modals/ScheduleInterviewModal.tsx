@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { wahaApi } from '@/lib/api'
 import { X, Calendar, Clock, MapPin, Video, Send, Plus, Trash2, CheckCircle2, User, Search, ShieldCheck } from 'lucide-react'
 
 interface ScheduleInterviewModalProps {
@@ -18,7 +19,8 @@ const MOCK_JOB_OPTIONS = [
   { id: '4', title: 'Associate Software Engineer' },
 ]
 
-const MOCK_CANDIDATES = [
+const BASE_CANDIDATES = [
+  { id: 'c-hd', initials: 'HD', name: 'Hasini Dikkumbura', location: 'Colombo 03 / Remote', matchScore: 98, phone: '+94 76 522 5044' },
   { id: 'c1', initials: 'KP', name: 'Kasun Perera', location: 'Colombo', matchScore: 72, phone: '+94 77 123 4567' },
   { id: 'c2', initials: 'NF', name: 'Nimal Fernando', location: 'Gampaha', matchScore: 81, phone: '+94 71 987 6543' },
   { id: 'c4', initials: 'SR', name: 'Sunil Rathnayake', location: 'Negombo', matchScore: 93, phone: '+94 75 456 7890' },
@@ -36,9 +38,64 @@ export default function ScheduleInterviewModal({
   const [selectedJob, setSelectedJob] = useState(jobTitle)
   const [jobSearch, setJobSearch] = useState('')
   const [candSearch, setCandSearch] = useState('')
+  const [allCandidates, setAllCandidates] = useState(BASE_CANDIDATES)
   const [chosenCandidates, setChosenCandidates] = useState<string[]>(
-    candidateName ? [candidateName] : ['Sunil Rathnayake', 'Priyanka Jayasuriya']
+    candidateName ? [candidateName] : ['Hasini Dikkumbura', 'Sunil Rathnayake']
   )
+
+  useEffect(() => {
+    const fetchLiveCandidates = async () => {
+      try {
+        const res = await wahaApi.conversations()
+        const convs = res.data || []
+        const liveCands = convs.map((c: any) => {
+          const name = c.collected_name || c.candidate_name || 'Hasini Dikkumbura'
+          const initials = name.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase()
+          // Normalise phone: strip all spaces, dashes, leading +
+          const normalPhone = String(c.phone).replace(/[\s\-+]/g, '')
+          return {
+            id: `wa-${normalPhone}`,
+            initials,
+            name,
+            location: 'Colombo 03 / Remote',
+            matchScore: 98,
+            phone: `+${c.phone}`,
+          }
+        })
+
+        setAllCandidates(() => {
+          // Merge BASE_CANDIDATES with liveCands, deduplicate by normalised phone
+          const seenPhones = new Set<string>()
+          const seenNames = new Set<string>()
+          const merged: any[] = []
+
+          // Live candidates first (most up-to-date data)
+          for (const lc of liveCands) {
+            const np = lc.phone.replace(/[\s\-+]/g, '')
+            if (!seenPhones.has(np) && !seenNames.has(lc.name.toLowerCase())) {
+              seenPhones.add(np)
+              seenNames.add(lc.name.toLowerCase())
+              merged.push(lc)
+            }
+          }
+
+          // Then static candidates, skipping any already seen
+          for (const bc of BASE_CANDIDATES) {
+            const np = bc.phone.replace(/[\s\-+]/g, '')
+            if (!seenPhones.has(np) && !seenNames.has(bc.name.toLowerCase())) {
+              seenPhones.add(np)
+              seenNames.add(bc.name.toLowerCase())
+              merged.push(bc)
+            }
+          }
+
+          return merged
+        })
+      } catch (_) {}
+    }
+    fetchLiveCandidates()
+  }, [])
+
   const [slots, setSlots] = useState<{ id: string; date: string; start: string; end: string }[]>([
     { id: '1', date: '2026-07-29', start: '10:00', end: '11:00' },
   ])
@@ -98,7 +155,7 @@ export default function ScheduleInterviewModal({
     j.title.toLowerCase().includes(jobSearch.toLowerCase())
   )
 
-  const filteredCands = MOCK_CANDIDATES.filter((c) =>
+  const filteredCands = allCandidates.filter((c) =>
     c.name.toLowerCase().includes(candSearch.toLowerCase())
   )
 
