@@ -74,10 +74,10 @@ export default function RegisterPage() {
       <div className="sm:mx-auto sm:w-full sm:max-w-md z-10">
         <div className="flex justify-center items-center gap-2.5">
           <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-primary to-accent flex items-center justify-center text-white font-extrabold text-xl shadow-lg shadow-primary/25">
-            J
+            H
           </div>
           <span className="text-3xl font-extrabold tracking-tight text-foreground font-display">
-            Job<span className="text-primary">Start</span>
+            Hire<span className="text-primary">Path</span>
           </span>
         </div>
         <h2 className="mt-4 text-center text-2xl font-bold tracking-tight text-foreground">
