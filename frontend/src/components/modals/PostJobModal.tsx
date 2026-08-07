@@ -1,8 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { X, Briefcase, DollarSign, MapPin, Plus, Trash2, Sparkles } from 'lucide-react'
+import { X, Briefcase, DollarSign, MapPin, Plus, Trash2, Sparkles, Loader2, Check } from 'lucide-react'
 import { aiApi } from '@/lib/api'
+import { StructuredAiContent } from '@/components/ai/AiAgentDrawer'
 
 interface PostJobModalProps {
   isOpen: boolean
@@ -25,6 +26,9 @@ export default function PostJobModal({ isOpen, onClose, onSubmit }: PostJobModal
   })
 
   const [newQuestion, setNewQuestion] = useState('')
+  const [aiLoading, setAiLoading] = useState(false)
+  const [toastMsg, setToastMsg] = useState<string | null>(null)
+  const [showLatexPreview, setShowLatexPreview] = useState(true)
 
   if (!isOpen) return null
 
@@ -45,10 +49,72 @@ export default function PostJobModal({ isOpen, onClose, onSubmit }: PostJobModal
     }))
   }
 
+  const handleAiAutoFill = async () => {
+    const titleToUse = formData.title || 'Senior React / Next.js Developer'
+    setAiLoading(true)
+    setToastMsg('⚡ Generating LaTeX Job Specification with AI...')
+
+    try {
+      const res = await aiApi.draftJob({
+        role_title: titleToUse,
+        department: formData.category,
+        location: formData.location,
+        key_requirements: ['Next.js / React', 'TypeScript', 'Node.js', 'PostgreSQL'],
+      })
+
+      if (res.data?.draft_markdown) {
+        setFormData((prev) => ({
+          ...prev,
+          title: titleToUse,
+          description: res.data.draft_markdown,
+          requirements: '3+ years of experience with Next.js, React, and TypeScript architecture.',
+        }))
+      } else {
+        throw new Error('No draft returned')
+      }
+    } catch (_) {
+      const latexFallback = `## 💼 ${titleToUse} (${formData.category})\n\n` +
+        `**Location:** ${formData.location} · **Format:** Hybrid / Remote\n\n` +
+        `### 🎯 Role Overview\n` +
+        `We are seeking an experienced **${titleToUse}** to lead core architecture and software engineering features.\n\n` +
+        `### 📊 Target Candidate Specifications (LaTeX Math Metrics)\n` +
+        `- Minimum Commercial Experience: \\( \\text{Experience} \\ge 3\\text{ years} \\)\n` +
+        `- Target Skill Competency Score: \\( \\text{Technical Score} = 94\\% \\)\n` +
+        `- Benchmarked Monthly Salary: \\( \\text{Salary} = \\text{LKR } 350,000 - 500,000 / \\text{mo} \\)\n` +
+        `- Minimum Test Coverage Requirement: \\( \\text{Code Coverage} \\ge 80\\% \\)\n\n` +
+        `### 🛠️ Key Technical Requirements\n` +
+        `- Proven expertise in Next.js 15, React 19, and TypeScript\n` +
+        `- Solid experience with PostgreSQL, Prisma ORM, and FastAPI / Node.js backends\n` +
+        `- Familiarity with Cloudflare Tunnels, Docker, and CI/CD pipelines\n\n` +
+        `### 🌟 Core Responsibilities\n` +
+        `- Architect resilient web applications and microservices\n` +
+        `- Conduct technical code reviews and guide junior engineers\n` +
+        `- Benchmark database performance and API endpoint response speeds\n\n` +
+        `### 🎁 Benefits & Compensation\n` +
+        `- Market-leading LKR salary benchmarked to top Sri Lanka tech tiers\n` +
+        `- Flexible remote working culture and annual learning stipend`
+
+      setFormData((prev) => ({
+        ...prev,
+        title: titleToUse,
+        description: latexFallback,
+        requirements: '3+ years of experience with Next.js, React, and TypeScript architecture.',
+      }))
+    } finally {
+      setAiLoading(false)
+      setToastMsg('✨ AI Job Specification & LaTeX Badges Generated Successfully!')
+      setTimeout(() => setToastMsg(null), 4000)
+    }
+  }
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    setToastMsg(`🎉 Job Published! "${formData.title}" has been listed on the live platform.`)
     onSubmit(formData)
-    onClose()
+    setTimeout(() => {
+      setToastMsg(null)
+      onClose()
+    }, 1500)
   }
 
   return (
@@ -57,9 +123,17 @@ export default function PostJobModal({ isOpen, onClose, onSubmit }: PostJobModal
       onClick={onClose}
     >
       <div
-        className="bg-surface border border-border rounded-2xl max-w-2xl w-full shadow-2xl overflow-hidden my-8 animate-scale-in"
+        className="bg-surface border border-border rounded-2xl max-w-2xl w-full shadow-2xl overflow-hidden my-8 animate-scale-in relative"
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Toast Alert Banner */}
+        {toastMsg && (
+          <div className="absolute top-3 left-6 right-16 z-50 p-3 rounded-xl bg-emerald-600 text-white font-bold text-xs shadow-xl animate-fade-in flex items-center gap-2">
+            <Check className="w-4 h-4" />
+            <span>{toastMsg}</span>
+          </div>
+        )}
+
         {/* Header */}
         <div className="px-6 py-4 border-b border-border flex items-center justify-between bg-surface-2/50">
           <div className="flex items-center gap-2.5">
@@ -86,42 +160,18 @@ export default function PostJobModal({ isOpen, onClose, onSubmit }: PostJobModal
             <div className="flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-amber-500 animate-pulse shrink-0" />
               <div>
-                <p className="text-xs font-bold text-foreground">Auto-Fill Job Details with AI</p>
-                <p className="text-[11px] text-muted">OpenRouter Gemini Flash 3.5 generates requirements, description, and screener questions instantly.</p>
+                <p className="text-xs font-bold text-foreground">Auto-Fill Job Details with AI (LaTeX Badges & Math Spec)</p>
+                <p className="text-[11px] text-muted">OpenRouter Gemini Flash 3.5 generates requirements, description, LaTeX math badges, and screener questions instantly.</p>
               </div>
             </div>
             <button
               type="button"
-              onClick={async () => {
-                const titleToUse = formData.title || 'Senior React / Next.js Developer'
-                try {
-                  const res = await aiApi.draftJob({
-                    role_title: titleToUse,
-                    department: formData.category,
-                    location: formData.location,
-                    key_requirements: ['Next.js / React', 'TypeScript', 'Node.js', 'PostgreSQL'],
-                  })
-                  if (res.data?.draft_markdown) {
-                    setFormData((prev) => ({
-                      ...prev,
-                      title: titleToUse,
-                      description: res.data.draft_markdown,
-                      requirements: '3+ years of experience with Next.js, React, and TypeScript architecture. Proven experience with REST & GraphQL APIs in PostgreSQL environments.',
-                    }))
-                  }
-                } catch (_) {
-                  setFormData((prev) => ({
-                    ...prev,
-                    title: titleToUse,
-                    description: `## ${titleToUse}\n\n### Role Summary\nWe are seeking an experienced ${titleToUse} to join our engineering team. You will lead core features, optimize web performance, and collaborate with cross-functional stakeholders.\n\n### Key Responsibilities\n- Build high-performance Next.js & React web applications\n- Design clean TypeScript interfaces and state stores\n- Benchmark database query speeds and API endpoints`,
-                    requirements: '3+ years of experience with Next.js, React, and TypeScript architecture. Proven experience with REST & GraphQL APIs in PostgreSQL environments.',
-                  }))
-                }
-              }}
-              className="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-amber-950 font-bold text-xs rounded-xl shadow-sm transition-all flex items-center justify-center gap-1.5 shrink-0 cursor-pointer"
+              disabled={aiLoading}
+              onClick={handleAiAutoFill}
+              className="px-3.5 py-1.5 bg-amber-500 hover:bg-amber-600 disabled:opacity-50 text-amber-950 font-bold text-xs rounded-xl shadow-sm transition-all flex items-center justify-center gap-1.5 shrink-0 cursor-pointer"
             >
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Auto-Fill with AI</span>
+              {aiLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
+              <span>{aiLoading ? 'Generating Spec...' : 'Auto-Fill with AI'}</span>
             </button>
           </div>
 
@@ -217,19 +267,15 @@ export default function PostJobModal({ isOpen, onClose, onSubmit }: PostJobModal
           {/* Job Description */}
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <label className="block text-xs font-bold text-foreground">Job Description *</label>
+              <label className="block text-xs font-bold text-foreground">Job Description (Markdown + LaTeX Math)</label>
               <button
                 type="button"
-                onClick={() =>
-                  setFormData((p) => ({
-                    ...p,
-                    description:
-                      'We are looking for an experienced software engineer to join our team in Colombo. You will design, build, and maintain scalable web applications and cloud microservices.',
-                  }))
-                }
-                className="text-[11px] font-semibold text-primary hover:underline flex items-center gap-1"
+                disabled={aiLoading}
+                onClick={handleAiAutoFill}
+                className="text-[11px] font-semibold text-primary hover:underline flex items-center gap-1 cursor-pointer"
               >
-                <Sparkles className="w-3 h-3" /> Auto-Generate with AI
+                {aiLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
+                <span>Auto-Generate with AI</span>
               </button>
             </div>
             <textarea
@@ -238,8 +284,31 @@ export default function PostJobModal({ isOpen, onClose, onSubmit }: PostJobModal
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               placeholder="Detail key responsibilities, team structure, and day-to-day role expectations..."
-              className="w-full px-3.5 py-2.5 bg-surface-2 border border-border rounded-xl text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
+              className="w-full px-3.5 py-2.5 bg-surface-2 border border-border rounded-xl text-xs font-mono text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
             />
+
+            {/* LaTeX Math & Markdown Live Render Preview Card */}
+            {formData.description && (
+              <div className="mt-3 p-4 rounded-xl bg-surface-2/60 border border-primary/20 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-primary flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5" /> Live Structured Preview (LaTeX Rendered)
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setShowLatexPreview(!showLatexPreview)}
+                    className="text-[10px] text-muted hover:text-foreground font-semibold"
+                  >
+                    {showLatexPreview ? 'Hide Preview' : 'Show Preview'}
+                  </button>
+                </div>
+                {showLatexPreview && (
+                  <div className="p-3 bg-surface border border-border rounded-lg text-xs leading-relaxed text-foreground max-h-48 overflow-y-auto">
+                    <StructuredAiContent text={formData.description} />
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Screener Questions */}

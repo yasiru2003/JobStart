@@ -107,26 +107,41 @@ class LangChainAgentEngine:
         """
         Drafts a structured Job Description via OpenRouter Gemini Flash 3.5.
         """
-        system_prompt = "You are a professional HR Job Description Writer benchmarking Sri Lankan tech salaries and job roles."
+        system_prompt = (
+            "You are a Senior Technical HR Director writing structured job specifications for Sri Lanka tech roles. "
+            "CRITICAL: Always incorporate LaTeX math notation into the job spec for metrics, experience thresholds, and skill scores. "
+            "For example: \\( \\text{Experience} \\ge 3\\text{ years} \\), \\( \\text{Target Match Score} \\ge 85\\% \\), "
+            "\\( \\text{Base Salary} = \\text{LKR } 350,000 - 500,000 / \\text{mo} \\). "
+            "Format the text with bold titles, LaTeX badges, and structured bullet lists."
+        )
         user_prompt = (
-            f"Draft a job posting for role '{role_title}' in department '{department}' located in '{location}'.\n"
-            f"Key Requirements: {', '.join(key_requirements)}"
+            f"Draft a detailed, high-converting job specification for '{role_title}' in department '{department}' located in '{location}'.\n"
+            f"Key Requirements: {', '.join(key_requirements)}\n"
+            f"Must include LaTeX math badges: \\( \\text{{Exp}} \\ge 3\\text{{ years}} \\) and \\( \\text{{Score}} \\ge 85\\% \\)."
         )
 
         llm_reply = await self._call_openrouter_llm(system_prompt, user_prompt)
         requirements_str = "\n".join([f"- {req}" for req in key_requirements])
 
         description = llm_reply or (
-            f"## {role_title} ({department})\n\n"
-            f"**Location:** {location}\n\n"
-            f"### Role Summary\n"
-            f"We are seeking an exceptional {role_title} to join our high-growth team in {location}. "
-            f"You will drive core architecture, collaborate with cross-functional teams, and build scalable solutions.\n\n"
-            f"### Key Requirements\n{requirements_str}\n\n"
-            f"### What We Offer\n"
-            f"- Competitive compensation package (LKR market benchmarked)\n"
-            f"- Flexible hybrid / remote working arrangements\n"
-            f"- Continuous professional learning & certification support\n"
+            f"## 💼 {role_title} ({department})\n\n"
+            f"**Location:** {location} · **Format:** Hybrid / Remote\n\n"
+            f"### 🎯 Role Overview\n"
+            f"We are seeking a high-caliber **{role_title}** to lead core architecture and software features. "
+            f"Key evaluation metric: \\( \\text{{Match Threshold}} \\ge 85\\% \\).\n\n"
+            f"### 📊 Candidate Target Metrics (LaTeX Specification)\n"
+            f"- Minimum Commercial Experience: \\( \\text{{Experience}} \\ge 3\\text{{ years}} \\)\n"
+            f"- Target Technical Competency Score: \\( \\text{{Skill Score}} = 92\\% \\)\n"
+            f"- Benchmarked Monthly Salary: \\( \\text{{Salary}} = \\text{{LKR }} 350,000 - 500,000 / \\text{{mo}} \\)\n\n"
+            f"### 🛠️ Key Technical Requirements\n{requirements_str}\n\n"
+            f"### 🌟 Primary Responsibilities\n"
+            f"- Architect high-performance web applications using modern frameworks\n"
+            f"- Conduct peer code reviews and enforce high test coverage \\( \\text{{Coverage}} \\ge 80\\% \\)\n"
+            f"- Collaborate with product managers and DevOps engineering teams\n\n"
+            f"### 🎁 Benefits & Perks\n"
+            f"- Market-leading compensation in LKR\n"
+            f"- Flexible remote/office working arrangement\n"
+            f"- Professional learning & cloud certification budget"
         )
 
         return {
