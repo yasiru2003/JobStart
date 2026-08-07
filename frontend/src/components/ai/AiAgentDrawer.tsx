@@ -47,8 +47,8 @@ export function StructuredAiContent({ text }: { text: string }) {
 
   // 1. Process LaTeX math formulas \( ... \) or \[ ... \] or \text{...}
   const renderLaTeX = (rawStr: string) => {
-    // Check if line contains LaTeX equations like \(...\), \[...\], $...$, \text{}
-    const latexRegex = /(\\\([^)]+\\\)|\\\[[^\]]+\\\]|\$[^$]+\$|\\text\{[^}]+\})/g
+    // Check if line contains LaTeX equations like \(...\), \[...\], $...$
+    const latexRegex = /(\\\([\s\S]*?\\\)|\\\[[\s\S]*?\\\]|\$[^$]+\$)/g
     const parts = rawStr.split(latexRegex)
 
     const renderBracketPlaceholders = (textSegment: string) => {
@@ -62,10 +62,10 @@ export function StructuredAiContent({ text }: { text: string }) {
     }
 
     return parts.map((part, idx) => {
-      if (part.match(/^(\\\(|\\\[|\$)/)) {
+      if (part.startsWith('\\(') || part.startsWith('\\[') || part.startsWith('$')) {
         const cleanedMath = part
-          .replace(/^(\\\(|\ costume|\\\[|\$+|\$+$)/g, '')
-          .replace(/(\\\)|\ costume|\\\]|\$+|\$+$)/g, '')
+          .replace(/^\\\(|^\\\[|^\$+/g, '')
+          .replace(/\\\)$|\\\]$|\$+$|\\\)\s*$/g, '')
           .replace(/\\text\{([^}]+)\}/g, '$1')
           .trim()
 
