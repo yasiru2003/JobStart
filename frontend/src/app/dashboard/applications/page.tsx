@@ -159,16 +159,17 @@ export default function ApplicationsPage() {
                   </span>
                 </td>
                 <td className="p-4 text-right">
-                  <div className="flex items-center justify-end gap-2">
+                  <div className="flex items-center justify-end gap-2 shrink-0">
                     {(app as any).cvUrl && (
                       <a
                         href={(app as any).cvUrl.startsWith('http') ? (app as any).cvUrl : `/dashboard/whatsapp`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="px-2.5 py-1.5 bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20 font-bold rounded-lg text-xs flex items-center gap-1 transition-colors hover:bg-purple-500/20 cursor-pointer"
+                        className="px-2.5 py-1.5 bg-purple-500/10 text-purple-700 dark:text-purple-300 border border-purple-500/25 font-semibold rounded-xl text-xs inline-flex items-center gap-1.5 transition-all hover:bg-purple-500/20 whitespace-nowrap shrink-0 cursor-pointer shadow-sm"
                         title={`View CV: ${(app as any).cvUrl}`}
                       >
-                        <FileText className="w-3.5 h-3.5" /> PDF CV
+                        <FileText className="w-3.5 h-3.5 text-purple-600 dark:text-purple-400 shrink-0" />
+                        <span>PDF CV</span>
                       </a>
                     )}
 
@@ -180,11 +181,13 @@ export default function ApplicationsPage() {
                           }))
                         }
                       }}
-                      className="px-3 py-1.5 bg-gradient-to-r from-teal-700 to-teal-900 hover:from-teal-800 hover:to-teal-950 text-white font-bold text-xs rounded-xl shadow-sm transition-all flex items-center gap-1.5 cursor-pointer border border-teal-600/30"
+                      className="px-3 py-1.5 bg-teal-800 hover:bg-teal-900 text-teal-100 font-bold text-xs rounded-xl shadow-sm transition-all inline-flex items-center gap-1.5 cursor-pointer border border-teal-600/40 whitespace-nowrap shrink-0 hover:scale-[1.02]"
                       title={`Ask AI Agent about @${app.candidate}`}
                     >
-                      <Bot className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                      <span>AI Copilot (@{app.candidate})</span>
+                      <div className="w-4 h-4 rounded bg-amber-500 text-amber-950 flex items-center justify-center font-bold shrink-0">
+                        <Bot className="w-3 h-3 text-amber-950" />
+                      </div>
+                      <span>AI Copilot</span>
                     </button>
 
                     <button
@@ -192,16 +195,19 @@ export default function ApplicationsPage() {
                         setSelectedApp(app)
                         setIsScheduleModalOpen(true)
                       }}
-                      className="px-3 py-1.5 bg-accent hover:bg-amber-600 text-amber-950 font-bold rounded-lg text-xs flex items-center gap-1 transition-colors shadow-sm cursor-pointer"
+                      className="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-amber-950 font-bold rounded-xl text-xs inline-flex items-center gap-1.5 transition-all shadow-sm cursor-pointer whitespace-nowrap shrink-0 hover:scale-[1.02]"
                       id={`schedule-app-btn-${app.id}`}
                     >
-                      <Calendar className="w-3.5 h-3.5" /> Schedule Interview
+                      <Calendar className="w-3.5 h-3.5 text-amber-950 shrink-0" />
+                      <span>Schedule Interview</span>
                     </button>
+
                     <button
                       onClick={() => handleUpdateStatus(app.id, 'offer')}
-                      className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg text-xs flex items-center gap-1 transition-colors cursor-pointer"
+                      className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-xs inline-flex items-center gap-1.5 transition-all shadow-sm cursor-pointer whitespace-nowrap shrink-0 hover:scale-[1.02]"
                     >
-                      <CheckCircle className="w-3.5 h-3.5" /> Offer
+                      <CheckCircle className="w-3.5 h-3.5 shrink-0" />
+                      <span>Offer</span>
                     </button>
                   </div>
                 </td>
