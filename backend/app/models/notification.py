@@ -1,4 +1,6 @@
+from __future__ import annotations
 import uuid
+from typing import Optional
 from datetime import datetime, timezone
 from sqlalchemy import String, Boolean, DateTime, ForeignKey, Text, Enum as SAEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -21,7 +23,7 @@ class Notification(Base):
     message: Mapped[str] = mapped_column(Text, nullable=False)
     type: Mapped[NotificationType] = mapped_column(SAEnum(NotificationType), default=NotificationType.system)
     is_read: Mapped[bool] = mapped_column(Boolean, default=False)
-    link: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    link: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=lambda: datetime.now(timezone.utc)
     )

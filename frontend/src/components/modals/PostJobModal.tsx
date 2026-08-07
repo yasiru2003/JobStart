@@ -264,7 +264,8 @@ export default function PostJobModal({ isOpen, onClose, onSubmit }: PostJobModal
                 type="text"
                 value={newQuestion}
                 onChange={(e) => setNewQuestion(e.target.value)}
-                placeholder="Add custom question (e.g. Do you hold NVQ Level 5 or higher?)"
+                placeholder="Add custom question (e.g. Do you hold a relevant Bachelor Degree or higher?)"
+
                 className="flex-1 px-3.5 py-2 bg-surface-2 border border-border rounded-xl text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
               />
               <button

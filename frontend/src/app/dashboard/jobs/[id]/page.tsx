@@ -22,7 +22,7 @@ const JOBS_DATA: Record<string, {
     salary: 'LKR 350,000 – 500,000 / mo',
     type: 'Full-time',
     status: 'Active',
-    applicants: 42,
+    applicants: 7,
     pipeline: {
       matched: [
         { id: 'c1', initials: 'KP', name: 'Kasun Perera',        location: 'Colombo', verified: false, rating: '4.0', matchScore: 72 },
@@ -47,7 +47,7 @@ const JOBS_DATA: Record<string, {
     ] as any,
   },
   '2': {
-    title: 'Lead UI/UX Designer', employer: 'Sysco LABS', location: 'Colombo 05', salary: 'LKR 300,000 – 450,000 / mo', type: 'Full-time', status: 'Active', applicants: 28,
+    title: 'Lead UI/UX Designer', employer: 'Sysco LABS', location: 'Colombo 05', salary: 'LKR 300,000 – 450,000 / mo', type: 'Full-time', status: 'Active', applicants: 2,
     pipeline: {
       matched:      [{ id: 'u1', initials: 'AM', name: 'Amaya Madushan',  location: 'Colombo', verified: true, rating: '4.3', matchScore: 79 }],
       shortlisted:  [{ id: 'u2', initials: 'RS', name: 'Ruchika Silva',   location: 'Colombo', verified: true, rating: '4.7', matchScore: 91 }],
@@ -57,7 +57,7 @@ const JOBS_DATA: Record<string, {
     interviews: [],
   },
   '3': {
-    title: 'DevOps & Kubernetes Engineer', employer: 'Dialog Axiata', location: 'Colombo 02', salary: 'LKR 400,000 – 600,000 / mo', type: 'Full-time', status: 'Active', applicants: 19,
+    title: 'DevOps & Kubernetes Engineer', employer: 'Dialog Axiata', location: 'Colombo 02', salary: 'LKR 400,000 – 600,000 / mo', type: 'Full-time', status: 'Active', applicants: 1,
     pipeline: {
       matched:      [{ id: 'd1', initials: 'TK', name: 'Tharaka Kumarage', location: 'Colombo', verified: false, rating: '3.9', matchScore: 68 }],
       shortlisted:  [],
@@ -67,7 +67,8 @@ const JOBS_DATA: Record<string, {
     interviews: [],
   },
   '4': {
-    title: 'Associate Software Engineer', employer: 'Brandix Tech', location: 'Katunayake', salary: 'LKR 150,000 – 220,000 / mo', type: 'Contract', status: 'Paused', applicants: 65,
+    title: 'Associate Software Engineer', employer: 'Brandix Tech', location: 'Katunayake', salary: 'LKR 150,000 – 220,000 / mo', type: 'Contract', status: 'Paused', applicants: 3,
+
     pipeline: {
       matched:      [{ id: 'b1', initials: 'LP', name: 'Lakmal Peiris',    location: 'Gampaha', verified: true, rating: '4.0', matchScore: 74 },
                      { id: 'b2', initials: 'MR', name: 'Maleesha Rodrigo', location: 'Colombo', verified: true, rating: '3.7', matchScore: 62 }],

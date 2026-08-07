@@ -50,6 +50,11 @@ class Settings(BaseSettings):
     OPENROUTER_MODEL: str = "google/gemini-2.5-flash-lite"
     OPENROUTER_BASE_URL: str = "https://openrouter.ai/api/v1"
 
+    # WAHA WhatsApp API
+    WAHA_BASE_URL: str = "http://178.104.127.220:3000"
+    WAHA_SESSION: str = "jobstart"
+    WAHA_API_KEY: str = "key_Z9s561T3AdkBlkciQ73wt7oag2yEurGA"
+
     # Supabase & Lovable AI Integration
     SUPABASE_URL: str = ""
     SUPABASE_ANON_KEY: str = ""
@@ -60,6 +65,7 @@ class Settings(BaseSettings):
     # CORS
     ALLOWED_ORIGINS: list[str] = [
         "http://localhost:3000",
+        "http://127.0.0.1:3000",
         "https://jobstart.lk",
         "https://www.jobstart.lk",
     ]
@@ -71,6 +77,7 @@ class Settings(BaseSettings):
     class Config:
         env_file = ".env"
         case_sensitive = True
+        extra = "ignore"
 
 
 @lru_cache()

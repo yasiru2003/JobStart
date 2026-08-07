@@ -3,7 +3,20 @@ import logging
 from typing import Optional
 from app.core.config import settings
 
+import re
+
 logger = logging.getLogger("jobstart.waha")
+
+
+def format_whatsapp_markdown(text: str) -> str:
+    """Sanitize and format markdown cleanly for native WhatsApp rendering (*bold*)."""
+    if not text:
+        return text
+    # Convert double asterisks **bold** to single asterisk *bold* for WhatsApp
+    text = re.sub(r"\*\*(.*?)\*\*", r"*\1*", text)
+    # Convert markdown headers ### Title to *Title*
+    text = re.sub(r"^#{1,6}\s*(.*)$", r"*\1*", text, flags=re.MULTILINE)
+    return text
 
 
 class WAHAService:
@@ -48,13 +61,14 @@ class WAHAService:
         return bool(self.base_url)
 
     def _format_phone(self, phone: str) -> str:
-        """Formats phone number to WAHA chatId format e.g. 94771234567@c.us"""
+        """Formats phone number or JID to WAHA chatId format e.g. 94771234567@c.us or 123@lid"""
+        phone = str(phone).strip()
+        if any(phone.endswith(suffix) for suffix in ("@c.us", "@s.whatsapp.net", "@lid", "@g.us")):
+            return phone
         cleaned = "".join(filter(str.isdigit, phone))
         if cleaned.startswith("0"):
             cleaned = "94" + cleaned[1:]
-        if not cleaned.endswith("@c.us"):
-            return f"{cleaned}@c.us"
-        return cleaned
+        return f"{cleaned}@c.us"
 
     # ── Health / Connectivity ──────────────────────────────────────────────
 
@@ -229,11 +243,12 @@ class WAHAService:
 
     async def send_text(self, phone: str, text: str) -> dict:
         chat_id = self._format_phone(phone)
+        formatted_text = format_whatsapp_markdown(text)
         url = f"{self.base_url}/api/sendText"
         payload = {
             "session": self.session,
             "chatId": chat_id,
-            "text": text,
+            "text": formatted_text,
         }
         try:
             async with httpx.AsyncClient(timeout=10.0) as client:

@@ -1,3 +1,4 @@
+import re
 from fastapi import APIRouter, Depends, HTTPException, status, Request
 from pydantic import BaseModel, Field
 from typing import Optional, List, Dict, Any
@@ -6,6 +7,7 @@ from app.core.security import require_roles
 from app.services.waha import waha_service
 from app.services.whatsapp_agent import whatsapp_agent, conversation_store
 from app.services.ai_ranking import ai_ranking_service, CandidateProfile, JobRequirements
+from app.api.v1.jobs import JOBS_DB
 
 router = APIRouter(prefix="/whatsapp", tags=["WhatsApp (WAHA)"])
 
@@ -77,6 +79,11 @@ class CompareCandidatesRequest(BaseModel):
 
 class AgentToggleRequest(BaseModel):
     enabled: bool = Field(..., description="Enable or disable auto-reply agent")
+
+
+class NewJobNotificationRequest(BaseModel):
+    phones: List[str] = Field(..., example=["94765225044", "94771234567"], description="List of candidate phone numbers to notify")
+    jobs: Optional[List[Dict[str, Any]]] = Field(default=None, description="Override jobs to send (defaults to JOBS_DB)")
 
 
 # ── Session endpoints ──────────────────────────────────────────────────────
@@ -213,6 +220,29 @@ async def send_interview_invite(payload: SendInviteRequest, _: None = Depends(re
     return {"message": f"Interview invitation sent to {payload.candidate_name}", "detail": result}
 
 
+class SendSlotsRequest(BaseModel):
+    phone: str = Field(..., example="94771234567")
+    candidate_name: str = Field(..., example="Kasun Perera")
+    job_title: str = Field(..., example="Senior Developer")
+    employer_name: str = Field(default="JobStart Client", example="TechCorp")
+    slots: List[str] = Field(..., example=["Mon 10:00 AM", "Tue 2:00 PM", "Wed 11:30 AM"])
+
+
+@router.post("/agent/slots/send", summary="Send pre-allocated recruiter interview slots via WhatsApp")
+async def send_interview_slots(payload: SendSlotsRequest, _: None = Depends(require_admin)):
+    if not waha_service.is_configured:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="WAHA is not configured")
+
+    result = await whatsapp_agent.send_interview_slots(
+        phone=payload.phone,
+        candidate_name=payload.candidate_name,
+        job_title=payload.job_title,
+        employer_name=payload.employer_name,
+        slots=payload.slots,
+    )
+    return {"message": f"Interview slots sent to {payload.candidate_name}", "detail": result}
+
+
 @router.post("/agent/notify-match", summary="Send proactive job-match notification")
 async def notify_job_match(payload: NotifyMatchRequest, _: None = Depends(require_admin)):
     if not waha_service.is_configured:
@@ -238,6 +268,25 @@ async def start_screening(payload: StartScreeningRequest, _: None = Depends(requ
         job_title=payload.job_title or "",
     )
     return {"message": f"Screening started for {payload.candidate_name}", "detail": result}
+
+
+@router.get("/agent/screening-results", summary="Get recruiter candidate screening analytics & response metrics")
+async def get_candidate_screening_results(phone: str):
+    """
+    Returns candidate screening answers, average response latency, responsiveness rating, and AI quality scores.
+    """
+    results = conversation_store.get_screening_results(phone)
+    conv = conversation_store.get(phone) or {}
+    return {
+        "phone": phone,
+        "candidate_name": conv.get("candidate_name", "Candidate"),
+        "job_title": conv.get("selected_job_title") or conv.get("job_title", "Candidate"),
+        "stage": results.get("stage"),
+        "questions": results.get("questions"),
+        "answers": results.get("answers"),
+        "metrics": results.get("metrics"),
+    }
+
 
 
 @router.post("/agent/rank", summary="Rank candidate list against job requirements via LLM")
@@ -327,6 +376,148 @@ async def get_messages(limit: int = 50, _: None = Depends(require_admin)) -> Lis
     return messages
 
 
+class LovableWhatsAppMessageRequest(BaseModel):
+    phone: str = Field(..., example="94771234567")
+    message: str = Field(..., example="I want to apply for Senior React Developer")
+    candidate_name: Optional[str] = Field(default="Candidate", example="Kasun Perera")
+    language: Optional[str] = Field(default="en", example="en")
+
+
+@router.post("/lovable-process", summary="Process WhatsApp message via Lovable AI System")
+async def process_whatsapp_with_lovable(payload: LovableWhatsAppMessageRequest, _: None = Depends(require_admin)):
+    from app.services.lovable_agent import lovable_ai_service
+    result = await lovable_ai_service.process_whatsapp_message(
+        phone=payload.phone,
+        message_text=payload.message,
+        candidate_name=payload.candidate_name or "Candidate",
+        language=payload.language or "en",
+    )
+    return result
+
+
+PROCESSED_MESSAGE_IDS = set()
+
+
+@router.post("/agent/reset-session", summary="Reset a candidate session stage (admin)")
+async def reset_candidate_session(phone: str, stage: str = "none"):
+    """Reset a candidate's application_stage in the live conversation store."""
+    from app.services.whatsapp_agent import ApplicationStage, ScreeningStage
+    try:
+        new_stage = ApplicationStage(stage)
+    except ValueError:
+        new_stage = ApplicationStage.NONE
+    conversation_store.upsert(phone, "", "system", {
+        "application_stage": new_stage,
+        "screening_stage": ScreeningStage.IDLE,
+        "pdf_received": False,
+        "selected_job_title": None,
+    })
+
+    s = conversation_store.get(phone)
+    return {
+        "status": "reset",
+        "phone": phone,
+        "application_stage": s.get("application_stage"),
+        "pending_jobs": [j["title"] for j in (s.get("pending_notification_jobs") or [])],
+    }
+
+
+@router.post(
+    "/agent/notify-new-job",
+    summary="Broadcast new job notifications to candidates (in-house WhatsApp apply)",
+    description="Send new job notifications to a list of candidates. Candidates can reply with 1/2/3 to apply in-house.",
+)
+async def notify_new_job(payload: NewJobNotificationRequest):
+    """
+    Sends new job listings to candidates via WhatsApp.
+    Candidate replies 1/2/3 → AI agent auto-processes application in-house.
+    """
+    jobs_to_notify = payload.jobs or JOBS_DB
+    if not jobs_to_notify:
+        raise HTTPException(status_code=400, detail="No jobs available to notify")
+
+    results = []
+    for phone in payload.phones:
+        conv = conversation_store.get(phone)
+        candidate_name = (conv.get("candidate_name") if conv else None) or "Valued Candidate"
+
+        # Build job listing lines
+        job_lines = "\n\n".join(
+            f"💼 *{i+1}. {j.get('title')}*\n"
+            f"🏢 {j.get('company', 'JobStart Client')}, {j.get('location', 'Colombo')}\n"
+            f"💰 LKR {j.get('salary_min', 'N/A'):,} – {j.get('salary_max', 'N/A'):,}\n"
+            f"🕐 {j.get('job_type', 'Full-time')}"
+            for i, j in enumerate(jobs_to_notify[:3])
+        )
+
+        msg = (
+            f"🔔 *නව රැකියා දැන්වීම!* — JobStart Sri Lanka\n\n"
+            f"👋 ආයුබෝවන් *{candidate_name}*! ඔබේ profile සමඟ ගැළපෙන නව Job Opportunities!\n\n"
+            f"━━━━━━━━━━━━━━━━━━━━━━━\n"
+            f"{job_lines}\n"
+            f"━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+            f"✅ *Apply කිරීමට*: ජොබ් අංකය *1*, *2*, හෝ *3* ලෙස reply කරන්න!\n"
+            f"📎 ඔබේ CV ලෙස PDF file එකද reply කළ හොත් apply process සම්පූර්ණ!\n\n"
+            f"— *JobStart AI Recruitment*"
+        )
+
+        # Save pending notification jobs to candidate session so replies resolve correctly
+        conversation_store.upsert(phone, msg, "agent", {
+            "pending_notification_jobs": [
+                {"id": j.get("id"), "title": j.get("title"), "company": j.get("company"), "location": j.get("location"),
+                 "salary_min": j.get("salary_min"), "salary_max": j.get("salary_max")}
+                for j in jobs_to_notify[:3]
+            ]
+        })
+
+        try:
+            r = await waha_service.send_text(phone, msg)
+            results.append({"phone": phone, "status": "sent", "message_id": r.get("key", {}).get("id")})
+        except Exception as e:
+            results.append({"phone": phone, "status": "failed", "error": str(e)})
+
+    return {"notified": len(results), "results": results}
+
+
+
+def extract_phone_deep(payload: Any, active_sessions: Optional[Dict[str, Any]] = None) -> Optional[str]:
+    """
+    Recursively scans the entire payload JSON for candidate phone numbers.
+    Immunizes the system against ANY future WAHA/WhatsApp schema changes, key renames, or format shifts.
+    """
+    found_phones = []
+    
+    def _scan(node: Any):
+        if isinstance(node, str):
+            clean = node.replace("@s.whatsapp.net", "").replace("@c.us", "").replace("@g.us", "")
+            digits = re.sub(r"\D", "", clean)
+            if digits.isdigit() and 9 <= len(digits) <= 15 and not node.endswith("@lid"):
+                if digits not in found_phones:
+                    found_phones.append(digits)
+        elif isinstance(node, dict):
+            for v in node.values():
+                _scan(v)
+        elif isinstance(node, list):
+            for item in node:
+                _scan(item)
+
+    _scan(payload)
+
+    # Check if any extracted phone matches an active session
+    if active_sessions:
+        for p in found_phones:
+            if p in active_sessions:
+                return p
+
+    # Prefer Sri Lanka country code (94...) or return first valid phone
+    lk_phones = [p for p in found_phones if p.startswith("94")]
+    if lk_phones:
+        return lk_phones[0]
+    elif found_phones:
+        return found_phones[0]
+    return None
+
+
 @router.post(
     "/webhook",
     summary="WAHA webhook receiver",
@@ -340,27 +531,49 @@ async def waha_webhook(request: Request):
     """
     try:
         body = await request.json()
-    except Exception:
+        print(f"--> [WAHA WEBHOOK RECEIVED]: {body}")
+        import logging
+        logging.getLogger("jobstart.waha").info(f"Received WAHA webhook body: {body}")
+    except Exception as e:
+        print(f"--> [WAHA WEBHOOK ERROR]: {e}")
         return {"status": "ignored", "reason": "invalid JSON"}
 
-    event = body.get("event", "")
-    if event not in ("message", "message.any"):
-        return {"status": "ignored", "event": event}
+    # Extract payload regardless of wrapping
+    payload = body.get("payload") if isinstance(body.get("payload"), dict) else body
+    event = body.get("event", payload.get("event", "message"))
 
-    payload = body.get("payload", {})
-    sender = payload.get("from", "")
-    text = payload.get("body", "")
+    # Skip non-message status events like session.status
+    if event and event not in ("message", "message.any", "message.upsert", "message.created"):
+        if "status" in str(event).lower() or "session" in str(event).lower():
+            return {"status": "ignored", "event": event}
+
+    # ── Deduplicate by Message ID to prevent double replies ────────────
+    msg_id = payload.get("id") or payload.get("_data", {}).get("key", {}).get("id")
+    if msg_id:
+        if msg_id in PROCESSED_MESSAGE_IDS:
+            return {"status": "ignored", "reason": "duplicate message ID"}
+        PROCESSED_MESSAGE_IDS.add(msg_id)
+        if len(PROCESSED_MESSAGE_IDS) > 1000:
+            PROCESSED_MESSAGE_IDS.clear()
+
+    # ── Deep Recursive Phone Extraction (Schema Change Immune) ──────────
+    phone = extract_phone_deep(payload, active_sessions=conversation_store._sessions)
+    if not phone:
+        sender_raw = payload.get("from") or payload.get("chatId") or payload.get("author", "")
+        phone = str(sender_raw).replace("@c.us", "").replace("@s.whatsapp.net", "").replace("@g.us", "")
+
+
+
+    text = payload.get("body") or payload.get("text") or payload.get("caption", "")
     is_from_me = payload.get("fromMe", False)
     has_media = payload.get("hasMedia", False)
-    media_url = payload.get("mediaUrl") or payload.get("media", {}).get("url")
+    media_obj = payload.get("media") if isinstance(payload.get("media"), dict) else {}
+    media_url = payload.get("mediaUrl") or media_obj.get("url")
     msg_type = payload.get("_data", {}).get("type", "text") if not has_media else "document"
 
-    # Skip messages sent by the bot itself
-    if is_from_me or not sender:
-        return {"status": "ignored"}
-
-    # Strip @c.us suffix for storage
-    phone = sender.replace("@c.us", "").replace("@g.us", "")
+    # Skip messages sent by the bot itself (fromMe=True) to prevent loops
+    if is_from_me or not phone:
+        return {"status": "ignored", "reason": "fromMe or empty phone"}
 
     # Look up any existing conversation context
     conv = conversation_store.get(phone)
@@ -378,6 +591,7 @@ async def waha_webhook(request: Request):
         job_title=job_title,
         interview_date=interview_date,
         interview_time=interview_time,
+        available_jobs=JOBS_DB,
     )
 
     # Send auto-reply via WAHA if one was generated

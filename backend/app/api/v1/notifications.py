@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, Field
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 import uuid
 from datetime import datetime
 
@@ -45,7 +45,8 @@ MOCK_NOTIFICATIONS_DB: List[Dict[str, Any]] = [
   {
     "id": "notif-3",
     "title": "AI Agent Candidate Analysis Ready",
-    "message": "LangChain agent finished CV screening for 5 new applicants.",
+    "message": "JobStart AI agent finished CV screening for 5 new applicants.",
+
     "type": "ai_alert",
     "is_read": True,
     "link": "/dashboard/candidates",

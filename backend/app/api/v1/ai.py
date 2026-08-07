@@ -20,7 +20,8 @@ class CandidateAnalysisRequest(BaseModel):
     job_title: str = Field(..., example="Senior Full Stack Engineer")
     skills: List[str] = Field(default=["React", "Next.js", "Node.js", "TypeScript"])
     experience_years: int = Field(default=6, example=6)
-    documents_verified: List[str] = Field(default=["NIC", "NVQ Level 6"])
+    documents_verified: List[str] = Field(default=["NIC", "Degree Certificate"])
+
 
 class DraftJobRequest(BaseModel):
     role_title: str = Field(..., example="Senior React / Next.js Developer")
@@ -109,4 +110,85 @@ async def lovable_chat(payload: AgentChatRequest, is_manager: bool = Depends(ver
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Lovable AI processing error: {str(e)}"
         )
+
+
+class SinhalaChatRequest(BaseModel):
+    message: str = Field(..., example="ආයුබෝවන්, මට රැකියාවක් සොයා ගැනීමට උදව් කරන්න")
+    history: Optional[List[Dict[str, str]]] = Field(default=None)
+
+
+@router.post("/sinhala-chat")
+async def sinhala_chat(payload: SinhalaChatRequest):
+    """
+    Gemini 3.6 Flash powered Sinhala/English support chatbot API.
+    """
+    from app.services.sinhala_chat import sinhala_chat_service
+    try:
+        result = await sinhala_chat_service.ask(
+            message=payload.message,
+            history=payload.history,
+        )
+        return result
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Sinhala Chatbot error: {str(e)}"
+        )
+
+
+class InterviewQuestionsRequest(BaseModel):
+    candidate_name: str = Field(..., example="Hasini Dikkumbura")
+    job_title: str = Field(..., example="Senior React Developer")
+    skills: List[str] = Field(default=["React", "Next.js", "TypeScript"])
+    experience_years: int = Field(default=4, example=4)
+
+
+@router.post("/interview-questions")
+async def generate_interview_questions(payload: InterviewQuestionsRequest, is_manager: bool = Depends(verify_platform_manager)):
+    """
+    Generates 5 tailored technical & behavioral interview questions specifically for the recruiter.
+    """
+    try:
+        result = await ai_agent_engine.generate_interview_questions(
+            candidate_name=payload.candidate_name,
+            job_title=payload.job_title,
+            skills=payload.skills,
+            experience_years=payload.experience_years,
+        )
+        return result
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"AI interview question generation error: {str(e)}"
+        )
+
+
+class EvaluateAnswersRequest(BaseModel):
+    candidate_name: str = Field(..., example="Hasini Dikkumbura")
+    job_title: str = Field(..., example="Senior React Developer")
+    questions: List[str] = Field(...)
+    answers: List[str] = Field(...)
+
+
+@router.post("/evaluate-answers")
+async def evaluate_candidate_answers(payload: EvaluateAnswersRequest, is_manager: bool = Depends(verify_platform_manager)):
+    """
+    Evaluates candidate screening answers using Gemini Flash LLM to produce real quality scores and technical evaluations.
+    """
+    try:
+        result = await ai_agent_engine.evaluate_candidate_answers(
+            candidate_name=payload.candidate_name,
+            job_title=payload.job_title,
+            questions=payload.questions,
+            answers=payload.answers,
+        )
+        return result
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"AI answer evaluation error: {str(e)}"
+        )
+
+
+
 

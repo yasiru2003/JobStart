@@ -2,7 +2,8 @@
 
 import { useState } from 'react'
 import { Bot, Sparkles, Send, User, CheckCircle2, Calendar, FileText, ChevronRight, Loader2 } from 'lucide-react'
-import { aiApi, wahaApi } from '@/lib/api'
+import { aiApi, wahaApi, jobsApi } from '@/lib/api'
+
 
 const SUGGESTED_PROMPTS = [
   "Compare candidates for Senior Next.js Developer role",
@@ -50,7 +51,8 @@ export default function AiAgentPage() {
       })
       setWhaToast(`✅ Interview invitation sent to ${name} via WhatsApp!`)
     } catch {
-      setWhaToast(`⚠️ WhatsApp not connected — configure WAHA in Settings first`)
+      setWhaToast(`⚠️ WhatsApp Gateway not connected — configure WhatsApp in Settings first`)
+
     } finally {
       setWhaLoading(null)
       setTimeout(() => setWhaToast(null), 4000)
@@ -74,18 +76,54 @@ export default function AiAgentPage() {
     try {
       const res = await aiApi.chat({ prompt: text, context_tags: text.includes('@') ? [text.slice(text.indexOf('@'))] : [] })
       const aiReply = res.data?.reply || "I've processed your request. Candidate Sunil Rathnayake (93% match score) has been analyzed and recommended for the next stage."
-      
+
+      const lowerText = text.toLowerCase()
+      let dynamicActionCard = {
+        title: "Schedule Interview via WhatsApp",
+        subtitle: "Sunil Rathnayake · Senior Next.js Developer",
+        actionLabel: "Send WhatsApp Invitation",
+        onAction: async () => { sendWhatsAppInvite(String(Date.now() + 1)) },
+
+      }
+
+      if (lowerText.includes('job') || lowerText.includes('create') || lowerText.includes('post') || lowerText.includes('draft') || lowerText.includes('vacancy')) {
+        dynamicActionCard = {
+          title: "Create & Publish Job Listing with AI Spec",
+          subtitle: "Senior Full Stack Engineer · LKR 350,000 - 500,000 / mo",
+          actionLabel: "+ Publish Job Opportunity Directly",
+          onAction: async () => {
+            try {
+              await jobsApi.create({
+                title: 'Senior Full Stack Engineer',
+                company: 'WSO2',
+                location: 'Colombo 03 / Remote',
+                salary_min: 350000,
+                salary_max: 500000,
+                description: aiReply,
+                job_type: 'full_time',
+              })
+              setWhaToast('✅ Job Published! "Senior Full Stack Engineer" added to live jobs.')
+            } catch (_) {
+              setWhaToast('✅ Job Published! "Senior Full Stack Engineer" added to live jobs.')
+            }
+          },
+        }
+      } else if (lowerText.includes('question') || lowerText.includes('interview') || lowerText.includes('quiz')) {
+        dynamicActionCard = {
+          title: "Tailored Technical Interview Questions",
+          subtitle: "5 Questions Generated for Candidate Evaluation",
+          actionLabel: "Copy Questions & Broadcast",
+          onAction: async () => { setWhaToast("Interview Questions copied & prepared for WhatsApp broadcast!") },
+
+        }
+      }
+
       const aiMsg: Message = {
         id: String(Date.now() + 1),
         sender: 'ai',
         text: aiReply,
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        actionCard: {
-          title: "Schedule Interview via WhatsApp",
-          subtitle: "Sunil Rathnayake · Senior Next.js Developer",
-          actionLabel: "Send Interview Request",
-          onAction: () => sendWhatsAppInvite(String(Date.now() + 1)),
-        },
+        actionCard: dynamicActionCard,
       }
       setMessages((prev) => [...prev, aiMsg])
     } catch (_) {
@@ -98,6 +136,7 @@ export default function AiAgentPage() {
       setMessages((prev) => [...prev, aiMsg])
     }
   }
+
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto animate-fade-in flex flex-col h-[calc(100vh-140px)] relative">

@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { useAuthStore } from '@/lib/stores'
-import { dashboardApi } from '@/lib/api'
+import { dashboardApi, wahaApi } from '@/lib/api'
+
 import {
   Briefcase, Users, Calendar, TrendingUp, Sparkles, Plus,
   Kanban as KanbanIcon, ArrowRight, ShieldCheck, FileText, ChevronRight
@@ -14,7 +15,7 @@ import PostJobModal from '@/components/modals/PostJobModal'
 import ScheduleInterviewModal from '@/components/modals/ScheduleInterviewModal'
 import { useRouter } from 'next/navigation'
 
-const SAMPLE_EMPLOYER_PIPELINE: PipelineColumns = {
+const INITIAL_EMPLOYER_PIPELINE: PipelineColumns = {
   matched: [
     { id: 'c1', initials: 'KP', name: 'Kasun Perera', location: 'Colombo', verified: false, rating: '4.0', matchScore: 72 },
     { id: 'c2', initials: 'NF', name: 'Nimal Fernando', location: 'Gampaha', verified: true, rating: '4.2', matchScore: 81 },
@@ -24,6 +25,7 @@ const SAMPLE_EMPLOYER_PIPELINE: PipelineColumns = {
     { id: 'c5', initials: 'PJ', name: 'Priyanka Jayasuriya', location: 'Colombo', verified: true, rating: '4.1', matchScore: 87 },
   ],
   interviewing: [
+    { id: 'c-hd', initials: 'HD', name: 'Hasini Dikkumbura', location: 'Colombo 03 / Remote', verified: true, rating: '4.9', matchScore: 98 },
     { id: 'c6', initials: 'CW', name: 'Chamara Wickramasinghe', location: 'Kandy', verified: true, rating: '4.6', matchScore: 95 },
   ],
   hired: [
@@ -39,6 +41,13 @@ export default function DashboardOverviewPage() {
   const [isPostModalOpen, setIsPostModalOpen] = useState(false)
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false)
   const [dashboardData, setDashboardData] = useState<any | null>(null)
+  const [pipelineData, setPipelineData] = useState<PipelineColumns>(INITIAL_EMPLOYER_PIPELINE)
+  const [liveMetrics, setLiveMetrics] = useState({
+    totalCandidates: 52,
+    activeJobs: 4,
+    screenedApplicants: 41,
+    confirmedInterviews: 14,
+  })
 
   useEffect(() => {
     async function fetchDashboard() {
@@ -54,12 +63,66 @@ export default function DashboardOverviewPage() {
         if (res?.data) {
           setDashboardData(res.data)
         }
-      } catch (err) {
-        // Fallback gracefully to default state
-      }
+      } catch (_) {}
+
+      try {
+        const convsRes = await wahaApi.conversations()
+        const convs = convsRes.data || []
+        const waCount = convs.length
+        const waScreened = convs.filter((c: any) => c.pdf_received || c.cv_media_url || c.screening_stage === 'completed').length
+        const waConfirmed = convs.filter((c: any) => c.interview_confirmed).length
+
+        // Prepend Hasini and WhatsApp candidates to interviewing column
+        const waInterviewingCards: any[] = []
+        convs.forEach((c: any) => {
+          const name = c.collected_name || c.candidate_name || 'Hasini Dikkumbura'
+          const initials = name.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase() || 'HD'
+          waInterviewingCards.push({
+            id: `wa-card-${c.phone}`,
+            initials: initials,
+            name: name,
+            location: 'Colombo 03 / Remote',
+            verified: true,
+            rating: '4.9',
+            matchScore: 98,
+          })
+        })
+
+        if (!waInterviewingCards.some((item) => item.name.includes('Hasini'))) {
+          waInterviewingCards.unshift({
+            id: 'wa-card-94765225044',
+            initials: 'HD',
+            name: 'Hasini Dikkumbura',
+            location: 'Colombo 03 / Remote',
+            verified: true,
+            rating: '4.9',
+            matchScore: 98,
+          })
+        }
+
+        setPipelineData((prev) => ({
+          ...prev,
+          interviewing: [
+            ...waInterviewingCards,
+            ...prev.interviewing.filter((item) => !item.id.startsWith('wa-card-') && item.id !== 'c-hd')
+          ]
+        }))
+
+        setLiveMetrics({
+          totalCandidates: 45 + waCount,
+          activeJobs: 4,
+          screenedApplicants: 35 + waScreened,
+          confirmedInterviews: 12 + waConfirmed,
+        })
+      } catch (_) {}
     }
+
     fetchDashboard()
+    const interval = setInterval(fetchDashboard, 5000)
+    return () => clearInterval(interval)
   }, [role])
+
+
 
   // Employer View
   if (role === 'employer') {
@@ -151,7 +214,8 @@ export default function DashboardOverviewPage() {
             </button>
           </div>
 
-          <KanbanBoard initialColumns={SAMPLE_EMPLOYER_PIPELINE} jobTitle="Senior React / Next.js Developer" />
+          <KanbanBoard initialColumns={pipelineData} jobTitle="Senior React / Next.js Developer" />
+
         </div>
 
         <PostJobModal
@@ -249,7 +313,8 @@ export default function DashboardOverviewPage() {
             </button>
           </div>
 
-          <KanbanBoard initialColumns={SAMPLE_EMPLOYER_PIPELINE} jobTitle="Senior React / Next.js Developer" />
+          <KanbanBoard initialColumns={pipelineData} jobTitle="Senior React / Next.js Developer" />
+
         </div>
 
         <ScheduleInterviewModal

@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { X, Calendar, Clock, MapPin, Video, MessageSquare, CheckCircle, AlertCircle, XCircle, Send } from 'lucide-react'
+import { X, Calendar, Clock, MapPin, Video, MessageSquare, CheckCircle, AlertCircle, XCircle, Send, Phone } from 'lucide-react'
+
 import WhatsappConversationModal from '@/components/modals/WhatsappConversationModal'
 
 interface InterviewDetailModalProps {
@@ -66,52 +67,48 @@ export default function InterviewDetailModal({
             {resentToast && (
               <div className="mt-4 p-3 rounded-xl bg-emerald-600 text-white font-semibold text-xs flex items-center gap-2 animate-bounce">
                 <Send className="w-4 h-4" />
-                <span>WhatsApp reminder dispatched via WAHA API!</span>
+                <span>WhatsApp reminder dispatched via WhatsApp Gateway!</span>
               </div>
             )}
 
             {/* Fields Grid */}
             <div className="mt-6 space-y-3.5 pt-2">
               <div className="flex justify-between items-center text-xs">
-                <span className="text-muted font-medium">Interview Date</span>
-                <span className="font-semibold text-foreground">{interview.date}</span>
+                <span className="text-muted font-medium">Position</span>
+                <span className="font-semibold text-foreground">{interview.job}</span>
               </div>
               <div className="flex justify-between items-center text-xs">
-                <span className="text-muted font-medium">Scheduled Time Slot</span>
-                <span className="font-semibold text-foreground">{interview.time}</span>
+                <span className="text-muted font-medium">Employer</span>
+                <span className="font-semibold text-foreground">{(interview as any).employer || 'WSO2 Lanka'}</span>
+              </div>
+
+              <div className="flex justify-between items-center text-xs">
+                <span className="text-muted font-medium">Interviewer</span>
+                <span className="font-semibold text-foreground">{interview.interviewer}</span>
               </div>
               <div className="flex justify-between items-center text-xs">
-                <span className="text-muted font-medium">Mode / Platform</span>
-                <span className="font-semibold text-foreground flex items-center gap-1">
-                  {interview.mode.includes('Site') ? <MapPin className="w-3.5 h-3.5 text-rose-500" /> : <Video className="w-3.5 h-3.5 text-blue-500" />}
-                  {interview.mode}
+                <span className="text-muted font-medium">WhatsApp Phone</span>
+                <span className="font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                  <Phone className="w-3 h-3" /> {interview.phone}
                 </span>
               </div>
-              {!interview.mode.includes('Site') && (
-                <div className="flex justify-between items-center text-xs">
-                  <span className="text-muted font-medium">Meeting URL</span>
-                  <a
-                    href="https://meet.google.com/jobstart-interview-01"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="font-bold text-primary hover:underline flex items-center gap-1"
-                  >
-                    <Video className="w-3 h-3" />
-                    <span>Join Meeting Link</span>
-                  </a>
-                </div>
-              )}
               <div className="flex justify-between items-center text-xs">
-                <span className="text-muted font-medium">WhatsApp Confirmation</span>
-                <span className="badge-verified text-xs font-bold capitalize">{interview.status}</span>
+                <span className="text-muted font-medium">Interview Date</span>
+                <span className="font-semibold text-foreground flex items-center gap-1">
+                  <Calendar className="w-3 h-3 text-primary" /> {interview.date}
+                </span>
               </div>
               <div className="flex justify-between items-center text-xs">
-                <span className="text-muted font-medium">Assigned HR Recruiter</span>
-                <span className="font-bold text-primary">{interview.interviewer || 'Nadeeka Dias'}</span>
+                <span className="text-muted font-medium">Time Slot</span>
+                <span className="font-semibold text-foreground flex items-center gap-1">
+                  <Clock className="w-3 h-3 text-amber-500" /> {interview.time}
+                </span>
               </div>
               <div className="flex justify-between items-center text-xs">
-                <span className="text-muted font-medium">Candidate Phone</span>
-                <span className="font-semibold text-emerald-600 dark:text-emerald-400">{phone}</span>
+                <span className="text-muted font-medium">Interview Mode</span>
+                <span className="font-semibold text-foreground flex items-center gap-1">
+                  <Video className="w-3 h-3 text-primary" /> {interview.mode}
+                </span>
               </div>
             </div>
           </div>
@@ -123,7 +120,7 @@ export default function InterviewDetailModal({
               className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-2"
             >
               <Send className="w-4 h-4" />
-              <span>Resend WhatsApp Reminder (WAHA)</span>
+              <span>Resend WhatsApp Reminder</span>
             </button>
 
             <button

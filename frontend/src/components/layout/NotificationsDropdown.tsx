@@ -25,7 +25,8 @@ const INITIAL_NOTIFICATIONS: NotificationItem[] = [
   {
     id: '2',
     title: 'Verification Passed',
-    message: 'Kasun Perera’s NVQ Level 6 certificate has been verified via TVEC registry.',
+    message: 'Kasun Perera’s degree certificate has been verified via university registry.',
+
     time: '1 hour ago',
     read: false,
     type: 'verification',
@@ -49,30 +50,33 @@ const INITIAL_NOTIFICATIONS: NotificationItem[] = [
 ]
 
 export default function NotificationsDropdown() {
-  const [notifications, setNotifications] = useState<NotificationItem[]>(INITIAL_NOTIFICATIONS)
+  const [notifications, setNotifications] = useState<NotificationItem[]>([])
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   const unreadCount = notifications.filter((n) => !n.read).length
 
+  const syncNotifications = async () => {
+    try {
+      const res = await notificationsApi.getAll()
+      if (res.data && Array.isArray(res.data)) {
+        const mapped: NotificationItem[] = res.data.map((n: any) => ({
+          id: n.id,
+          title: n.title,
+          message: n.message,
+          time: n.created_at || 'Just now',
+          read: Boolean(n.is_read),
+          type: n.type || 'system',
+        }))
+        setNotifications(mapped)
+      }
+    } catch (_) {}
+  }
+
   useEffect(() => {
-    async function syncNotifications() {
-      try {
-        const res = await notificationsApi.getAll()
-        if (res.data && Array.isArray(res.data)) {
-          const mapped: NotificationItem[] = res.data.map((n: any) => ({
-            id: n.id,
-            title: n.title,
-            message: n.message,
-            time: n.created_at || 'Just now',
-            read: Boolean(n.is_read),
-            type: n.type || 'system',
-          }))
-          setNotifications(mapped)
-        }
-      } catch (_) {}
-    }
     syncNotifications()
+    const interval = setInterval(syncNotifications, 5000)
+    return () => clearInterval(interval)
   }, [])
 
   useEffect(() => {
@@ -85,18 +89,28 @@ export default function NotificationsDropdown() {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
-  const markAllAsRead = () => {
+  const markAllAsRead = async () => {
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })))
+    try {
+      await notificationsApi.markAllRead()
+    } catch (_) {}
   }
 
-  const markAsRead = (id: string) => {
+  const markAsRead = async (id: string) => {
     setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)))
+    try {
+      await notificationsApi.markRead(id)
+    } catch (_) {}
   }
 
-  const deleteNotification = (id: string, e: React.MouseEvent) => {
+  const deleteNotification = async (id: string, e: React.MouseEvent) => {
     e.stopPropagation()
     setNotifications((prev) => prev.filter((n) => n.id !== id))
+    try {
+      await notificationsApi.delete(id)
+    } catch (_) {}
   }
+
 
   const getIcon = (type: NotificationItem['type']) => {
     switch (type) {

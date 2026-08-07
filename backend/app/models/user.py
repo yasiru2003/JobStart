@@ -1,6 +1,8 @@
+from __future__ import annotations
 import uuid
+from typing import Optional
 from datetime import datetime, timezone
-from sqlalchemy import String, Boolean, DateTime, Enum as SAEnum
+from sqlalchemy import String, Boolean, DateTime, ForeignKey, Enum as SAEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.dialects.postgresql import UUID
 from app.core.database import Base
@@ -24,9 +26,9 @@ class User(Base):
     hashed_password: Mapped[str] = mapped_column(String(255), nullable=False)
     full_name: Mapped[str] = mapped_column(String(255), nullable=False)
     role: Mapped[UserRole] = mapped_column(SAEnum(UserRole), nullable=False, default=UserRole.candidate)
-    avatar_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
-    phone: Mapped[str | None] = mapped_column(String(50), nullable=True)
-    tenant_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("tenants.id"), index=True, nullable=True)
+    avatar_url: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
+    phone: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+    tenant_id: Mapped[Optional[uuid.UUID]] = mapped_column(UUID(as_uuid=True), ForeignKey("tenants.id"), index=True, nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     is_verified: Mapped[bool] = mapped_column(Boolean, default=False)
     created_at: Mapped[datetime] = mapped_column(
@@ -39,10 +41,10 @@ class User(Base):
     )
 
     # Relationships
-    employer_profile: Mapped["EmployerProfile | None"] = relationship(
+    employer_profile: Mapped[Optional["EmployerProfile"]] = relationship(
         "EmployerProfile", back_populates="user", uselist=False
     )
-    candidate_profile: Mapped["CandidateProfile | None"] = relationship(
+    candidate_profile: Mapped[Optional["CandidateProfile"]] = relationship(
         "CandidateProfile", back_populates="user", uselist=False
     )
 

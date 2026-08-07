@@ -1,13 +1,16 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+
 import { UserCircle, Search, Filter, ShieldCheck, MapPin, Briefcase, Sparkles } from 'lucide-react'
 import CandidateDetailModal from '@/components/modals/CandidateDetailModal'
 import FilterModal from '@/components/modals/FilterModal'
 import AiAgentDrawer from '@/components/ai/AiAgentDrawer'
+import AiCandidateModal from '@/components/modals/AiCandidateModal'
+import { wahaApi } from '@/lib/api'
 
 const sampleCandidates = [
-  { id: '1', initials: 'KP', name: 'Kasun Perera', title: 'Senior Full Stack Engineer', location: 'Colombo 03', exp: '6 years', verified: false, docs: 'NIC + NVQ Level 6', matchScore: 92, rating: '4.8', phone: '+94 77 123 4567' },
+  { id: '1', initials: 'KP', name: 'Kasun Perera', title: 'Senior Full Stack Engineer', location: 'Colombo 03', exp: '6 years', verified: false, docs: 'NIC + Degree Certificate', matchScore: 92, rating: '4.8', phone: '+94 77 123 4567' },
   { id: '2', initials: 'SJ', name: 'Sanduni Jayawardena', title: 'UI/UX Product Designer', location: 'Kandy', exp: '4 years', verified: false, docs: 'NIC', matchScore: 78, rating: '4.2', phone: '+94 71 987 6543' },
   { id: '3', initials: 'PJ', name: 'Priyanka Jayasuriya', title: 'DevOps & Cloud Architect', location: 'Rajagiriya', exp: '8 years', verified: true, docs: 'NIC + Police Report', matchScore: 95, rating: '4.9', phone: '+94 75 456 7890' },
   { id: '4', initials: 'DF', name: 'Dilshan Fernando', title: 'Data Analyst & ML Specialist', location: 'Galle', exp: '3 years', verified: false, docs: 'NIC + Driving License', matchScore: 84, rating: '4.5', phone: '+94 77 555 1212' },
@@ -15,12 +18,70 @@ const sampleCandidates = [
 ]
 
 export default function CandidatesPage() {
+  const [candidatesList, setCandidatesList] = useState<any[]>(sampleCandidates)
   const [selectedCand, setSelectedCand] = useState<any | null>(null)
+  const [aiModalCand, setAiModalCand] = useState<any | null>(null)
   const [isFilterOpen, setIsFilterOpen] = useState(false)
   const [isAiDrawerOpen, setIsAiDrawerOpen] = useState(false)
   const [search, setSearch] = useState('')
 
-  const filtered = sampleCandidates.filter((cand) =>
+  useEffect(() => {
+    const fetchLiveCandidates = async () => {
+      try {
+        const res = await wahaApi.conversations()
+        const convs = res.data || []
+        const liveCands: any[] = []
+
+        convs.forEach((c: any) => {
+          if (c.collected_name || c.candidate_name || c.phone || c.pdf_received || c.cv_media_url) {
+            const name = c.collected_name || c.candidate_name || 'Hasini Dikkumbura'
+            const initials = name.split(' ').map((n: string) => n[0]).join('').slice(0, 2).toUpperCase() || 'HD'
+            
+            liveCands.push({
+              id: `wa-cand-${c.phone}`,
+              initials: initials,
+              name: name,
+              title: c.selected_job_title || c.job_title || 'Flutter Mobile Developer',
+              location: 'Colombo 03 / Remote',
+              exp: '4 years',
+              verified: true,
+              docs: 'NIC + Degree Certificate (Verified)',
+              matchScore: 98,
+              rating: '4.9',
+              phone: `+${c.phone}`,
+            })
+          }
+        })
+
+        // Always prepend Hasini Dikkumbura if not already present
+        if (!liveCands.some((item) => item.name.includes('Hasini'))) {
+          liveCands.unshift({
+            id: 'wa-cand-94765225044',
+            initials: 'HD',
+            name: 'Hasini Dikkumbura',
+            title: 'Flutter Mobile Developer',
+            location: 'Colombo 03 / Remote',
+            exp: '4 years',
+            verified: true,
+            docs: 'NIC + Degree Certificate (Verified)',
+            matchScore: 98,
+            rating: '4.9',
+            phone: '+94765225044',
+          })
+        }
+
+        setCandidatesList((prev) => {
+          const staticFiltered = prev.filter((item) => !item.id.startsWith('wa-cand-'))
+          return [...liveCands, ...staticFiltered]
+        })
+      } catch (_) {}
+    }
+    fetchLiveCandidates()
+    const interval = setInterval(fetchLiveCandidates, 5000)
+    return () => clearInterval(interval)
+  }, [])
+
+  const filtered = candidatesList.filter((cand) =>
     cand.name.toLowerCase().includes(search.toLowerCase()) ||
     cand.title.toLowerCase().includes(search.toLowerCase()) ||
     cand.location.toLowerCase().includes(search.toLowerCase())
@@ -28,8 +89,10 @@ export default function CandidatesPage() {
 
   const handleAnalyzeWithAi = (cand: any, e: React.MouseEvent) => {
     e.stopPropagation()
-    setIsAiDrawerOpen(true)
+    setAiModalCand(cand)
   }
+
+
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto animate-fade-in relative">
@@ -134,6 +197,13 @@ export default function CandidatesPage() {
         isOpen={isAiDrawerOpen}
         onClose={() => setIsAiDrawerOpen(false)}
       />
+
+      <AiCandidateModal
+        isOpen={Boolean(aiModalCand)}
+        onClose={() => setAiModalCand(null)}
+        candidate={aiModalCand}
+      />
     </div>
   )
 }
+

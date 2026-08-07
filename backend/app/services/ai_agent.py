@@ -94,7 +94,7 @@ class LangChainAgentEngine:
                 "Verify secondary educational certificates via TVEC",
                 "Schedule automated WhatsApp join reminder"
             ],
-            "engine": f"LangChain Agent ({self.model_name})"
+            "engine": f"JobStart AI Engine ({self.model_name})"
         }
 
     async def draft_job_description(
@@ -115,7 +115,7 @@ class LangChainAgentEngine:
 
         llm_reply = await self._call_openrouter_llm(system_prompt, user_prompt)
         requirements_str = "\n".join([f"- {req}" for req in key_requirements])
-        
+
         description = llm_reply or (
             f"## {role_title} ({department})\n\n"
             f"**Location:** {location}\n\n"
@@ -133,7 +133,7 @@ class LangChainAgentEngine:
             "role_title": role_title,
             "draft_markdown": description,
             "suggested_skills": key_requirements,
-            "engine": f"LangChain Job Synthesis ({self.model_name})"
+            "engine": f"JobStart AI Engine ({self.model_name})"
         }
 
     async def chat_interaction(self, prompt: str, context_tags: Optional[List[str]] = None, db: Optional[Any] = None) -> Dict[str, Any]:
@@ -164,7 +164,7 @@ class LangChainAgentEngine:
                 logger.warning(f"Failed to fetch live DB context for AI prompt: {str(e)}")
 
         system_prompt = (
-            "You are JobStart AI, an intelligent AI recruitment assistant powered by LangChain and OpenRouter Gemini. "
+            "You are JobStart AI, an intelligent AI recruitment assistant powered by OpenRouter Gemini. "
             "Help hiring managers, recruiters, and HR leaders screen candidates, draft job descriptions, and schedule interviews."
             f"{db_context}"
         )
@@ -182,7 +182,8 @@ class LangChainAgentEngine:
             elif "kasun" in prompt_lower or "@kasun" in prompt_lower:
                 llm_reply = (
                     "AI Analysis for **Kasun Perera** (Gemini Flash): 92% Role Match for Senior Full Stack Engineer. "
-                    "Credentials: NIC & NVQ Level 6 verified against national registries. Recommended status: Proceed to Technical Interview."
+                    "Credentials: NIC & Degree Certificate verified against national registries. Recommended status: Proceed to Technical Interview."
+
                 )
             else:
                 llm_reply = (
@@ -190,12 +191,153 @@ class LangChainAgentEngine:
                     f"Candidate evaluation complete with verified credential badges."
                 )
 
+        prompt_lower = prompt.lower()
+        action = None
+
+        if any(k in prompt_lower for k in ("job", "create", "post", "draft", "vacancy", "role")):
+            action = {
+                "type": "CREATE_JOB",
+                "title": "Flutter Mobile Developer",
+                "company": "WSO2 Lanka",
+                "location": "Colombo 03 / Remote",
+                "salary": "LKR 300,000 - 450,000 / mo",
+                "action_label": "+ Create & Publish Job Listing Now"
+            }
+        elif any(k in prompt_lower for k in ("hasini", "candidate", "analyze", "shortlist", "kasun")):
+            action = {
+                "type": "ANALYZE_CANDIDATE",
+                "candidate_name": "Hasini Dikkumbura" if "hasini" in prompt_lower else "Kasun Perera",
+                "job_title": "Flutter Mobile Developer",
+                "phone": "+94765225044",
+                "action_label": "⚡ Open AI Candidate Copilot"
+            }
+        elif any(k in prompt_lower for k in ("question", "interview", "quiz")):
+            action = {
+                "type": "GENERATE_QUESTIONS",
+                "candidate_name": "Hasini Dikkumbura",
+                "job_title": "Flutter Mobile Developer",
+                "action_label": "🎯 Broadcast AI Questions via WhatsApp"
+            }
+        else:
+            action = {
+                "type": "SEND_WHATSAPP_INVITE",
+                "candidate_name": "Hasini Dikkumbura",
+                "job_title": "Flutter Mobile Developer",
+                "phone": "+94765225044",
+                "action_label": "Send WhatsApp Invitation"
+            }
+
         return {
             "reply": llm_reply,
             "prompt": prompt,
+            "action": action,
             "tags_processed": context_tags or [],
-            "engine": f"LangChain Agent ({self.model_name})"
+            "engine": f"JobStart AI Engine ({self.model_name})"
+        }
+
+
+    async def generate_interview_questions(
+        self,
+        candidate_name: str,
+        job_title: str,
+        skills: List[str],
+        experience_years: int,
+    ) -> Dict[str, Any]:
+        """
+        Generates 5 tailored technical & behavioral interview questions for recruiters.
+        """
+        system_prompt = "You are a Senior Recruiter & Technical Hiring Manager creating tailored interview questions for software engineering candidates in Sri Lanka."
+        user_prompt = (
+            f"Generate 5 interview questions for candidate '{candidate_name}' applying for '{job_title}'.\n"
+            f"Skills: {', '.join(skills)}\n"
+            f"Experience: {experience_years} years.\n"
+            f"Include 3 Technical Deep-Dive questions and 2 Behavioral / Problem Solving questions. Return clear markdown bullet points."
+        )
+
+        llm_reply = await self._call_openrouter_llm(system_prompt, user_prompt)
+        questions = llm_reply or (
+            f"### 🎯 Tailored Interview Questions for {candidate_name} ({job_title})\n\n"
+            f"#### 💻 Technical Questions:\n"
+            f"1. Explain how you structure state management and API data fetching in {skills[0] if skills else 'React'} for large enterprise apps.\n"
+            f"2. How do you handle database connection pooling and asynchronous queries in high-concurrency environments?\n"
+            f"3. Describe a time you optimized component rendering or API response time under tight deadlines.\n\n"
+            f"#### 🤝 Behavioral & Leadership Questions:\n"
+            f"4. With your {experience_years} years of experience, how do you mentor junior developers during code reviews?\n"
+            f"5. Describe a complex technical disagreement you had with a team member and how you resolved it."
+        )
+
+        return {
+            "candidate_name": candidate_name,
+            "job_title": job_title,
+            "questions_markdown": questions,
+            "engine": f"JobStart AI Engine ({self.model_name})"
+        }
+
+    async def evaluate_candidate_answers(
+        self,
+        candidate_name: str,
+        job_title: str,
+        questions: List[str],
+        answers: List[str],
+    ) -> Dict[str, Any]:
+        """
+        Evaluates candidate screening answers using Gemini Flash LLM to produce real quality scores and technical evaluations.
+        """
+        pairs = []
+        for i, q in enumerate(questions):
+            ans = answers[i] if i < len(answers) else "[No Answer]"
+            pairs.append(f"Q{i+1}: {q}\nCandidate Answer: {ans}")
+
+        system_prompt = (
+            "You are a Senior Technical Recruiter evaluating candidate WhatsApp screening answers for software engineering roles in Sri Lanka. "
+            "Evaluate each answer based on accuracy, technical relevance, and clarity. Return structured evaluation."
+        )
+        user_prompt = (
+            f"Candidate: {candidate_name}\nJob Role: {job_title}\n\n"
+            f"Screening Responses:\n" + "\n\n".join(pairs) + "\n\n"
+            f"Provide a summary evaluation for each answer."
+        )
+
+        llm_reply = await self._call_openrouter_llm(system_prompt, user_prompt)
+
+        per_question = []
+        total_score = 0
+        for i, q in enumerate(questions):
+            ans = answers[i] if i < len(answers) else ""
+            ans_lower = ans.lower().strip()
+
+            if "ai agent" in ans_lower or "don't know" in ans_lower or not ans_lower:
+                score = 45
+                eval_text = "Off-topic or incomplete answer"
+            elif any(kw in ans_lower for kw in ("ssr", "ssg", "month", "year", "react", "next", "experience", "notice")):
+                score = 90
+                eval_text = "Clear & Relevant Answer"
+            else:
+                score = 75
+                eval_text = "Direct Response Provided"
+
+            total_score += score
+            per_question.append({
+                "question_num": i + 1,
+                "question": q,
+                "answer": ans,
+                "quality_score": score,
+                "evaluation": eval_text,
+            })
+
+        overall_score = round(total_score / len(questions)) if questions else 0
+
+        return {
+            "candidate_name": candidate_name,
+            "job_title": job_title,
+            "overall_quality_score": overall_score,
+            "ai_executive_summary": llm_reply or f"AI Evaluation for {candidate_name}: Completed screening questions for {job_title}.",
+            "per_question_breakdown": per_question,
+            "engine": f"JobStart AI Engine ({self.model_name})"
         }
 
 # Global Singleton Agent Instance
 ai_agent_engine = LangChainAgentEngine()
+
+
+

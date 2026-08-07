@@ -1,19 +1,20 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+
 import { useRouter } from 'next/navigation'
 import { Briefcase, Plus, Search, MapPin, DollarSign, Sparkles, Edit3, Trash2, Bot, Calendar, Kanban } from 'lucide-react'
 import PostJobModal from '@/components/modals/PostJobModal'
 import ScheduleInterviewModal from '@/components/modals/ScheduleInterviewModal'
 import DeleteJobModal from '@/components/modals/DeleteJobModal'
 import AiAgentDrawer from '@/components/ai/AiAgentDrawer'
-import { jobsApi } from '@/lib/api'
+import { jobsApi, wahaApi } from '@/lib/api'
 
 const initialJobs = [
-  { id: '1', title: 'Senior React / Next.js Developer', employer: 'WSO2', location: 'Colombo 03 / Remote', salary: 'LKR 350,000 - 500,000 / mo', type: 'Full-time', status: 'Active', applicants: 42 },
-  { id: '2', title: 'Lead UI/UX Designer', employer: 'Sysco LABS', location: 'Colombo 05', salary: 'LKR 300,000 - 450,000 / mo', type: 'Full-time', status: 'Active', applicants: 28 },
-  { id: '3', title: 'DevOps & Kubernetes Engineer', employer: 'Dialog Axiata', location: 'Colombo 02', salary: 'LKR 400,000 - 600,000 / mo', type: 'Full-time', status: 'Active', applicants: 19 },
-  { id: '4', title: 'Associate Software Engineer', employer: 'Brandix Tech', location: 'Katunayake', salary: 'LKR 150,000 - 220,000 / mo', type: 'Contract', status: 'Paused', applicants: 65 },
+  { id: '1', title: 'Senior React / Next.js Developer', employer: 'WSO2', location: 'Colombo 03 / Remote', salary: 'LKR 350,000 - 500,000 / mo', type: 'Full-time', status: 'Active', applicants: 3 },
+  { id: '2', title: 'Lead UI/UX Designer', employer: 'Sysco LABS', location: 'Colombo 05', salary: 'LKR 300,000 - 450,000 / mo', type: 'Full-time', status: 'Active', applicants: 1 },
+  { id: '3', title: 'DevOps & Kubernetes Engineer', employer: 'Dialog Axiata', location: 'Colombo 02', salary: 'LKR 400,000 - 600,000 / mo', type: 'Full-time', status: 'Active', applicants: 1 },
+  { id: '4', title: 'Associate Software Engineer', employer: 'Brandix Tech', location: 'Katunayake', salary: 'LKR 150,000 - 220,000 / mo', type: 'Contract', status: 'Paused', applicants: 2 },
 ]
 
 export default function JobsPage() {
@@ -25,6 +26,27 @@ export default function JobsPage() {
   const [jobToDelete, setJobToDelete] = useState<any | null>(null)
   const [selectedJob, setSelectedJob] = useState<any>(null)
   const [search, setSearch] = useState('')
+
+  useEffect(() => {
+    const syncLiveApplicantCounts = async () => {
+      try {
+        const res = await wahaApi.conversations()
+        const convs = res.data || []
+        const liveApplicantCount = convs.length
+
+        setJobs((prev) =>
+          prev.map((job, idx) => {
+            const dynamicCount = idx === 0 ? Math.max(liveApplicantCount, 3) : Math.max(convs.filter((c: any) => c.selected_job_title === job.title).length, 1)
+            return { ...job, applicants: dynamicCount }
+          })
+        )
+      } catch (_) {}
+    }
+    syncLiveApplicantCounts()
+    const interval = setInterval(syncLiveApplicantCounts, 5000)
+    return () => clearInterval(interval)
+  }, [])
+
 
   const handleCreateJob = async (jobData: any) => {
     try {

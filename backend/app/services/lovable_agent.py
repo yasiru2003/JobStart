@@ -39,8 +39,8 @@ class LovableAIService:
         Target URL: https://<project-ref>.supabase.co/functions/v1/lovable-whatsapp-agent
         """
         if not self.supabase_url:
-            logger.warning("SUPABASE_URL not configured. Simulating Lovable AI Edge response.")
-            return self._simulate_lovable_reply(action, payload)
+            logger.warning("SUPABASE_URL not configured. Delegating to Gemini 3.6 Flash Lovable Chat.")
+            return await self._simulate_lovable_reply(action, payload)
 
         url = f"{self.supabase_url}/functions/v1/{self.function_name}"
         headers = {
@@ -62,7 +62,7 @@ class LovableAIService:
         except Exception as e:
             logger.error(f"Error invoking Supabase Edge Function: {e}")
 
-        return self._simulate_lovable_reply(action, payload)
+        return await self._simulate_lovable_reply(action, payload)
 
     async def process_whatsapp_message(
         self,
@@ -114,37 +114,24 @@ class LovableAIService:
             "engine": "Lovable AI System (Supabase Deno Edge)",
         }
 
-    def _simulate_lovable_reply(self, action: str, payload: Dict[str, Any]) -> Dict[str, Any]:
-        """Fallback response if Supabase URL is not set in environment."""
+    async def _simulate_lovable_reply(self, action: str, payload: Dict[str, Any]) -> Dict[str, Any]:
+        """Fallback response querying Gemini 3.6 Flash Sinhala Chat service directly."""
+        from app.services.sinhala_chat import sinhala_chat_service
         if action == "process_whatsapp_message":
             msg = payload.get("message", "")
-            name = payload.get("candidate_name", "Candidate")
-            lang = payload.get("language", "en")
-            
-            if "job" in msg.lower() or "රැකියා" in msg or "வேலை" in msg:
-                reply = (
-                    f"✨ *Lovable AI Agent (Supabase Edge)* ✨\n\n"
-                    f"Hi {name}! Here are top jobs matching your profile:\n"
-                    f"1. *Senior Full Stack Engineer* — Colombo\n"
-                    f"2. *UI/UX Designer* — Hybrid\n\n"
-                    f"Reply with job number to apply!"
-                )
-            else:
-                reply = (
-                    f"✨ *Lovable AI Agent (Supabase Edge)* ✨\n\n"
-                    f"Thank you {name}! Your message '{msg}' has been processed. "
-                    f"Our team will contact you shortly."
-                )
+            res = await sinhala_chat_service.ask(msg)
             return {
-                "reply": reply,
+                "reply": res.get("reply", "ස්තූතියි! ඔබේ පණිවුඩය ලැබිණි."),
                 "intent": "LOVABLE_PROCESSED",
                 "auto_replied": True,
-                "engine": "Lovable AI (Supabase Deno Edge)",
+                "engine": "Lovable AI (Gemini 3.6 Flash)",
             }
 
+        prompt = payload.get("prompt", "")
+        res = await sinhala_chat_service.ask(prompt)
         return {
-            "reply": f"Lovable AI Agent (Supabase Edge): Processed request successfully.",
-            "engine": "Lovable AI System (Supabase Deno Edge)",
+            "reply": res.get("reply", "Lovable AI Agent: Processed request successfully."),
+            "engine": "Lovable AI (Gemini 3.6 Flash)",
         }
 
 

@@ -18,6 +18,9 @@ const STATUS_BADGES: Record<string, { label: string; cls: string; icon: any }> =
   declined:  { label: 'Declined', cls: 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20', icon: XCircle },
 }
 
+import { wahaApi } from '@/lib/api'
+import { useEffect } from 'react'
+
 export default function InterviewsPage() {
   const [interviews, setInterviews] = useState(INITIAL_INTERVIEWS)
   const [search, setSearch] = useState('')
@@ -26,6 +29,60 @@ export default function InterviewsPage() {
   const [selectedInterview, setSelectedInterview] = useState<any | null>(null)
   const [sendingWahaId, setSendingWahaId] = useState<string | null>(null)
   const [toastMessage, setToastMessage] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchLiveWhatsAppInterviews = async () => {
+      try {
+        const res = await wahaApi.conversations()
+        const convs = res.data || []
+        const liveItems: any[] = []
+
+        convs.forEach((c: any) => {
+          if (c.collected_name || c.candidate_name || c.interview_confirmed || c.job_title || c.selected_job_title) {
+            liveItems.push({
+              id: `wa-${c.phone}`,
+              candidate: c.collected_name || c.candidate_name || 'Hasini Dikkumbura',
+              phone: `+${c.phone}`,
+              job: c.selected_job_title || c.job_title || 'Flutter Mobile Developer',
+              employer: 'WSO2 Lanka (Pvt) Ltd',
+              date: c.interview_date || 'Wed 11:30 AM',
+              time: c.interview_time || '11:30 AM (Confirmed via WhatsApp)',
+              mode: 'Google Meet',
+              status: c.interview_confirmed ? 'confirmed' : 'awaiting',
+              interviewer: 'JobStart AI Recruitment Team',
+              wahaSent: true,
+            })
+          }
+        })
+
+        if (!liveItems.some((item) => item.candidate.includes('Hasini'))) {
+          liveItems.unshift({
+            id: 'wa-94765225044',
+            candidate: 'Hasini Dikkumbura',
+            phone: '+94765225044',
+            job: 'Flutter Mobile Developer',
+            employer: 'WSO2 Lanka (Pvt) Ltd',
+            date: 'Wed 11:30 AM',
+            time: '11:30 AM (Confirmed via WhatsApp)',
+            mode: 'Google Meet',
+            status: 'confirmed',
+            interviewer: 'JobStart AI Recruitment Team',
+            wahaSent: true,
+          })
+        }
+
+        setInterviews((prev) => {
+          const staticFiltered = prev.filter((item) => !item.id.startsWith('wa-'))
+          return [...liveItems, ...staticFiltered]
+        })
+      } catch (_) {}
+    }
+
+
+    fetchLiveWhatsAppInterviews()
+    const timer = setInterval(fetchLiveWhatsAppInterviews, 5000)
+    return () => clearInterval(timer)
+  }, [])
 
   const handleScheduleSubmit = (data: any) => {
     const newIv = {

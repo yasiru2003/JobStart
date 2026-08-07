@@ -5,7 +5,7 @@ import { Shield, CheckCircle, XCircle, FileText, Eye } from 'lucide-react'
 import VerificationReviewModal from '@/components/modals/VerificationReviewModal'
 
 const initialVerificationQueue = [
-  { id: '1', name: 'Kasun Perera', docType: 'NIC + NVQ Certificate', submitted: '3 days ago', status: 'Pending', nic: '952451234V' },
+  { id: '1', name: 'Kasun Perera', docType: 'NIC + Degree Certificate', submitted: '3 days ago', status: 'Pending', nic: '952451234V' },
   { id: '2', name: 'Sanduni Jayawardena', docType: 'NIC', submitted: '2 days ago', status: 'Pending', nic: '199854210012' },
   { id: '3', name: 'Priyanka Jayasuriya', docType: 'NIC + Police Report', submitted: '6 days ago', status: 'Verified', nic: '912345678V' },
   { id: '4', name: 'Dilshan Fernando', docType: 'NIC + Driving License', submitted: '1 day ago', status: 'Pending', nic: '199584739201' },
@@ -28,8 +28,9 @@ export default function VerificationPage() {
           <Shield className="w-6 h-6 text-primary" />
           Candidate Verification Queue
         </h1>
-        <p className="text-sm text-muted">Review submitted national identity cards, police certificates, and NVQ qualifications.</p>
+        <p className="text-sm text-muted">Review submitted national identity cards, police certificates, and educational qualifications.</p>
       </div>
+
 
       <div className="card overflow-x-auto">
         <table className="w-full text-left border-collapse min-w-[780px]">

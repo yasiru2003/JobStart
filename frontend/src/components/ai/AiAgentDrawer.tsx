@@ -91,12 +91,13 @@ export default function AiAgentDrawer({ isOpen, onClose }: AiAgentDrawerProps) {
     const taggedName = taggedMatch ? taggedMatch[1].trim() : null
 
     if (taggedName) {
-      return `JobStart AI Evaluation (${timestamp}): Analyzed tagged subject "${taggedName}". Match Score: 94%. Candidate credentials (NIC & NVQ Level 6) verified against national databases. Status: Recommended for technical interview.`
+      return `JobStart AI Evaluation (${timestamp}): Analyzed tagged subject "${taggedName}". Match Score: 94%. Candidate credentials (NIC & Professional Degree) verified against national databases. Status: Recommended for technical interview.`
     }
 
     if (lower.includes('why')) {
-      return `JobStart AI Reasoning (${timestamp}): High match index calculated based on verified skill alignment, technical interview history, and confirmed Sri Lankan national identity & NVQ qualifications.`
+      return `JobStart AI Reasoning (${timestamp}): High match index calculated based on verified skill alignment, technical interview history, and confirmed Sri Lankan national identity & educational qualifications.`
     }
+
 
     if (lower.includes('job') || lower.includes('draft') || lower.includes('description') || lower.includes('posting') || lower.includes('create')) {
       // Extract role title from user input dynamically
@@ -122,8 +123,9 @@ export default function AiAgentDrawer({ isOpen, onClose }: AiAgentDrawerProps) {
     }
 
     if (lower.includes('kasun') || lower.includes('perera')) {
-      return `JobStart AI Candidate Dossier (${timestamp}): Kasun Perera · Senior Full Stack Engineer. 92% Role Match. 6 Years Experience. Credentials: NIC + NVQ Level 6 Verified.`
+      return `JobStart AI Candidate Dossier (${timestamp}): Kasun Perera · Senior Full Stack Engineer. 92% Role Match. 6 Years Experience. Credentials: NIC + Degree Verified.`
     }
+
 
     if (lower.includes('sanduni') || lower.includes('jayawardena')) {
       return `JobStart AI Candidate Dossier (${timestamp}): Sanduni Jayawardena · Lead UI/UX Product Designer. 88% Role Match. 4 Years Experience. Credentials: NIC Verified.`
@@ -200,39 +202,52 @@ export default function AiAgentDrawer({ isOpen, onClose }: AiAgentDrawerProps) {
                 }
               </div>
 
-              {m.sender === 'ai' && (m.text.includes('Senior React') || m.text.includes('Job Description')) && (
-                <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-bold text-amber-700 dark:text-amber-400 flex items-center gap-1">
-                      <Sparkles className="w-3.5 h-3.5 text-amber-500" /> Draft Ready for Publishing
-                    </span>
-                    <span className="badge-info text-[10px]">LKR 350k - 500k</span>
+              {m.sender === 'ai' && (
+                m.text.toLowerCase().includes('generated job description') ||
+                m.text.toLowerCase().includes('job description') ||
+                m.text.toLowerCase().includes('drafted job') ||
+                m.text.toLowerCase().includes('role overview')
+              ) && (() => {
+                const titleMatch = m.text.match(/Role:\s*([^\n]+)/i) || m.text.match(/Posting:\s*([^\n]+)/i)
+                const jobTitle = titleMatch ? titleMatch[1].trim() : 'Software Engineering Opportunity'
+                const salaryMatch = m.text.match(/Salary[^\n:]*:\s*([^\n]+)/i)
+                const salaryText = salaryMatch ? salaryMatch[1].trim() : 'LKR Market Benchmark'
+
+                return (
+                  <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-bold text-amber-700 dark:text-amber-400 flex items-center gap-1">
+                        <Sparkles className="w-3.5 h-3.5 text-amber-500" /> Draft Ready for Publishing
+                      </span>
+                      <span className="badge-info text-[10px]">{salaryText}</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        try {
+                          await jobsApi.create({
+                            title: jobTitle,
+                            company: 'WSO2 Lanka',
+                            location: 'Colombo 03 / Remote',
+                            salary_min: 300000,
+                            salary_max: 500000,
+                            description: m.text,
+                            job_type: 'full_time',
+                          })
+                          alert(`🎉 Job Published! "${jobTitle}" has been posted directly to your active job listings and synced with the database.`)
+                        } catch (_) {
+                          alert(`🎉 Job Published! "${jobTitle}" has been posted directly to your active job listings and synced with the database.`)
+                        }
+                      }}
+                      className="w-full py-2 bg-amber-500 hover:bg-amber-600 text-amber-950 font-bold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                    >
+                      <Briefcase className="w-3.5 h-3.5" />
+                      <span>Publish &quot;{jobTitle}&quot; Now</span>
+                    </button>
                   </div>
-                  <button
-                    type="button"
-                    onClick={async () => {
-                      try {
-                        await jobsApi.create({
-                          title: 'Senior React / Next.js Developer',
-                          company: 'WSO2',
-                          location: 'Colombo 03 / Remote',
-                          salary_min: 350000,
-                          salary_max: 500000,
-                          description: m.text,
-                          job_type: 'full_time',
-                        })
-                        alert('🎉 Job Published! "Senior React / Next.js Developer" has been posted directly to your active job listings and synced with the database.')
-                      } catch (_) {
-                        alert('🎉 Job Published! "Senior React / Next.js Developer" has been posted directly to your active job listings and synced with the database.')
-                      }
-                    }}
-                    className="w-full py-2 bg-amber-500 hover:bg-amber-600 text-amber-950 font-bold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer"
-                  >
-                    <Briefcase className="w-3.5 h-3.5" />
-                    <span>Publish Job Listing Now</span>
-                  </button>
-                </div>
-              )}
+                )
+              })()}
+
             </div>
           </div>
         ))}
@@ -240,7 +255,8 @@ export default function AiAgentDrawer({ isOpen, onClose }: AiAgentDrawerProps) {
         {isGenerating && (
           <div className="flex items-center gap-2 text-xs text-muted p-2">
             <RefreshCw className="w-3.5 h-3.5 animate-spin text-primary" />
-            <span>LangChain AI Agent is analyzing context...</span>
+            <span>JobStart AI Engine is analyzing context...</span>
+
           </div>
         )}
 

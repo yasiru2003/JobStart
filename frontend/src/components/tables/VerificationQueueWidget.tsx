@@ -15,7 +15,8 @@ const defaultItems: VerificationItem[] = [
   {
     id: '1',
     name: 'Kasun Perera',
-    details: 'NIC + NVQ Certificate',
+    details: 'NIC + Degree Certificate',
+
     submittedAt: 'submitted 3 days ago',
     status: 'Pending',
   },

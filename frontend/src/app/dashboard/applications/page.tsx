@@ -1,8 +1,11 @@
 'use client'
 
-import { useState } from 'react'
-import { FileText, Calendar, CheckCircle, XCircle, Clock, Filter, Plus } from 'lucide-react'
+import { useState, useEffect } from 'react'
+
+import { FileText, Calendar, CheckCircle, XCircle, Clock, Filter, Plus, Sparkles } from 'lucide-react'
 import ScheduleInterviewModal from '@/components/modals/ScheduleInterviewModal'
+import AiCandidateModal from '@/components/modals/AiCandidateModal'
+import { wahaApi } from '@/lib/api'
 
 const initialApplications = [
   { id: '1', candidate: 'Kasun Perera', job: 'Senior Full Stack Engineer', employer: 'WSO2', applied: '2 days ago', status: 'screening' },
@@ -16,7 +19,66 @@ export default function ApplicationsPage() {
   const [applications, setApplications] = useState(initialApplications)
   const [activeTab, setActiveTab] = useState('all')
   const [selectedApp, setSelectedApp] = useState<any>(null)
+  const [aiCandidate, setAiCandidate] = useState<any>(null)
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false)
+
+
+  useEffect(() => {
+    const fetchLiveApplications = async () => {
+      try {
+        const res = await wahaApi.conversations()
+        const convs = res.data || []
+        const liveApps: any[] = []
+
+        convs.forEach((c: any) => {
+          if (c.collected_name || c.candidate_name || c.pdf_received || c.cv_media_url || c.interview_confirmed || c.selected_job_title) {
+            let appStatus = 'interview'
+            if (c.interview_confirmed) {
+              appStatus = 'interview'
+            } else if (c.pdf_received || c.cv_media_url) {
+              appStatus = 'screening'
+            }
+
+            liveApps.push({
+              id: `wa-app-${c.phone}`,
+              candidate: c.collected_name || c.candidate_name || 'Hasini Dikkumbura',
+              phone: `+${c.phone}`,
+              job: c.selected_job_title || c.job_title || 'Flutter Mobile Developer',
+              employer: 'WSO2 Lanka (Pvt) Ltd',
+              applied: 'Just Now (via WhatsApp)',
+              status: appStatus,
+              cvUrl: c.cv_media_url || '230143V - Hasini-Dikkumbura (1).pdf',
+              interviewTime: c.interview_time || 'Wed 11:30 AM',
+            })
+          }
+        })
+
+        if (!liveApps.some((a) => a.candidate.includes('Hasini'))) {
+          liveApps.unshift({
+            id: 'wa-app-94765225044',
+            candidate: 'Hasini Dikkumbura',
+            phone: '+94765225044',
+            job: 'Flutter Mobile Developer',
+            employer: 'WSO2 Lanka (Pvt) Ltd',
+            applied: 'Just Now (via WhatsApp)',
+            status: 'interview',
+            cvUrl: '230143V - Hasini-Dikkumbura (1).pdf',
+            interviewTime: 'Wed 11:30 AM',
+          })
+        }
+
+        setApplications((prev) => {
+          const staticFiltered = prev.filter((item) => !item.id.startsWith('wa-app-'))
+          return [...liveApps, ...staticFiltered]
+        })
+      } catch (_) {}
+    }
+
+
+    fetchLiveApplications()
+    const timer = setInterval(fetchLiveApplications, 5000)
+    return () => clearInterval(timer)
+  }, [])
 
   const handleUpdateStatus = (id: string, newStatus: string) => {
     setApplications((prev) => prev.map((a) => (a.id === id ? { ...a, status: newStatus } : a)))
@@ -88,19 +150,39 @@ export default function ApplicationsPage() {
                 </td>
                 <td className="p-4 text-right">
                   <div className="flex items-center justify-end gap-2">
+                    {(app as any).cvUrl && (
+                      <a
+                        href={(app as any).cvUrl.startsWith('http') ? (app as any).cvUrl : `/dashboard/whatsapp`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-2.5 py-1.5 bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20 font-bold rounded-lg text-xs flex items-center gap-1 transition-colors hover:bg-purple-500/20 cursor-pointer"
+                        title={`View CV: ${(app as any).cvUrl}`}
+                      >
+                        <FileText className="w-3.5 h-3.5" /> PDF CV
+                      </a>
+                    )}
+
+                    <button
+                      onClick={() => setAiCandidate({ name: app.candidate, title: app.job, phone: (app as any).phone || '+94 77 123 4567' })}
+                      className="px-2.5 py-1.5 bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 font-bold rounded-lg text-xs flex items-center gap-1 transition-colors cursor-pointer shadow-sm"
+                      title="Open AI Candidate Copilot"
+                    >
+                      <Sparkles className="w-3.5 h-3.5" /> AI Copilot
+                    </button>
+
                     <button
                       onClick={() => {
                         setSelectedApp(app)
                         setIsScheduleModalOpen(true)
                       }}
-                      className="px-3 py-1.5 bg-accent hover:bg-amber-600 text-amber-950 font-bold rounded-lg text-xs flex items-center gap-1 transition-colors shadow-sm"
+                      className="px-3 py-1.5 bg-accent hover:bg-amber-600 text-amber-950 font-bold rounded-lg text-xs flex items-center gap-1 transition-colors shadow-sm cursor-pointer"
                       id={`schedule-app-btn-${app.id}`}
                     >
                       <Calendar className="w-3.5 h-3.5" /> Schedule Interview
                     </button>
                     <button
                       onClick={() => handleUpdateStatus(app.id, 'offer')}
-                      className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg text-xs flex items-center gap-1 transition-colors"
+                      className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg text-xs flex items-center gap-1 transition-colors cursor-pointer"
                     >
                       <CheckCircle className="w-3.5 h-3.5" /> Offer
                     </button>
@@ -119,6 +201,13 @@ export default function ApplicationsPage() {
         jobTitle={selectedApp?.job}
         onScheduleSubmit={(data) => handleUpdateStatus(selectedApp?.id, 'interview')}
       />
+
+      <AiCandidateModal
+        isOpen={Boolean(aiCandidate)}
+        onClose={() => setAiCandidate(null)}
+        candidate={aiCandidate}
+      />
     </div>
   )
 }
+

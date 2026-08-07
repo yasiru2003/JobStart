@@ -11,10 +11,11 @@ interface ChangePlanModalProps {
 }
 
 const PLANS = [
-  { id: 'starter', name: 'Starter', price: 'LKR 45,000 / mo', desc: 'Up to 5 active jobs, basic candidate screening, 10 WAHA WhatsApp invites' },
-  { id: 'growth', name: 'Growth (Popular)', price: 'LKR 95,000 / mo', desc: 'Up to 20 active jobs, AI screening agent, unlimited WAHA WhatsApp invitations' },
-  { id: 'enterprise', name: 'Enterprise Scale', price: 'LKR 250,000 / mo', desc: 'Unlimited jobs, dedicated WAHA instance, custom ATS integrations & SLA' },
+  { id: 'starter', name: 'Starter', price: 'LKR 45,000 / mo', desc: 'Up to 5 active jobs, basic candidate screening, 10 WhatsApp interview invites' },
+  { id: 'growth', name: 'Growth (Popular)', price: 'LKR 95,000 / mo', desc: 'Up to 20 active jobs, AI screening agent, unlimited WhatsApp invitations' },
+  { id: 'enterprise', name: 'Enterprise Scale', price: 'LKR 250,000 / mo', desc: 'Unlimited jobs, dedicated WhatsApp Gateway instance, custom ATS integrations & SLA' },
 ]
+
 
 export default function ChangePlanModal({
   isOpen,

@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1'
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api/v1'
 
 export const api = axios.create({
   baseURL: API_BASE,
@@ -45,7 +45,8 @@ export const authApi = {
     api.post('/auth/refresh', { refresh_token: refreshToken }),
 }
 
-// ── AI Agent (LangChain Engine) ──
+// ── AI Agent (JobStart AI & Gemini 3.6 Flash Engine) ──
+
 export const aiApi = {
   analyzeCandidate: (data: { candidate_name: string; job_title: string; skills?: string[]; experience_years?: number; documents_verified?: string[] }) =>
     api.post('/ai/analyze-candidate', data),
@@ -53,7 +54,12 @@ export const aiApi = {
     api.post('/ai/draft-job', data),
   chat: (data: { prompt: string; context_tags?: string[] }) =>
     api.post('/ai/chat', data),
+  sinhalaChat: (data: { message: string; history?: { role: string; content: string }[] }) =>
+    api.post('/ai/sinhala-chat', data),
+  generateQuestions: (data: { candidate_name: string; job_title: string; skills?: string[]; experience_years?: number }) =>
+    api.post('/ai/interview-questions', data),
 }
+
 
 // ── Notifications Engine ──
 export const notificationsApi = {
@@ -136,9 +142,9 @@ export const reportsApi = {
   placements: (period: string = 'month') => api.get(`/reports/placements?period=${period}`),
 }
 
-// ── WAHA (WhatsApp HTTP API) ──
+// ── WAHA (WhatsApp HTTP API & Recruiter Agent) ──
 export const wahaApi = {
-  /** Get current session status (NOT_CONFIGURED | NOT_STARTED | SCAN_QR_CODE | WORKING | FAILED | UNREACHABLE) */
+  /** Get current session status */
   status: () => api.get('/whatsapp/status'),
   /** Get QR code as base64 data URI for scanning */
   getQR: () => api.get('/whatsapp/qr'),
@@ -153,4 +159,22 @@ export const wahaApi = {
   /** Update WAHA host + API key at runtime */
   updateConfig: (host: string, api_key: string, session?: string) =>
     api.put('/whatsapp/config', { host, api_key, session }),
+  /** Get AI Agent status & stats */
+  agentStatus: () => api.get('/whatsapp/agent/status'),
+  /** Get all tracked WhatsApp conversations for recruiters/admins */
+  conversations: () => api.get('/whatsapp/agent/conversations'),
+  /** Send recruiter interview invitation */
+  sendInvite: (data: { phone: string; candidate_name: string; job_title: string; employer_name?: string; date: string; time_slot: string; mode?: string }) =>
+    api.post('/whatsapp/agent/send-invite', data),
+  /** Send pre-allocated recruiter interview time slots */
+  sendSlots: (data: { phone: string; candidate_name: string; job_title: string; employer_name?: string; slots: string[] }) =>
+    api.post('/whatsapp/agent/slots/send', data),
+  /** Send job match notification */
+  notifyMatch: (data: { phone: string; candidate_name: string; matched_jobs: Array<{ job_title: string; score: number }> }) =>
+    api.post('/whatsapp/agent/notify-match', data),
+  /** Toggle auto-reply AI agent */
+  toggleAgent: (enabled: boolean) => api.put('/whatsapp/agent/toggle', { enabled }),
+  /** Get candidate screening response time & quality analytics */
+  screeningResults: (phone: string) => api.get(`/whatsapp/agent/screening-results?phone=${phone}`),
 }
+

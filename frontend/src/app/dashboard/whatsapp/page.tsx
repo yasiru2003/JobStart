@@ -29,8 +29,10 @@ import {
   Globe,
   ArrowRightLeft,
   Check,
+  QrCode,
 } from 'lucide-react'
 import { wahaApi } from '@/lib/api'
+import WAHASettingsCard from '@/components/modals/WAHASettingsCard'
 
 // ── Types ─────────────────────────────────────────────────────────────────
 
@@ -116,11 +118,13 @@ function formatTime(iso: string) {
 
 // ── Tabs ──────────────────────────────────────────────────────────────────
 
-type Tab = 'conversations' | 'send-invite' | 'screening' | 'ranking' | 'notify-match' | 'agent-settings'
+type Tab = 'conversations' | 'waha-qr' | 'send-invite' | 'screening' | 'ranking' | 'notify-match' | 'agent-settings'
 
 const TABS: { id: Tab; label: string; icon: React.ReactNode }[] = [
   { id: 'conversations',  label: 'Conversations',  icon: <MessageSquare className="w-3.5 h-3.5" /> },
+  { id: 'waha-qr',        label: 'WhatsApp Connection & QR', icon: <QrCode className="w-3.5 h-3.5 text-emerald-500" /> },
   { id: 'send-invite',    label: 'Send Invitation', icon: <CalendarCheck className="w-3.5 h-3.5" /> },
+
   { id: 'screening',      label: 'WhatsApp Screening', icon: <HelpCircle className="w-3.5 h-3.5" /> },
   { id: 'ranking',        label: 'AI Ranking',     icon: <Trophy className="w-3.5 h-3.5" /> },
   { id: 'notify-match',   label: 'Job Match Alert', icon: <BellRing className="w-3.5 h-3.5" /> },
@@ -176,13 +180,13 @@ export default function WhatsAppAgentPage() {
   const fetchData = useCallback(async (silent = false) => {
     if (!silent) setLoading(true)
     try {
-      const token = JSON.parse(localStorage.getItem('jobstart-auth-v2') || '{}')?.state?.token || ''
-      const headers = { Authorization: `Bearer ${token}` }
-
-      const [convData, agentData] = await Promise.all([
-        fetch('/api/v1/whatsapp/agent/conversations', { headers }).then(r => r.json()).catch(() => []),
-        fetch('/api/v1/whatsapp/agent/status', { headers }).then(r => r.json()).catch(() => null),
+      const [convRes, agentRes] = await Promise.all([
+        wahaApi.conversations().catch(() => ({ data: [] })),
+        wahaApi.agentStatus().catch(() => ({ data: null })),
       ])
+      const convData = convRes.data || []
+      const agentData = agentRes.data || null
+
       setConversations(Array.isArray(convData) ? convData : [])
       if (agentData && !agentData.detail) setAgentStatus(agentData)
     } catch {
@@ -288,7 +292,8 @@ export default function WhatsAppAgentPage() {
       // Sample candidate pool for ranking demonstration
       const sampleCandidates = [
         { id: 'cand-1', name: 'Kasun Perera', skills: ['React', 'TypeScript', 'Next.js', 'Tailwind', 'PostgreSQL'], experience_years: 5, education: 'BSc Computer Science (University of Moratuwa)' },
-        { id: 'cand-2', name: 'Sanduni Jayawardena', skills: ['React', 'JavaScript', 'HTML/CSS', 'Node.js'], experience_years: 3, education: 'NVQ Level 6 Software Engineering' },
+        { id: 'cand-2', name: 'Sanduni Jayawardena', skills: ['React', 'JavaScript', 'HTML/CSS', 'Node.js'], experience_years: 3, education: 'BSc Software Engineering' },
+
         { id: 'cand-3', name: 'Priyanka Jayasuriya', skills: ['Vue.js', 'Python', 'FastAPI', 'Docker', 'PostgreSQL'], experience_years: 4, education: 'BSc IT (SLIIT)' },
         { id: 'cand-4', name: 'Mahesh Gunasekara', skills: ['React', 'TypeScript', 'Node.js', 'AWS', 'Docker', 'GraphQL'], experience_years: 6, education: 'MSc Computer Science (Colombo)' },
       ]
@@ -556,6 +561,13 @@ export default function WhatsAppAgentPage() {
               </div>
             )}
           </div>
+        </div>
+      )}
+
+      {/* ── Tab: WAHA Connection & QR ── */}
+      {activeTab === 'waha-qr' && (
+        <div className="max-w-4xl animate-fade-in">
+          <WAHASettingsCard onToast={showToast} />
         </div>
       )}
 

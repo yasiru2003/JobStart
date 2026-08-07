@@ -68,7 +68,8 @@ export default function ResumePreviewModal({
             </div>
 
             <div>
-              <p className="text-[11px] font-extrabold text-primary uppercase tracking-wider mb-2">Technical Skills & NVQ Certification</p>
+              <p className="text-[11px] font-extrabold text-primary uppercase tracking-wider mb-2">Technical Skills & Credentials</p>
+
               <div className="space-y-1.5">
                 <div className="h-2 bg-surface-2 rounded-full w-[68%]" />
                 <div className="h-2 bg-surface-2 rounded-full w-[75%]" />
