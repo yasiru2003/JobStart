@@ -589,9 +589,9 @@ export default function AiAgentDrawer({ isOpen, onClose }: AiAgentDrawerProps) {
               Tag Candidate or Job posting:
             </p>
             {filteredTags.length > 0 ? (
-              filteredTags.map((tag) => (
+              filteredTags.map((tag, idx) => (
                 <button
-                  key={tag.label}
+                  key={`${tag.label}-${idx}`}
                   type="button"
                   onClick={() => handleSelectTag(tag.label)}
                   className="w-full px-2.5 py-2 hover:bg-primary/10 text-left flex items-center gap-2 transition-colors rounded-lg group"
