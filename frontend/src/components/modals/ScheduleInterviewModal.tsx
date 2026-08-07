@@ -104,8 +104,10 @@ export default function ScheduleInterviewModal({
   const [address, setAddress] = useState('WSO2 HQ, 20 Palm Grove, Colombo 03')
   const [reminderFreqs, setReminderFreqs] = useState<string[]>(['1 hour before', 'Morning of + 1h'])
 
-  if (!isOpen) return null
+  const [sendingState, setSendingState] = useState(false)
+  const [toastMsg, setToastMsg] = useState<string | null>(null)
 
+  if (!isOpen) return null
   const handleToggleReminderFreq = (opt: string) => {
     setReminderFreqs((prev) =>
       prev.includes(opt) ? prev.filter((o) => o !== opt) : [...prev, opt]
@@ -131,8 +133,7 @@ export default function ScheduleInterviewModal({
     }
   }
 
-  const [sendingState, setSendingState] = useState(false)
-  const [toastMsg, setToastMsg] = useState<string | null>(null)
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
