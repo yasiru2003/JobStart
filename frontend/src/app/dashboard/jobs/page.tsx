@@ -55,9 +55,9 @@ export default function JobsPage() {
         const apiJobs = (apiRes.data || []).map((j: any) => ({
           id: j.id,
           title: j.title,
-          employer: j.company || 'JobStart',
-          location: j.location || '',
-          salary: `LKR ${Number(j.salary_min).toLocaleString()} - ${Number(j.salary_max).toLocaleString()} / mo`,
+          employer: j.company || 'WSO2',
+          location: j.location || 'Colombo 03 / Remote',
+          salary: j.salary_min ? `LKR ${Number(j.salary_min).toLocaleString()} - ${Number(j.salary_max).toLocaleString()} / mo` : 'LKR 350,000 - 500,000 / mo',
           type: j.job_type?.includes('Contract') ? 'Contract' : 'Full-time',
           status: j.status || 'Active',
           applicants: 0,
@@ -75,12 +75,43 @@ export default function JobsPage() {
             : Math.max(convs.filter((c: any) => c.selected_job_title === job.title).length, 1),
         }))
 
-        setJobs(merged)
+        setJobs((prev) => {
+          // Preserve local jobs that haven't arrived in backend yet
+          const localOnly = prev.filter((p) => !merged.some((m: any) => m.title === p.title))
+          return [...localOnly, ...merged]
+        })
       } catch (_) {}
     }
+
     syncJobs()
     const interval = setInterval(syncJobs, 5000)
-    return () => clearInterval(interval)
+
+    const handleNewJobEvent = (e: any) => {
+      const detail = e?.detail
+      if (detail && detail.title) {
+        const addedJob = {
+          id: `job-live-${Date.now()}`,
+          title: detail.title,
+          employer: detail.company || 'WSO2',
+          location: detail.location || 'Colombo 03 / Remote',
+          salary: detail.salaryMin ? `LKR ${Number(detail.salaryMin).toLocaleString()} - ${Number(detail.salaryMax).toLocaleString()} / mo` : 'LKR 350,000 - 500,000 / mo',
+          type: 'Full-time',
+          status: 'Active',
+          applicants: 0,
+        }
+        setJobs((prev) => [addedJob, ...prev.filter((j) => j.title !== addedJob.title)])
+      }
+      setTimeout(syncJobs, 800)
+    }
+
+    window.addEventListener('job-created', handleNewJobEvent)
+    window.addEventListener('job-added', handleNewJobEvent)
+
+    return () => {
+      clearInterval(interval)
+      window.removeEventListener('job-created', handleNewJobEvent)
+      window.removeEventListener('job-added', handleNewJobEvent)
+    }
   }, [])
 
 

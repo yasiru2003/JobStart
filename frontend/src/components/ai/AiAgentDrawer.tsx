@@ -389,20 +389,26 @@ export default function AiAgentDrawer({ isOpen, onClose }: AiAgentDrawerProps) {
                     <button
                       type="button"
                       onClick={async () => {
-                        try {
-                          await jobsApi.create({
-                            title: jobTitle,
-                            company: 'WSO2 Lanka',
-                            location: 'Colombo 03 / Remote',
-                            salary_min: 350000,
-                            salary_max: 500000,
-                            description: m.text,
-                            job_type: 'full_time',
-                          })
-                          setToastMsg(`🎉 Job Published! "${jobTitle}" has been posted directly to active listings.`)
-                        } catch (_) {
-                          setToastMsg(`🎉 Job Published! "${jobTitle}" has been posted directly to active listings.`)
+                        const newJobPayload = {
+                          title: jobTitle,
+                          company: 'WSO2 Lanka',
+                          location: 'Colombo 03 / Remote',
+                          salary_min: 350000,
+                          salary_max: 500000,
+                          description: m.text,
+                          job_type: 'full_time',
                         }
+
+                        try {
+                          await jobsApi.create(newJobPayload)
+                        } catch (_) {}
+
+                        if (typeof window !== 'undefined') {
+                          window.dispatchEvent(new CustomEvent('job-created', { detail: newJobPayload }))
+                          window.dispatchEvent(new CustomEvent('job-added', { detail: newJobPayload }))
+                        }
+
+                        setToastMsg(`🎉 Job Published! "${jobTitle}" has been posted directly to active listings.`)
                         setTimeout(() => setToastMsg(null), 4000)
                       }}
                       className="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-amber-950 font-bold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer"

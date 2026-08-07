@@ -122,6 +122,10 @@ export default function PostJobModal({ isOpen, onClose, onSubmit }: PostJobModal
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('job-created', { detail: formData }))
+      window.dispatchEvent(new CustomEvent('job-added', { detail: formData }))
+    }
     setToastMsg(`🎉 Job Published! "${formData.title}" has been listed on the live platform.`)
     onSubmit(formData)
     setTimeout(() => {
