@@ -1387,11 +1387,12 @@ class WhatsAppAgentService:
         from app.services.waha import waha_service
 
         message = (
-            f"🎉 *CONGRATULATIONS {candidate_name}!* 🎉\n\n"
-            f"We are thrilled to inform you that *{employer_name}* has officially issued you a *Job Offer* "
-            f"for the position of *{job_title}*!\n\n"
-            f"Our HR team will reach out to you shortly via email with the official offer letter and next steps.\n\n"
-            f"Welcome aboard! 🚀\n"
+            f"🎉 *සුබ පැතුම් {candidate_name}!* 🎉\n\n"
+            f"ඔබගේ විශිෂ්ට සම්මුඛ පරීක්ෂණය සහ දක්ෂතා මත පදනම්ව *{employer_name}* හි *{job_title}* තනතුර සඳහා ඔබව තෝරාගෙන ඇති බව සතුටින් දන්වා සිටිමු!\n\n"
+            f"කරුණාකර onboarding ක්‍රියාවලිය සඳහා පහත ලිපිලේඛන (PDF/Photos) මෙම අංකයටම WhatsApp කරන්න:\n"
+            f"• ජාතික හැඳුනුම්පතේ (NIC) පිටපතක්\n"
+            f"• බැංකු ගිණුම් විස්තර (Bank Passbook)\n\n"
+            f"ඔබ හෙට දින සිට සේවයට වාර්තා කිරීමට නියමිතයි. සුබ පැතුම්! 🚀\n"
             f"— *{self.agent_name}*"
         )
         result = await waha_service.send_text(phone, message)
