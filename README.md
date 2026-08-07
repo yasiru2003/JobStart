@@ -1,4 +1,4 @@
-# HirePath 🚀
+# HirePath
 
 **Sri Lanka's Premier AI-Powered Recruitment & Verification Platform**
 
@@ -6,9 +6,9 @@
 
 ---
 
-## 🎯 Project Purpose
+##  Project Purpose
 
-HirePath is an end-to-end, AI-driven recruitment platform designed to solve the critical challenges of modern hiring: **candidate friction, manual screening overload, and credential fraud.** 
+HirePath is an end-to-end, AI-driven recruitment platform designed to solve the critical challenges of modern hiring: **candidate friction, manual screening overload, and credential fraud.**
 
 Traditional job applications are tedious, often resulting in candidate drop-off, while recruiters spend countless hours manually parsing CVs and verifying credentials. HirePath revolutionizes this by allowing candidates to apply seamlessly via WhatsApp, while an autonomous AI Agent handles the entire top-of-funnel pipeline—from intelligent CV parsing and initial screening to automated interview scheduling and credential verification.
 
@@ -16,7 +16,7 @@ Our goal is to create a frictionless, zero-barrier entry for job seekers while p
 
 ---
 
-## 🧠 The AI Agent Workflow (Core Innovation)
+##  The AI Agent Workflow (Core Innovation)
 
 HirePath is not a simple chatbot or a single-prompt wrapper. It features a robust, multi-agent architecture capable of **real reasoning, decision-making, and autonomous action-taking**.
 
@@ -29,7 +29,7 @@ HirePath is not a simple chatbot or a single-prompt wrapper. It features a robus
 
 ---
 
-## ⚙️ Tech Stack
+##  Tech Stack
 
 This project leverages a modern, scalable tech stack, precisely matching our original proposal.
 
@@ -56,7 +56,7 @@ This project leverages a modern, scalable tech stack, precisely matching our ori
 
 ---
 
-## ✨ Core Features
+##  Core Features
 
 * **Omnichannel AI Application**: Candidates apply and complete initial screenings entirely via WhatsApp, eliminating the need for complex web forms.
 * **Intelligent Job Matching Engine**: The system algorithmically ranks candidates against job descriptions, providing recruiters with a match percentage and a detailed AI dossier.
@@ -67,7 +67,7 @@ This project leverages a modern, scalable tech stack, precisely matching our ori
 
 ---
 
-## 🛠️ Setup Instructions
+##  Setup Instructions
 
 Follow these steps to run HirePath locally on your machine.
 
