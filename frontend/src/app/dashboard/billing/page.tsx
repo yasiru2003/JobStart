@@ -1,10 +1,28 @@
 'use client'
 
+import { useState } from 'react'
 import { CreditCard, Check } from 'lucide-react'
+import ChangePlanModal from '@/components/modals/ChangePlanModal'
+import Toast from '@/components/ui/Toast'
+import { billingApi } from '@/lib/api'
 
 export default function BillingPage() {
+  const [isChangeModalOpen, setIsChangeModalOpen] = useState(false)
+  const [activePlanId, setActivePlanId] = useState('growth')
+  const [toastMsg, setToastMsg] = useState<string | null>(null)
+
+  const handleSelectPlan = async (planId: string) => {
+    setActivePlanId(planId)
+    try {
+      await billingApi.createCheckout(planId)
+    } catch (_) {}
+    setToastMsg(`🎉 Subscription checkout initiated for ${planId.toUpperCase()} Plan!`)
+  }
+
   return (
-    <div className="space-y-6 max-w-7xl mx-auto animate-fade-in">
+    <div className="space-y-6 max-w-7xl mx-auto animate-fade-in relative">
+      <Toast message={toastMsg} onClose={() => setToastMsg(null)} />
+
       <div>
         <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
           <CreditCard className="w-6 h-6 text-primary" />
@@ -28,8 +46,11 @@ export default function BillingPage() {
               <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600" /> Email Support</li>
             </ul>
           </div>
-          <button className="mt-8 w-full py-2.5 bg-surface-2 hover:bg-border font-semibold text-xs text-foreground rounded-xl transition-colors">
-            Current Active Plan (31 Employers)
+          <button
+            onClick={() => setIsChangeModalOpen(true)}
+            className="mt-8 w-full py-2.5 bg-surface-2 hover:bg-border font-semibold text-xs text-foreground rounded-xl transition-colors cursor-pointer"
+          >
+            {activePlanId === 'starter' ? 'Current Active Plan' : 'Select Starter Plan'}
           </button>
         </div>
 
@@ -50,8 +71,11 @@ export default function BillingPage() {
               <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600" /> Dedicated Recruiter Match</li>
             </ul>
           </div>
-          <button className="mt-8 w-full py-2.5 bg-[#0F766E] hover:bg-[#0d9488] text-white font-bold text-xs rounded-xl shadow-md transition-colors">
-            Manage Plan (42 Employers)
+          <button
+            onClick={() => setIsChangeModalOpen(true)}
+            className="mt-8 w-full py-2.5 bg-[#0F766E] hover:bg-[#0d9488] text-white font-bold text-xs rounded-xl shadow-md transition-colors cursor-pointer"
+          >
+            {activePlanId === 'growth' ? 'Current Active Plan' : 'Select Growth Plan'}
           </button>
         </div>
 
@@ -69,11 +93,21 @@ export default function BillingPage() {
               <li className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-600" /> Custom API & ATS Integration</li>
             </ul>
           </div>
-          <button className="mt-8 w-full py-2.5 bg-surface-2 hover:bg-border font-semibold text-xs text-foreground rounded-xl transition-colors">
-            Manage Enterprise (11 Employers)
+          <button
+            onClick={() => setIsChangeModalOpen(true)}
+            className="mt-8 w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-amber-950 font-bold text-xs rounded-xl transition-colors cursor-pointer"
+          >
+            {activePlanId === 'enterprise' ? 'Current Active Plan' : 'Select Enterprise Plan'}
           </button>
         </div>
       </div>
+
+      <ChangePlanModal
+        isOpen={isChangeModalOpen}
+        onClose={() => setIsChangeModalOpen(false)}
+        currentPlan={activePlanId}
+        onSelectPlan={handleSelectPlan}
+      />
     </div>
   )
 }
