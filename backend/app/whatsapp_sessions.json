@@ -1318,6 +1318,11 @@
         "sender": "agent",
         "text": "හලෝ හසිනි මහත්මිය! 👋 අප ආයතනයේ දැනට පවතින රැකියා පුරප්පාඩු මෙන්න:\n\n• *1. Senior React Developer* — 99x Technology (කොළඹ 03)\n💰 වැටුප: LKR 350,000–500,000 | Full-time | Hybrid\n\n• *2. Flutter Mobile Developer* — Rootcode Labs (කොළඹ 07)\n💰 වැටුප: LKR 200,000–320,000 | Full-time | Remote\n\n• *3. Node.js Backend Engineer* — IFS R&D International (කොළඹ 02)\n💰 වැටුප: LKR 280,000–420,000 | Full-time | On-site\n\nඔබට මෙම රැකියාවක් ගැන වැඩිදුර විස්තර දැනගැනීමට හෝ අයදුම් කිරීමට අවශ්‍ය නම් මට දන්වන්න!\n\n— *JobStart Recruitment Team*",
         "time": "2026-08-07T07:23:50.556892"
+      },
+      {
+        "sender": "agent",
+        "text": "👋 Hello *Hasini Dikkumbura*,\n\n🎉 Congratulations! You've been *shortlisted* for an interview with *WSO2 Lanka* for the position of *Senior React / Next.js Developer*.\n\n📅 *Date*: Wednesday, Aug 12\n⏰ *Time*: 11:30 AM\n📍 *Mode*: Google Meet\n\nPlease reply:\n✅ *YES* — to confirm your attendance\n❌ *NO* — if you need to reschedule\n\nWe look forward to meeting you!\n— *JobStart Recruitment Team*",
+        "time": "2026-08-07T08:20:57.592545"
       }
     ],
     "last_intent": null,
@@ -1341,9 +1346,9 @@
       "1 month notice period"
     ],
     "screening_current_index": 3,
-    "job_title": "React Developer (කොළඹ 03)",
-    "interview_date": "",
-    "interview_time": "බදාදා පෙ.ව. 11:30 (Wed 11:30 AM)",
+    "job_title": "Senior React / Next.js Developer",
+    "interview_date": "Wednesday, Aug 12",
+    "interview_time": "11:30 AM",
     "pdf_received": true,
     "available_slots": [],
     "last_notification": null,
