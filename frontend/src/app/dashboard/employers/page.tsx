@@ -13,9 +13,20 @@ const initialEmployers = [
   { id: '5', name: 'MAS Holdings', industry: 'Apparel & Innovation', size: '1000+ employees', jobs: 10, plan: 'Growth' },
 ]
 
+import { useAuthStore } from '@/lib/stores'
+
 export default function EmployersPage() {
+  const { user, viewingAs } = useAuthStore()
   const [employers, setEmployers] = useState(initialEmployers)
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false)
+
+  // Enforce Employer Tenant Isolation
+  const tenantEmployers = employers.filter((emp) => {
+    if (viewingAs === 'employer' || user?.role === 'employer') {
+      return emp.name.toLowerCase().includes('wso2')
+    }
+    return true // Admin / Recruiter Agency sees all companies
+  })
 
   useEffect(() => {
     const syncJobsCount = async () => {
@@ -92,7 +103,7 @@ export default function EmployersPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-border text-sm">
-            {employers.map((emp) => (
+            {tenantEmployers.map((emp) => (
               <tr key={emp.id} className="hover:bg-surface-2/40 transition-colors">
                 <td className="p-4 font-semibold text-foreground flex items-center gap-3">
                   <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-bold">

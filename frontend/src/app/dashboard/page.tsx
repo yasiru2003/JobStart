@@ -17,36 +17,32 @@ import { useRouter } from 'next/navigation'
 
 const INITIAL_EMPLOYER_PIPELINE: PipelineColumns = {
   matched: [
-    { id: 'c1', initials: 'KP', name: 'Kasun Perera', location: 'Colombo', verified: false, rating: '4.0', matchScore: 72 },
-    { id: 'c2', initials: 'NF', name: 'Nimal Fernando', location: 'Gampaha', verified: true, rating: '4.2', matchScore: 81 },
+    { id: 'c1', initials: 'KP', name: 'Kasun Perera', location: 'Colombo 03', verified: false, rating: '4.0', matchScore: 72 },
   ],
   shortlisted: [
     { id: 'c4', initials: 'SR', name: 'Sunil Rathnayake', location: 'Negombo', verified: true, rating: '4.5', matchScore: 93 },
-    { id: 'c5', initials: 'PJ', name: 'Priyanka Jayasuriya', location: 'Colombo', verified: true, rating: '4.1', matchScore: 87 },
   ],
   interviewing: [
     { id: 'c-hd', initials: 'HD', name: 'Hasini Dikkumbura', location: 'Colombo 03 / Remote', verified: true, rating: '4.9', matchScore: 98 },
-    { id: 'c6', initials: 'CW', name: 'Chamara Wickramasinghe', location: 'Kandy', verified: true, rating: '4.6', matchScore: 95 },
   ],
-  hired: [
-    { id: 'c7', initials: 'DG', name: 'Dilani Gunawardena', location: 'Colombo', verified: true, rating: '4.8', matchScore: 97 },
-  ],
+  hired: [],
 }
 
 export default function DashboardOverviewPage() {
   const router = useRouter()
   const { user, viewingAs } = useAuthStore()
   const role = viewingAs || user?.role || 'admin'
+  const isEmployer = role === 'employer'
 
   const [isPostModalOpen, setIsPostModalOpen] = useState(false)
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false)
   const [dashboardData, setDashboardData] = useState<any | null>(null)
   const [pipelineData, setPipelineData] = useState<PipelineColumns>(INITIAL_EMPLOYER_PIPELINE)
   const [liveMetrics, setLiveMetrics] = useState({
-    totalCandidates: 52,
-    activeJobs: 4,
-    screenedApplicants: 41,
-    confirmedInterviews: 14,
+    totalCandidates: isEmployer ? 3 : 52,
+    activeJobs: isEmployer ? 1 : 4,
+    screenedApplicants: isEmployer ? 2 : 41,
+    confirmedInterviews: isEmployer ? 2 : 14,
   })
 
   useEffect(() => {
@@ -109,10 +105,10 @@ export default function DashboardOverviewPage() {
         }))
 
         setLiveMetrics({
-          totalCandidates: 45 + waCount,
-          activeJobs: 4,
-          screenedApplicants: 35 + waScreened,
-          confirmedInterviews: 12 + waConfirmed,
+          totalCandidates: isEmployer ? (2 + waCount) : (45 + waCount),
+          activeJobs: isEmployer ? 1 : 4,
+          screenedApplicants: isEmployer ? (1 + waScreened) : (35 + waScreened),
+          confirmedInterviews: isEmployer ? (1 + waConfirmed) : (12 + waConfirmed),
         })
       } catch (_) {}
     }
