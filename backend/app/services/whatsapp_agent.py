@@ -1521,11 +1521,10 @@ class WhatsAppAgentService:
         )
 
         message = (
-            f"🔔 Hi *{candidate_name}*!\n\n"
-            f"We found *{len(matched_jobs)}* job(s) that match your profile:\n\n"
+            f"🔔 ආයුබෝවන් *{candidate_name}*!\n\n"
+            f"ඔබගේ සුදුසුකම් වලට ගැලපෙන රැකියා *{len(matched_jobs)}* ක් අපට හමුවිය:\n\n"
             f"{job_lines}\n\n"
-            f"Reply *apply* to start your application right here in WhatsApp, "
-            f"or reply *jobs* to see all available positions.\n\n"
+            f"මෙම රැකියාවට අයදුම් කිරීමට අදාල අංකය (උදා: *1*) යොමු කරන්න.\n\n"
             f"— *{self.agent_name}*"
         )
 
