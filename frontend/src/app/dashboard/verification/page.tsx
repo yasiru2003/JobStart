@@ -1,11 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Shield, CheckCircle, XCircle, FileText, Eye } from 'lucide-react'
 import VerificationReviewModal from '@/components/modals/VerificationReviewModal'
+import { wahaApi } from '@/lib/api'
 
 const initialVerificationQueue = [
-  { id: '1', name: 'Kasun Perera', docType: 'NIC + Degree Certificate', submitted: '3 days ago', status: 'Pending', nic: '952451234V' },
+  { id: 'v-hd', name: 'Hasini Dikkumbura', docType: 'NIC + Degree Certificate (PDF CV Verified)', submitted: 'Just now (WhatsApp Agent)', status: 'Verified', nic: '199878901234' },
+  { id: '1', name: 'Kasun Perera', docType: 'NIC + Professional Certification', submitted: '3 days ago', status: 'Pending', nic: '952451234V' },
   { id: '2', name: 'Sanduni Jayawardena', docType: 'NIC', submitted: '2 days ago', status: 'Pending', nic: '199854210012' },
   { id: '3', name: 'Priyanka Jayasuriya', docType: 'NIC + Police Report', submitted: '6 days ago', status: 'Verified', nic: '912345678V' },
   { id: '4', name: 'Dilshan Fernando', docType: 'NIC + Driving License', submitted: '1 day ago', status: 'Pending', nic: '199584739201' },
@@ -17,11 +19,46 @@ export default function VerificationPage() {
   const [selectedCandidate, setSelectedCandidate] = useState<any>(null)
   const [isReviewModalOpen, setIsReviewModalOpen] = useState(false)
 
+  useEffect(() => {
+    const fetchLiveVerifications = async () => {
+      try {
+        const res = await wahaApi.conversations()
+        const convs = res.data || []
+        const waItems: any[] = []
+
+        convs.forEach((c: any) => {
+          if (c.pdf_received || c.cv_media_url || c.collected_name) {
+            const name = c.collected_name || c.candidate_name || 'Hasini Dikkumbura'
+            waItems.push({
+              id: `wa-ver-${c.phone}`,
+              name,
+              docType: c.pdf_received ? 'NIC + Degree Certificate (PDF CV Verified)' : 'Identity & Credential Verification',
+              submitted: 'Recently via WhatsApp',
+              status: c.pdf_received ? 'Verified' : 'Pending',
+              nic: `WA-${c.phone.slice(-9)}`,
+            })
+          }
+        })
+
+        if (waItems.length > 0) {
+          setList((prev) => {
+            const existingIds = new Set(prev.map((p) => p.id))
+            const filteredNew = waItems.filter((item) => !existingIds.has(item.id))
+            return [...filteredNew, ...prev]
+          })
+        }
+      } catch (_) {}
+    }
+
+    fetchLiveVerifications()
+  }, [])
+
   const handleDecision = (candidateId: string, status: 'Verified' | 'Rejected', notes: string) => {
     setList((prev) => prev.map((item) => (item.id === candidateId ? { ...item, status } : item)))
   }
 
   return (
+
     <div className="space-y-6 max-w-7xl mx-auto animate-fade-in">
       <div>
         <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">

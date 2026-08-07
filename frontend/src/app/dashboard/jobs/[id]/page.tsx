@@ -34,6 +34,7 @@ const JOBS_DATA: Record<string, {
         { id: 'c5', initials: 'PJ', name: 'Priyanka Jayasuriya', location: 'Colombo', verified: true,  rating: '4.1', matchScore: 87 },
       ],
       interviewing: [
+        { id: 'c-hd', initials: 'HD', name: 'Hasini Dikkumbura', location: 'Colombo 03 / Remote', verified: true, rating: '4.9', matchScore: 98 },
         { id: 'c6', initials: 'CW', name: 'Chamara Wickramasinghe', location: 'Kandy', verified: true, rating: '4.6', matchScore: 95 },
       ],
       hired: [
@@ -41,6 +42,7 @@ const JOBS_DATA: Record<string, {
       ],
     },
     interviews: [
+      { candidate: 'Hasini Dikkumbura',       job: 'Senior React / Next.js Developer', date: 'Wed 11:30 AM', time: '11:30 AM–12:30 PM', mode: 'Google Meet', status: 'confirmed' },
       { candidate: 'Sunil Rathnayake',        job: 'Senior React / Next.js Developer', date: '24 Jul 2026', time: '10:00 AM–11:00 AM', mode: 'Video Call', status: 'confirmed' },
       { candidate: 'Priyanka Jayasuriya',     job: 'Senior React / Next.js Developer', date: '24 Jul 2026', time: '2:00 PM–3:00 PM',   mode: 'Video Call', status: 'awaiting'  },
       { candidate: 'Chamara Wickramasinghe',  job: 'Senior React / Next.js Developer', date: '26 Jul 2026', time: '11:00 AM–12:00 PM', mode: 'On-site',   status: 'declined'  },

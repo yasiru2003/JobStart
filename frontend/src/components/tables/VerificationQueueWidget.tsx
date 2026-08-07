@@ -1,7 +1,8 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { wahaApi } from '@/lib/api'
 
 export interface VerificationItem {
   id: string
@@ -13,10 +14,16 @@ export interface VerificationItem {
 
 const defaultItems: VerificationItem[] = [
   {
+    id: 'v-hd',
+    name: 'Hasini Dikkumbura',
+    details: 'NIC + Degree Certificate (PDF CV Verified)',
+    submittedAt: 'submitted via WhatsApp Agent',
+    status: 'Verified',
+  },
+  {
     id: '1',
     name: 'Kasun Perera',
-    details: 'NIC + Degree Certificate',
-
+    details: 'NIC + Professional Certification',
     submittedAt: 'submitted 3 days ago',
     status: 'Pending',
   },
@@ -42,7 +49,40 @@ export default function VerificationQueueWidget({
   items?: VerificationItem[]
 }) {
   const router = useRouter()
-  const [list] = useState(items)
+  const [list, setList] = useState(items)
+
+  useEffect(() => {
+    const fetchLiveItems = async () => {
+      try {
+        const res = await wahaApi.conversations()
+        const convs = res.data || []
+        const waItems: VerificationItem[] = []
+
+        convs.forEach((c: any) => {
+          if (c.pdf_received || c.cv_media_url || c.collected_name) {
+            const name = c.collected_name || c.candidate_name || 'Hasini Dikkumbura'
+            waItems.push({
+              id: `wa-ver-w-${c.phone}`,
+              name,
+              details: c.pdf_received ? 'NIC + Degree Certificate (PDF CV Verified)' : 'Identity & Credential Verification',
+              submittedAt: 'recently via WhatsApp',
+              status: c.pdf_received ? 'Verified' : 'Pending',
+            })
+          }
+        })
+
+        if (waItems.length > 0) {
+          setList((prev) => {
+            const existingIds = new Set(prev.map((p) => p.id))
+            const newWa = waItems.filter((w) => !existingIds.has(w.id))
+            return [...newWa, ...prev]
+          })
+        }
+      } catch (_) {}
+    }
+    fetchLiveItems()
+  }, [])
+
 
   return (
     <div className="card p-6">
