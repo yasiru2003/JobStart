@@ -399,6 +399,13 @@ export default function AiAgentDrawer({ isOpen, onClose }: AiAgentDrawerProps) {
       return `HirePth AI Candidate Dossier (${timestamp}): Sanduni Jayawardena · Lead UI/UX Product Designer. 88% Role Match. 4 Years Experience. Credentials: NIC Verified.`
     }
 
+    if (lower.includes('compare') || lower.includes('comparison')) {
+      return `HirePth AI Candidate Comparison (${timestamp}):\n\n` +
+        `Candidate 1 (Kasun Perera): 6 Years Exp. React/Node. Strong system design.\n` +
+        `Candidate 2 (Dilshan Fernando): 4 Years Exp. Next.js/AWS. Better frontend performance optimization.\n\n` +
+        `Recommendation: Kasun Perera is a 92% match and fits the Senior Architect role better, while Dilshan fits the Frontend-heavy requirement.`
+    }
+
     if (lower.includes('react') || lower.includes('developer') || lower.includes('engineer')) {
       return `HirePth AI Candidate Ranking (${timestamp}): Top matches for "${msg}" — 1. Kasun Perera (92% match), 2. Priyanka Jayasuriya (95% match), 3. Dilshan Fernando (84% match).`
     }
