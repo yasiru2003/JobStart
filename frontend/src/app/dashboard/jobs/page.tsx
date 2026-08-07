@@ -247,9 +247,16 @@ export default function JobsPage() {
                 </button>
 
                 <button
-                  onClick={() => setIsAiDrawerOpen(true)}
+                  onClick={() => {
+                    setIsAiDrawerOpen(true)
+                    if (typeof window !== 'undefined') {
+                      window.dispatchEvent(new CustomEvent('open-ai-drawer', {
+                        detail: { type: 'job', title: job.title }
+                      }))
+                    }
+                  }}
                   className="w-8 h-8 rounded-lg border border-border bg-surface-2 hover:bg-border flex items-center justify-center text-muted hover:text-foreground transition-colors cursor-pointer"
-                  title="Ask AI Agent about this job"
+                  title={`Ask AI Agent about @${job.title}`}
                 >
                   <Bot className="w-4 h-4 text-amber-500" />
                 </button>

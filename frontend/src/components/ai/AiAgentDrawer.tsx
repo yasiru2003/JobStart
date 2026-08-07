@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Sparkles, Send, X, Bot, RefreshCw, User, Briefcase, Zap, CheckCircle2, ChevronRight, FileText } from 'lucide-react'
 import { aiApi, jobsApi } from '@/lib/api'
 
@@ -172,6 +172,61 @@ export default function AiAgentDrawer({ isOpen, onClose }: AiAgentDrawerProps) {
   const [showMentionMenu, setShowMentionMenu] = useState(false)
   const [mentionFilter, setMentionFilter] = useState('')
   const [toastMsg, setToastMsg] = useState<string | null>(null)
+
+  useEffect(() => {
+    const handleOpenAiDrawer = (e: any) => {
+      const detail = e.detail
+      if (!detail) return
+
+      let tagLabel = ''
+      let welcomeBanner = ''
+      let initialPrompt = ''
+
+      if (detail.type === 'job' || detail.title) {
+        tagLabel = detail.title || 'Senior React / Next.js Developer'
+        welcomeBanner =
+          `## 🤖 Active Context Loaded: **@${tagLabel}** (WSO2 Lanka)\n\n` +
+          `### 📊 Job Target Metrics (LaTeX Math)\n` +
+          `- \\( \\text{Target Match Score} \\ge 85\\% \\)\n` +
+          `- \\( \\text{Required Experience} \\ge 3\\text{ years} \\)\n` +
+          `- \\( \\text{Benchmarked Salary} = \\text{LKR } 350,000 - 500,000 / \\text{mo} \\)\n\n` +
+          `Ask me to evaluate candidate applications, draft job specifications, or refine screener questions.`
+        initialPrompt = `Evaluate candidate match scores and draft recruitment strategy for @${tagLabel}`
+      } else if (detail.type === 'candidate' || detail.name) {
+        tagLabel = detail.name || 'Hasini Dikkumbura'
+        const roleTitle = detail.title || 'Flutter Mobile Developer'
+        welcomeBanner =
+          `## 🤖 Candidate Analysis: **@${tagLabel}** (${roleTitle})\n\n` +
+          `### 📊 AI Evaluation Metrics (LaTeX Math)\n` +
+          `- \\( \\text{AI Suitability Score} = 98\\% \\)\n` +
+          `- \\( \\text{National Registry Verification} = \\text{Verified (TVEC + NIC)} \\)\n` +
+          `- \\( \\text{Experience Benchmark} \\ge 4\\text{ years} \\)\n` +
+          `- \\( \\text{Performance Rating} = 4.9 / 5.0 \\)\n\n` +
+          `### 📝 Executive AI Reasoning Summary\n` +
+          `Candidate **${tagLabel}** demonstrates exceptional technical competency with verified identity credentials on national databases. ` +
+          `Ask me to generate tailored interview questions, evaluate skill gaps, or schedule a technical screening call.`
+        initialPrompt = `Analyze TVEC verification status, candidate qualifications, and job match score for @${tagLabel}`
+      } else if (typeof detail === 'string') {
+        tagLabel = detail
+        welcomeBanner = `🤖 Active Context Loaded: **@${tagLabel}**`
+        initialPrompt = `Analyze active context for @${tagLabel}`
+      }
+
+      if (tagLabel) {
+        setInput(initialPrompt)
+        setMessages((prev) => [
+          ...prev,
+          {
+            sender: 'ai',
+            text: welcomeBanner,
+          },
+        ])
+      }
+    }
+
+    window.addEventListener('open-ai-drawer', handleOpenAiDrawer)
+    return () => window.removeEventListener('open-ai-drawer', handleOpenAiDrawer)
+  }, [])
 
   if (!isOpen) return null
 

@@ -1,11 +1,17 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Sparkles } from 'lucide-react'
 import AiAgentDrawer from '@/components/ai/AiAgentDrawer'
 
 export default function FloatingAiAgentButton() {
   const [isOpen, setIsOpen] = useState(false)
+
+  useEffect(() => {
+    const handleOpen = () => setIsOpen(true)
+    window.addEventListener('open-ai-drawer', handleOpen)
+    return () => window.removeEventListener('open-ai-drawer', handleOpen)
+  }, [])
 
   return (
     <>

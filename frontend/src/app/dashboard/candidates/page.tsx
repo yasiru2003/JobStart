@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 
-import { UserCircle, Search, Filter, ShieldCheck, MapPin, Briefcase, Sparkles } from 'lucide-react'
+import { UserCircle, Search, Filter, ShieldCheck, MapPin, Briefcase, Sparkles, Bot } from 'lucide-react'
 import CandidateDetailModal from '@/components/modals/CandidateDetailModal'
 import FilterModal from '@/components/modals/FilterModal'
 import AiAgentDrawer from '@/components/ai/AiAgentDrawer'
@@ -101,7 +101,12 @@ export default function CandidatesPage() {
 
   const handleAnalyzeWithAi = (cand: any, e: React.MouseEvent) => {
     e.stopPropagation()
-    setAiModalCand(cand)
+    setIsAiDrawerOpen(true)
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('open-ai-drawer', {
+        detail: { type: 'candidate', name: cand.name, title: cand.title }
+      }))
+    }
   }
 
 
@@ -174,13 +179,16 @@ export default function CandidatesPage() {
             </div>
 
             <div className="space-y-2 pt-2 border-t border-border">
-              <button
-                onClick={(e) => handleAnalyzeWithAi(cand, e)}
-                className="w-full py-2 bg-primary/10 hover:bg-primary/20 text-primary font-bold text-xs rounded-xl transition-all border border-primary/20 flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
-              >
-                <Sparkles className="w-3.5 h-3.5" />
-                <span>Analyze Candidate with AI</span>
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={(e) => handleAnalyzeWithAi(cand, e)}
+                  className="flex-1 py-2 bg-amber-500/10 hover:bg-amber-500/20 text-amber-900 dark:text-amber-300 font-bold text-xs rounded-xl transition-all border border-amber-500/30 flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
+                  title={`Ask AI Agent about @${cand.name}`}
+                >
+                  <Bot className="w-4 h-4 text-amber-500" />
+                  <span>Ask AI Agent (@{cand.name})</span>
+                </button>
+              </div>
 
               <button
                 onClick={() => setSelectedCand(cand)}
