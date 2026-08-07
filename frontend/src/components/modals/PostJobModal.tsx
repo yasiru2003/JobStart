@@ -52,7 +52,14 @@ export default function PostJobModal({ isOpen, onClose, onSubmit }: PostJobModal
   const handleAiAutoFill = async () => {
     const titleToUse = formData.title || 'Senior React / Next.js Developer'
     setAiLoading(true)
-    setToastMsg('⚡ Generating LaTeX Job Specification with AI...')
+    setToastMsg('⚡ Generating Real FinTech Job Specification & Screener Questions with AI...')
+
+    const aiQuestions = [
+      `Do you have 3+ years of commercial experience in ${titleToUse} or related stack?`,
+      'Have you built or integrated REST / GraphQL payment APIs in FinTech environments?',
+      'Are you willing to work in a hybrid setup based in Colombo 03?',
+      'What is your notice period (e.g. Immediate, 1 month, 2 months)?'
+    ]
 
     try {
       const res = await aiApi.draftJob({
@@ -68,13 +75,18 @@ export default function PostJobModal({ isOpen, onClose, onSubmit }: PostJobModal
           title: titleToUse,
           description: res.data.draft_markdown,
           requirements: '3+ years of experience with Next.js, React, and TypeScript architecture.',
+          screenerQuestions: res.data.screener_questions || aiQuestions,
         }))
       } else {
         throw new Error('No draft returned')
       }
     } catch (_) {
       const latexFallback = `## 💼 ${titleToUse} (${formData.category})\n\n` +
-        `**Location:** ${formData.location} · **Format:** Hybrid / Remote\n\n` +
+        `**Company:** WSO2 Lanka (Pvt) Ltd · **Location:** ${formData.location} · **Format:** Hybrid / Remote\n\n` +
+        `### 🏢 About WSO2 Lanka & FinTech Solutions\n` +
+        `WSO2 Lanka is Sri Lanka's premier enterprise middleware and FinTech technology pioneer, empowering over 500+ global financial institutions and enterprises. ` +
+        `Our cutting-edge open banking, API management, and identity platforms process over 60 billion transactions annually. ` +
+        `We foster a collaborative, high-performance engineering culture dedicated to technical excellence and career growth.\n\n` +
         `### 🎯 Role Overview\n` +
         `We are seeking an experienced **${titleToUse}** to lead core architecture and software engineering features.\n\n` +
         `### 📊 Target Candidate Specifications (LaTeX Math Metrics)\n` +
@@ -99,10 +111,11 @@ export default function PostJobModal({ isOpen, onClose, onSubmit }: PostJobModal
         title: titleToUse,
         description: latexFallback,
         requirements: '3+ years of experience with Next.js, React, and TypeScript architecture.',
+        screenerQuestions: aiQuestions,
       }))
     } finally {
       setAiLoading(false)
-      setToastMsg('✨ AI Job Specification & LaTeX Badges Generated Successfully!')
+      setToastMsg('✨ AI Job Specification & Screener Questions Generated Successfully!')
       setTimeout(() => setToastMsg(null), 4000)
     }
   }

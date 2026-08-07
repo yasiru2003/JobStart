@@ -125,29 +125,42 @@ class LangChainAgentEngine:
 
         description = llm_reply or (
             f"## 💼 {role_title} ({department})\n\n"
-            f"**Location:** {location} · **Format:** Hybrid / Remote\n\n"
+            f"**Company:** WSO2 Lanka (Pvt) Ltd · **Location:** {location} · **Format:** Hybrid / Remote\n\n"
+            f"### 🏢 About WSO2 Lanka & FinTech Solutions\n"
+            f"WSO2 Lanka is Sri Lanka's premier enterprise middleware and FinTech technology pioneer, empowering over 500+ global financial institutions and enterprises. "
+            f"Our cutting-edge open banking, API management, and identity platforms process over 60 billion transactions annually. "
+            f"We foster a collaborative, high-performance engineering culture dedicated to technical excellence and career growth.\n\n"
             f"### 🎯 Role Overview\n"
-            f"We are seeking a high-caliber **{role_title}** to lead core architecture and software features. "
+            f"We are seeking a high-caliber **{role_title}** to architect core software systems and digital services. "
             f"Key evaluation metric: \\( \\text{{Match Threshold}} \\ge 85\\% \\).\n\n"
-            f"### 📊 Candidate Target Metrics (LaTeX Specification)\n"
+            f"### 📊 Target Candidate Specifications (LaTeX Math Metrics)\n"
             f"- Minimum Commercial Experience: \\( \\text{{Experience}} \\ge 3\\text{{ years}} \\)\n"
-            f"- Target Technical Competency Score: \\( \\text{{Skill Score}} = 92\\% \\)\n"
-            f"- Benchmarked Monthly Salary: \\( \\text{{Salary}} = \\text{{LKR }} 350,000 - 500,000 / \\text{{mo}} \\)\n\n"
+            f"- Target Technical Competency Score: \\( \\text{{Skill Score}} = 94\\% \\)\n"
+            f"- Benchmarked Monthly Salary: \\( \\text{{Salary}} = \\text{{LKR }} 350,000 - 500,000 / \\text{{mo}} \\)\n"
+            f"- Minimum Test Coverage Requirement: \\( \\text{{Code Coverage}} \\ge 80\\% \\)\n\n"
             f"### 🛠️ Key Technical Requirements\n{requirements_str}\n\n"
             f"### 🌟 Primary Responsibilities\n"
-            f"- Architect high-performance web applications using modern frameworks\n"
-            f"- Conduct peer code reviews and enforce high test coverage \\( \\text{{Coverage}} \\ge 80\\% \\)\n"
-            f"- Collaborate with product managers and DevOps engineering teams\n\n"
+            f"- Architect high-performance web applications and cloud microservices\n"
+            f"- Conduct peer code reviews and enforce strict security protocols \\( \\text{{Security SLA}} = 99.99\\% \\)\n"
+            f"- Collaborate with product leads, UI/UX designers, and DevOps engineers\n\n"
             f"### 🎁 Benefits & Perks\n"
-            f"- Market-leading compensation in LKR\n"
+            f"- Market-leading compensation in LKR (benchmarked to global standards)\n"
             f"- Flexible remote/office working arrangement\n"
-            f"- Professional learning & cloud certification budget"
+            f"- Professional learning & AWS / Kubernetes certification budget"
         )
+
+        suggested_questions = [
+            f"Do you have 3+ years of commercial experience in {role_title} or related stack?",
+            "Have you built or integrated REST / GraphQL APIs in production environments?",
+            "Are you willing to work in a hybrid setup based in Colombo 03?",
+            "What is your notice period (e.g. Immediate, 1 month, 2 months)?"
+        ]
 
         return {
             "role_title": role_title,
             "draft_markdown": description,
             "suggested_skills": key_requirements,
+            "screener_questions": suggested_questions,
             "engine": f"JobStart AI Engine ({self.model_name})"
         }
 

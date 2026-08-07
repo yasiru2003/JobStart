@@ -9,6 +9,7 @@ import ScheduleInterviewModal from '@/components/modals/ScheduleInterviewModal'
 import DeleteJobModal from '@/components/modals/DeleteJobModal'
 import AiAgentDrawer from '@/components/ai/AiAgentDrawer'
 import { jobsApi, wahaApi } from '@/lib/api'
+import { useAuthStore } from '@/lib/stores'
 
 // Fallback jobs in case API is down — must match backend JOBS_DB
 const FALLBACK_JOBS = [
@@ -19,6 +20,7 @@ const FALLBACK_JOBS = [
 ]
 
 export default function JobsPage() {
+  const { user, viewingAs } = useAuthStore()
   const router = useRouter()
   const [jobs, setJobs] = useState(FALLBACK_JOBS)
   const [isPostModalOpen, setIsPostModalOpen] = useState(false)
@@ -27,6 +29,15 @@ export default function JobsPage() {
   const [jobToDelete, setJobToDelete] = useState<any | null>(null)
   const [selectedJob, setSelectedJob] = useState<any>(null)
   const [search, setSearch] = useState('')
+
+  // Enforce Employer Tenant Data Isolation
+  const tenantJobs = jobs.filter((j) => {
+    if (viewingAs === 'employer' || user?.role === 'employer') {
+      const emp = String(j.employer || '').toLowerCase()
+      return emp.includes('wso2')
+    }
+    return true // Admin / Recruiter Agency sees all companies
+  })
 
   useEffect(() => {
     const syncJobs = async () => {

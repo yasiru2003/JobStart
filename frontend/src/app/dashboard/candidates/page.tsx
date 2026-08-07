@@ -8,6 +8,7 @@ import FilterModal from '@/components/modals/FilterModal'
 import AiAgentDrawer from '@/components/ai/AiAgentDrawer'
 import AiCandidateModal from '@/components/modals/AiCandidateModal'
 import { wahaApi } from '@/lib/api'
+import { useAuthStore } from '@/lib/stores'
 
 const sampleCandidates = [
   { id: '1', initials: 'KP', name: 'Kasun Perera', title: 'Senior Full Stack Engineer', location: 'Colombo 03', exp: '6 years', verified: false, docs: 'NIC + Degree Certificate', matchScore: 92, rating: '4.8', phone: '+94 77 123 4567' },
@@ -18,12 +19,23 @@ const sampleCandidates = [
 ]
 
 export default function CandidatesPage() {
+  const { user, viewingAs } = useAuthStore()
   const [candidatesList, setCandidatesList] = useState<any[]>(sampleCandidates)
   const [selectedCand, setSelectedCand] = useState<any | null>(null)
   const [aiModalCand, setAiModalCand] = useState<any | null>(null)
   const [isFilterOpen, setIsFilterOpen] = useState(false)
   const [isAiDrawerOpen, setIsAiDrawerOpen] = useState(false)
   const [search, setSearch] = useState('')
+
+  // Enforce Employer Tenant Data Isolation
+  const tenantCandidates = candidatesList.filter((cand) => {
+    if (viewingAs === 'employer' || user?.role === 'employer') {
+      const name = String(cand.name || '').toLowerCase()
+      const title = String(cand.title || '').toLowerCase()
+      return name.includes('hasini') || name.includes('kasun') || title.includes('flutter') || title.includes('full stack')
+    }
+    return true // Admin / Recruiter Agency sees all candidates
+  })
 
   useEffect(() => {
     const fetchLiveCandidates = async () => {
@@ -81,7 +93,7 @@ export default function CandidatesPage() {
     return () => clearInterval(interval)
   }, [])
 
-  const filtered = candidatesList.filter((cand) =>
+  const filtered = tenantCandidates.filter((cand) =>
     cand.name.toLowerCase().includes(search.toLowerCase()) ||
     cand.title.toLowerCase().includes(search.toLowerCase()) ||
     cand.location.toLowerCase().includes(search.toLowerCase())

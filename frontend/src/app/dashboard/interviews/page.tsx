@@ -21,7 +21,10 @@ const STATUS_BADGES: Record<string, { label: string; cls: string; icon: any }> =
 import { wahaApi } from '@/lib/api'
 import { useEffect } from 'react'
 
+import { useAuthStore } from '@/lib/stores'
+
 export default function InterviewsPage() {
+  const { user, viewingAs } = useAuthStore()
   const [interviews, setInterviews] = useState(INITIAL_INTERVIEWS)
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('all')
@@ -145,7 +148,15 @@ export default function InterviewsPage() {
     }, 800)
   }
 
-  const filtered = interviews.filter((iv) => {
+  const tenantInterviews = interviews.filter((iv) => {
+    if (viewingAs === 'employer' || user?.role === 'employer') {
+      const emp = String(iv.employer || '').toLowerCase()
+      return emp.includes('wso2')
+    }
+    return true // Admin / Recruiter Agency sees all companies
+  })
+
+  const filtered = tenantInterviews.filter((iv) => {
     const matchesSearch =
       iv.candidate.toLowerCase().includes(search.toLowerCase()) ||
       iv.job.toLowerCase().includes(search.toLowerCase()) ||

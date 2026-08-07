@@ -6,6 +6,7 @@ import { FileText, Calendar, CheckCircle, XCircle, Clock, Filter, Plus, Sparkles
 import ScheduleInterviewModal from '@/components/modals/ScheduleInterviewModal'
 import AiCandidateModal from '@/components/modals/AiCandidateModal'
 import { wahaApi } from '@/lib/api'
+import { useAuthStore } from '@/lib/stores'
 
 const initialApplications = [
   { id: '1', candidate: 'Kasun Perera', job: 'Senior Full Stack Engineer', employer: 'WSO2', applied: '2 days ago', status: 'screening' },
@@ -16,12 +17,21 @@ const initialApplications = [
 ]
 
 export default function ApplicationsPage() {
+  const { user, viewingAs } = useAuthStore()
   const [applications, setApplications] = useState(initialApplications)
   const [activeTab, setActiveTab] = useState('all')
   const [selectedApp, setSelectedApp] = useState<any>(null)
   const [aiCandidate, setAiCandidate] = useState<any>(null)
   const [isScheduleModalOpen, setIsScheduleModalOpen] = useState(false)
 
+  // Enforce Tenant Data Isolation
+  const tenantApplications = applications.filter((a) => {
+    if (viewingAs === 'employer' || user?.role === 'employer') {
+      const emp = String(a.employer || '').toLowerCase()
+      return emp.includes('wso2')
+    }
+    return true // Admin / Recruiter Agency sees all companies
+  })
 
   useEffect(() => {
     const fetchLiveApplications = async () => {
@@ -84,7 +94,7 @@ export default function ApplicationsPage() {
     setApplications((prev) => prev.map((a) => (a.id === id ? { ...a, status: newStatus } : a)))
   }
 
-  const filtered = activeTab === 'all' ? applications : applications.filter((a) => a.status === activeTab)
+  const filtered = activeTab === 'all' ? tenantApplications : tenantApplications.filter((a) => a.status === activeTab)
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto animate-fade-in">
@@ -101,7 +111,7 @@ export default function ApplicationsPage() {
       {/* Tabs */}
       <div className="flex border-b border-border space-x-2 text-xs font-semibold overflow-x-auto">
         {['all', 'applied', 'screening', 'interview', 'offer', 'rejected'].map((tab) => {
-          const count = tab === 'all' ? applications.length : applications.filter((a) => a.status === tab).length
+          const count = tab === 'all' ? tenantApplications.length : tenantApplications.filter((a) => a.status === tab).length
           return (
             <button
               key={tab}
