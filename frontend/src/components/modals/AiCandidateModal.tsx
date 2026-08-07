@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { X, Sparkles, Send, Copy, Check, Clock, ShieldCheck, HelpCircle, User, Loader2, MessageSquare } from 'lucide-react'
 import { aiApi, wahaApi } from '@/lib/api'
+import { StructuredAiContent } from '@/components/ai/AiAgentDrawer'
 
 interface AiCandidateModalProps {
   isOpen: boolean
@@ -316,8 +317,8 @@ export default function AiCandidateModal({ isOpen, onClose, candidate }: AiCandi
                 </div>
               ) : (
                 <>
-                  <div className="p-4 rounded-xl bg-surface-2 border border-border text-xs leading-relaxed text-foreground whitespace-pre-line font-mono">
-                    {questionsMarkdown}
+                  <div className="p-4 rounded-xl bg-surface-2 border border-border text-xs leading-relaxed text-foreground">
+                    <StructuredAiContent text={questionsMarkdown || ''} />
                   </div>
 
                   <div className="flex flex-wrap items-center justify-between gap-3 pt-2">

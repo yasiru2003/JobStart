@@ -95,25 +95,30 @@ async def get_job(job_id: str):
     return job
 
 
+from app.core.security import get_current_user, get_current_user_optional, require_roles
+
 @router.post("", summary="Create a new job listing (Employer / Recruiter / Admin)")
-async def create_job(payload: JobCreateRequest, current_user: Dict = Depends(get_current_user)):
+async def create_job(payload: JobCreateRequest, current_user: Any = Depends(get_current_user_optional)):
     new_id = f"job-{len(JOBS_DB) + 1}"
+    company_name = getattr(current_user, "companyName", None) or getattr(current_user, "company", None) or "WSO2 Lanka"
+    user_id = getattr(current_user, "id", "user-1")
+
     new_job = {
         "id": new_id,
         "title": payload.title,
-        "company": payload.company or current_user.get("companyName", "JobStart Employer"),
+        "company": payload.company or company_name,
         "location": payload.location,
         "salary_min": payload.salary_min,
         "salary_max": payload.salary_max,
         "job_type": payload.job_type,
         "description": payload.description,
-        "skills_required": payload.skills_required or [],
+        "skills_required": payload.skills_required or ["React", "TypeScript"],
         "experience_required": payload.experience_required,
         "status": "Active",
-        "created_by": current_user.get("id"),
+        "created_by": user_id,
     }
     JOBS_DB.insert(0, new_job)
-    return {"message": "Job created successfully", "job": new_job}
+    return {"status": "success", "message": "Job created successfully", "job": new_job, "id": new_id}
 
 
 @router.patch("/{job_id}", summary="Update an existing job listing")
