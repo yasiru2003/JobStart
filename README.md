@@ -48,7 +48,7 @@ This project leverages a modern, scalable tech stack, precisely matching our ori
 * **Authentication:** JWT (JSON Web Tokens)
 
 ### AI & Integrations
-* **LLM Engine:** Gemini 1.5 Flash (via Google AI Studio) for fast, context-aware reasoning and localized Sinhala support.
+* **LLM Engine:** Gemini 3.6 Flash (via Google AI Studio) for fast, context-aware reasoning and localized Sinhala support.
 * **Orchestration:** Custom Python-based Agentic Workflow Engine (handling state persistence, tool use, and multi-turn memory).
 * **Communication:** WAHA (WhatsApp HTTP API) for seamless, authenticated WhatsApp integration.
 
@@ -114,6 +114,3 @@ npm run dev
 ### 3. WhatsApp Integration (Optional for local dev)
 To fully test the WhatsApp agent locally, ensure the backend is exposed via a service like ngrok to receive webhooks from your WAHA instance.
 
----
-
-*Built with ❤️ for the future of recruitment.*
