@@ -660,6 +660,43 @@ class WhatsAppAgentService:
                 "stage": ApplicationStage.NONE,
             }
 
+        # ── Candidate Interview Confirmation Guard ────────────────────────────
+        has_unconfirmed_invite = bool(session.get("interview_date") and not session.get("interview_confirmed"))
+        if has_unconfirmed_invite:
+            lower_msg = message_text.lower().strip()
+            if any(kw in lower_msg for kw in ("yes", "1", "confirm", "ow", "hari", "join", "sure", "ok", "yep", "agree", "thawuruyi")):
+                conversation_store.set_confirmed(phone, True)
+                conversation_store.upsert(phone, message_text, "candidate", {
+                    "interview_confirmed": True,
+                    "application_stage": "interview_confirmed",
+                })
+                meet_link = "https://meet.google.com/jobstart-interview-room"
+                cand_name = session.get("collected_name") or session.get("candidate_name") or "Candidate"
+                job_t = session.get("selected_job_title") or session.get("job_title") or "Position"
+                date_t = session.get("interview_date") or "Scheduled Date"
+                time_t = session.get("interview_time") or "Scheduled Time"
+
+                reply = (
+                    f"✅ *සම්මුඛ පරීක්ෂණය තහවුරු කරන ලදී! / Interview Confirmed!*\n\n"
+                    f"👋 Hello *{cand_name}*,\n"
+                    f"Your technical interview for *{job_t}* is officially confirmed!\n\n"
+                    f"📅 *Date*: {date_t}\n"
+                    f"⏰ *Time*: {time_t}\n"
+                    f"📍 *Mode*: Google Meet\n"
+                    f"💻 *Join Link*: {meet_link}\n\n"
+                    f"We look forward to meeting you! Please join 5 minutes prior to the scheduled time.\n"
+                    f"— *{self.agent_name}*"
+                )
+                conversation_store.upsert(phone, reply, "agent")
+                await waha_service.send_text(phone, reply)
+                return {
+                    "intent": "INTERVIEW_CONFIRMED_BY_CANDIDATE",
+                    "reply": reply,
+                    "auto_replied": True,
+                    "language": lang,
+                    "meet_link": meet_link,
+                }
+
         clean_text = message_text.strip()
 
         emoji_map = {"1️⃣": 1, "2️⃣": 2, "3️⃣": 3, "4️⃣": 4, "5️⃣": 5}
@@ -1373,6 +1410,8 @@ class WhatsAppAgentService:
             "job_title": job_title,
             "interview_date": date,
             "interview_time": time_slot,
+            "interview_confirmed": False,
+            "application_stage": "interview_scheduled",
         })
         return result
 

@@ -2,7 +2,7 @@
   "94765225044": {
     "phone": "94765225044",
     "candidate_name": "Hasini Dikkumbura",
-    "language": "si",
+    "language": "en",
     "messages": [
       {
         "sender": "candidate",
@@ -1323,11 +1323,91 @@
         "sender": "agent",
         "text": "👋 Hello *Hasini Dikkumbura*,\n\n🎉 Congratulations! You've been *shortlisted* for an interview with *WSO2 Lanka* for the position of *Senior React / Next.js Developer*.\n\n📅 *Date*: Wednesday, Aug 12\n⏰ *Time*: 11:30 AM\n📍 *Mode*: Google Meet\n\nPlease reply:\n✅ *YES* — to confirm your attendance\n❌ *NO* — if you need to reschedule\n\nWe look forward to meeting you!\n— *JobStart Recruitment Team*",
         "time": "2026-08-07T08:20:57.592545"
+      },
+      {
+        "sender": "agent",
+        "text": "👋 Hello *Hasini Dikkumbura*,\n\n🎉 Congratulations! You've been *shortlisted* for an interview with *WSO2 Lanka* for the position of *Senior React / Next.js Developer*.\n\n📅 *Date*: Wed 11:30 AM\n⏰ *Time*: 11:30 AM\n📍 *Mode*: Google Meet\n\nPlease reply:\n✅ *YES* — to confirm your attendance\n❌ *NO* — if you need to reschedule\n\nWe look forward to meeting you!\n— *JobStart Recruitment Team*",
+        "time": "2026-08-07T08:28:20.144040"
+      },
+      {
+        "sender": "candidate",
+        "text": "yes",
+        "time": "2026-08-07T08:28:53.990312"
+      },
+      {
+        "sender": "agent",
+        "text": "Thank you for confirming, Hasini! 🎉\n\nYour interview for the *Senior React / Next.js Developer* position at *WSO2 Lanka* is officially confirmed.\n\n📅 *Date*: Wednesday\n⏰ *Time*: 11:30 AM\n📍 *Mode*: Google Meet\n\nWe will send the Google Meet meeting link to your email and phone prior to the interview. \n\nGood luck! If you need any further assistance, feel free to ask.\n\n— *JobStart Recruitment Team*",
+        "time": "2026-08-07T08:28:59.915889"
+      },
+      {
+        "sender": "agent",
+        "text": "👋 Hello *Hasini Dikkumbura*,\n\n🎉 Congratulations! You've been *shortlisted* for an interview with *WSO2 Lanka* for the position of *Senior React Developer*.\n\n📅 *Date*: Wednesday, Aug 12\n⏰ *Time*: 11:30 AM\n📍 *Mode*: Google Meet\n\nPlease reply:\n✅ *YES* — to confirm your attendance\n❌ *NO* — if you need to reschedule\n\nWe look forward to meeting you!\n— *JobStart Recruitment Team*",
+        "time": "2026-08-07T08:30:19.916493"
+      },
+      {
+        "sender": "agent",
+        "text": "👋 Hello *Hasini Dikkumbura*,\n\n🎉 Congratulations! You've been *shortlisted* for an interview with *WSO2 Lanka* for the position of *Senior React Developer*.\n\n📅 *Date*: Wednesday, Aug 12\n⏰ *Time*: 11:30 AM\n📍 *Mode*: Google Meet\n\nPlease reply:\n✅ *YES* — to confirm your attendance\n❌ *NO* — if you need to reschedule\n\nWe look forward to meeting you!\n— *JobStart Recruitment Team*",
+        "time": "2026-08-07T08:30:44.290498"
+      },
+      {
+        "sender": "agent",
+        "text": "👋 Hello *Hasini Dikkumbura*,\n\n🎉 Congratulations! You've been *shortlisted* for an interview with *WSO2 Lanka* for the position of *Senior React / Next.js Developer*.\n\n📅 *Date*: Wednesday, Aug 12\n⏰ *Time*: 11:30 AM\n📍 *Mode*: Google Meet\n\nPlease reply:\n✅ *YES* — to confirm your attendance\n❌ *NO* — if you need to reschedule\n\nWe look forward to meeting you!\n— *JobStart Recruitment Team*",
+        "time": "2026-08-07T08:30:57.434740"
+      },
+      {
+        "sender": "candidate",
+        "text": "YES",
+        "time": "2026-08-07T08:30:57.447097"
+      },
+      {
+        "sender": "agent",
+        "text": "Thank you for confirming, Hasini! 🎉\n\nYour interview for the *Senior React / Next.js Developer* role with *WSO2 Lanka* is fully confirmed.\n\n📅 *Date*: Wednesday, Aug 12\n⏰ *Time*: 11:30 AM\n📍 *Mode*: Google Meet\n\nWe will send the Google Meet link to your registered email and phone prior to the interview.\n\nIf you have any questions or need further details about your application, feel free to ask. Good luck!\n\n— *JobStart Recruitment Team*",
+        "time": "2026-08-07T08:31:03.241196"
+      },
+      {
+        "sender": "agent",
+        "text": "👋 Hello *Hasini Dikkumbura*,\n\n🎉 Congratulations! You've been *shortlisted* for an interview with *WSO2 Lanka* for the position of *Senior React / Next.js Developer*.\n\n📅 *Date*: Wednesday, Aug 12\n⏰ *Time*: 11:30 AM\n📍 *Mode*: Google Meet\n\nPlease reply:\n✅ *YES* — to confirm your attendance\n❌ *NO* — if you need to reschedule\n\nWe look forward to meeting you!\n— *JobStart Recruitment Team*",
+        "time": "2026-08-07T08:31:14.840854"
+      },
+      {
+        "sender": "candidate",
+        "text": "YES",
+        "time": "2026-08-07T08:31:14.866790"
+      },
+      {
+        "sender": "candidate",
+        "text": "YES",
+        "time": "2026-08-07T08:31:14.868899"
+      },
+      {
+        "sender": "agent",
+        "text": "✅ *සම්මුඛ පරීක්ෂණය තහවුරු කරන ලදී! / Interview Confirmed!*\n\n👋 Hello *Hasini Dikkumbura*,\nYour technical interview for *Flutter Mobile Developer* is officially confirmed!\n\n📅 *Date*: Wednesday, Aug 12\n⏰ *Time*: 11:30 AM\n📍 *Mode*: Google Meet\n💻 *Join Link*: https://meet.google.com/jobstart-interview-room\n\nWe look forward to meeting you! Please join 5 minutes prior to the scheduled time.\n— *JobStart Recruitment Team*",
+        "time": "2026-08-07T08:31:14.870925"
+      },
+      {
+        "sender": "agent",
+        "text": "👋 Hello *Hasini Dikkumbura*,\n\n🎉 Congratulations! You've been *shortlisted* for an interview with *WSO2 Lanka* for the position of *Senior React / Next.js Developer*.\n\n📅 *Date*: Wednesday, Aug 12\n⏰ *Time*: 11:30 AM\n📍 *Mode*: Google Meet\n\nPlease reply:\n✅ *YES* — to confirm your attendance\n❌ *NO* — if you need to reschedule\n\nWe look forward to meeting you!\n— *JobStart Recruitment Team*",
+        "time": "2026-08-07T08:31:32.286070"
+      },
+      {
+        "sender": "candidate",
+        "text": "YES",
+        "time": "2026-08-07T08:31:32.309786"
+      },
+      {
+        "sender": "candidate",
+        "text": "YES",
+        "time": "2026-08-07T08:31:32.311997"
+      },
+      {
+        "sender": "agent",
+        "text": "✅ *සම්මුඛ පරීක්ෂණය තහවුරු කරන ලදී! / Interview Confirmed!*\n\n👋 Hello *Hasini Dikkumbura*,\nYour technical interview for *Flutter Mobile Developer* is officially confirmed!\n\n📅 *Date*: Wednesday, Aug 12\n⏰ *Time*: 11:30 AM\n📍 *Mode*: Google Meet\n💻 *Join Link*: https://meet.google.com/jobstart-interview-room\n\nWe look forward to meeting you! Please join 5 minutes prior to the scheduled time.\n— *JobStart Recruitment Team*",
+        "time": "2026-08-07T08:31:32.313834"
       }
     ],
     "last_intent": null,
     "interview_confirmed": true,
-    "application_stage": "submitted",
+    "application_stage": "interview_confirmed",
     "selected_job_id": null,
     "selected_job_title": "Flutter Mobile Developer",
     "collected_name": "Hasini Dikkumbura",

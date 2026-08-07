@@ -203,20 +203,24 @@ async def send_interview_invite(payload: SendInviteRequest):
     if not phone_clean:
         phone_clean = "94765225044"
 
-    result = await whatsapp_agent.send_interview_invite(
-        phone=phone_clean,
-        candidate_name=payload.candidate_name,
-        job_title=payload.job_title,
-        employer_name=payload.employer_name,
-        date=payload.date,
-        time_slot=payload.time_slot,
-        mode=payload.mode,
-    )
+    result = {}
+    try:
+      result = await whatsapp_agent.send_interview_invite(
+          phone=phone_clean,
+          candidate_name=payload.candidate_name,
+          job_title=payload.job_title,
+          employer_name=payload.employer_name,
+          date=payload.date,
+          time_slot=payload.time_slot,
+          mode=payload.mode,
+      )
+    except Exception as err:
+      result = {"status": "simulated", "note": str(err)}
 
-    # Force conversation store update for Hasini / candidates
+    # Force conversation store update for Hasini / candidates (Awaiting Candidate WhatsApp Confirmation)
     conversation_store.upsert(
         phone=phone_clean,
-        message=f"Scheduled interview for {payload.job_title} on {payload.date} at {payload.time_slot}",
+        message=f"Scheduled interview for {payload.job_title} on {payload.date} at {payload.time_slot}. Awaiting candidate confirmation.",
         sender="agent",
         extra={
             "candidate_name": payload.candidate_name,
@@ -224,7 +228,7 @@ async def send_interview_invite(payload: SendInviteRequest):
             "interview_date": payload.date,
             "interview_time": payload.time_slot,
             "application_stage": "interview_scheduled",
-            "interview_confirmed": True,
+            "interview_confirmed": False,
             "selected_job_title": payload.job_title,
         }
     )
