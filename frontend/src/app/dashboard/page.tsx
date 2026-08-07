@@ -159,8 +159,8 @@ export default function DashboardOverviewPage() {
               <span className="text-xs font-semibold">Company Openings</span>
               <Briefcase className="w-4 h-4 text-primary" />
             </div>
-            <p className="text-2xl font-extrabold text-foreground">4 Active Jobs</p>
-            <p className="text-[11px] text-emerald-600 font-semibold">+2 posted this month</p>
+            <p className="text-2xl font-extrabold text-foreground">{liveMetrics.activeJobs} Active {liveMetrics.activeJobs === 1 ? 'Job' : 'Jobs'}</p>
+            <p className="text-[11px] text-emerald-600 font-semibold">+1 posted this month</p>
           </div>
 
           <div className="card p-5 space-y-1">
@@ -168,8 +168,8 @@ export default function DashboardOverviewPage() {
               <span className="text-xs font-semibold">Hiring Team</span>
               <Users className="w-4 h-4 text-indigo-500" />
             </div>
-            <p className="text-2xl font-extrabold text-foreground">3 HR Recruiters</p>
-            <p className="text-[11px] text-indigo-600 font-semibold">10 Openings Managed</p>
+            <p className="text-2xl font-extrabold text-foreground">2 HR Recruiters</p>
+            <p className="text-[11px] text-indigo-600 font-semibold">1 Opening Managed</p>
           </div>
 
           <div className="card p-5 space-y-1">
@@ -177,7 +177,7 @@ export default function DashboardOverviewPage() {
               <span className="text-xs font-semibold">Scheduled Interviews</span>
               <Calendar className="w-4 h-4 text-amber-500" />
             </div>
-            <p className="text-2xl font-extrabold text-foreground">12 Scheduled</p>
+            <p className="text-2xl font-extrabold text-foreground">{liveMetrics.confirmedInterviews} Scheduled</p>
             <p className="text-[11px] text-amber-600 font-semibold">WhatsApp Bot Active</p>
           </div>
 
@@ -186,8 +186,8 @@ export default function DashboardOverviewPage() {
               <span className="text-xs font-semibold">Total Hired</span>
               <ShieldCheck className="w-4 h-4 text-emerald-500" />
             </div>
-            <p className="text-2xl font-extrabold text-foreground">8 Placed</p>
-            <p className="text-[11px] text-emerald-600 font-semibold">+3 placed this week</p>
+            <p className="text-2xl font-extrabold text-foreground">1 Placed</p>
+            <p className="text-[11px] text-emerald-600 font-semibold">+1 placed this week</p>
           </div>
         </div>
 
