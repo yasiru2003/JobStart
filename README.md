@@ -1,6 +1,6 @@
 # HirePath
 
-**Sri Lanka's Premier AI-Powered Recruitment & Verification Platform**
+**Sri Lanka's Premier AI-Powered Recruitment SaaS
 
 *Submitted for the Open Category Innovation Challenge*
 
